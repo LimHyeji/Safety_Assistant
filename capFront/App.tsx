@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import axios from 'axios';
 
+//위치 접근 권한 받기
 async function requestPermission() {
   try {
     return await PermissionsAndroid.request(
