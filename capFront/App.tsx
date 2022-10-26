@@ -4,7 +4,6 @@ import { View, Text,  PermissionsAndroid, ScrollView } from "react-native";
 import MapView, {Marker, Polyline, AnimatedRegion} from "react-native-maps";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import axios from 'axios';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -35,28 +34,7 @@ function App() {
     },
   ]);
 
-  const [info, setInfo] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchInfo = async () => {
-    try {
-      setError(null);
-      setInfo("");
-        
-      setLoading(true);
-        
-      const response = await axios.get(
-        'http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=%2Buvw8mtEC8SxmORSnCRCjrnB2BDLitKPgiqG4575Ym%2Btu2WpCtx3C25RGKSVuxEb&searchYearCd=2022032&siDo=11&guGun=680'
-      );
-
-      setInfo(response.data.data);
-    } catch (e) {
-      console.log(e);
-    }
-    // loading 끄기
-    setLoading(false);
-  };
+  
 
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   useEffect(() => {
@@ -97,9 +75,6 @@ function App() {
       </View>
     );
   }
-
-  if (loading) return <View style={{margin: 50, width: 300, height: 200}}><Text>로딩 중..</Text></View>;
-  if (!info) return null;
 
   return (
       <View style={{ flex: 1 }}>
