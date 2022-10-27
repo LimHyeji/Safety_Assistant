@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Geolocation from "react-native-geolocation-service";
-import { View, Text,  PermissionsAndroid } from "react-native";
+import { View, Text,  PermissionsAndroid, ActivityIndicator } from "react-native";
 import MapView, {Marker, Polyline, AnimatedRegion} from "react-native-maps";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,12 +18,13 @@ async function requestPermission() {
 }
 
 function App() {
-  const [dangerArea, setDangerArea] = useState([]);
+  const [dangerAreas, setDangerAreas] = useState([]);
   const componentDidMount = async () => {
+    //guGun을 바꿔가면서 여러 번 호출 필요
     const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=%2Buvw8mtEC8SxmORSnCRCjrnB2BDLitKPgiqG4575Ym%2Btu2WpCtx3C25RGKSVuxEb&searchYearCd=2022032&siDo=11&guGun=680&type=json');
     const danger = await response.json();
-    setDangerArea(danger.items);
-    console.log(dangerArea);
+    setDangerAreas(danger.items.item);
+    console.log(dangerAreas);
   }
 
   useEffect(() => {
@@ -85,9 +86,26 @@ function App() {
             coordinate={{latitude: latitude, longitude: longitude}}
           />
         
-        <Marker
-            coordinate={{latitude: Number(dangerArea.item[0].la_crd), longitude: Number(dangerArea.item[0].lo_crd)}}
-          />
+        
+        {dangerAreas.length === 0 ? (
+            <View>
+              <ActivityIndicator
+                color="white"
+                style={{margin: 10}}
+                size="large"
+              />
+            </View>
+          ) : (
+            dangerAreas.map((dangerArea, index) => {
+              return (
+                //마커 띄우긴 가능 그러나 geom_json이 string으로 읽혀 polyline으로 출력 어려움
+                <Marker
+                  key={index}
+                  coordinate={{latitude: parseFloat(dangerArea.la_crd), longitude: parseFloat(dangerArea.lo_crd)}}
+                />
+              )
+            })
+          )}
 
         </MapView>
       </View>
