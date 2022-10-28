@@ -16,7 +16,7 @@ const CheckIsParent=[{
     value: false
 }]
 
-const AuthForm = () => {    
+function AuthForm() {    
   const [type, setType] = useState('Login');
   const [action, setAction] = useState('Login');
   const [actionMode, setActionMode] = useState('새로 등록할게요~');
@@ -30,13 +30,13 @@ const AuthForm = () => {
     },
     password: {
       value: '',
-      type: 'textInput',
+      type: 'textInput', // **로 입력되도록 조치 필요
       rules: {},
       valid: false,
     },
     confirmPassword: {
       value: '',
-      type: 'textInput',
+      type: 'textInput', //비밀번호확인과 회원가입버튼 필요
       rules: {},
       valid: false,
     },
@@ -106,7 +106,7 @@ const AuthForm = () => {
     setForm(form => {
       return {...formCopy};
     });
-    console.warn(form);
+    //console.warn(form);
 };
 confirmPassword = () => {
     return type != 'Login' ? (
@@ -131,7 +131,7 @@ confirmPassword = () => {
   };
 return (
     <View>
-        <Input
+        <TextInput
             value={form.userid.value}
             type={form.userid.type}
             autoCapitalize={'none'}
@@ -139,13 +139,13 @@ return (
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('userid',value)}
             />
-        <Input
+        <TextInput
             value={form.password.value}
             type={form.password.type}
             placeholder="비밀번호"
             placeholderTextColor={'#ddd'}
             />
-        <Input
+        <TextInput
             value={form.username.value}
             type={form.username.type}
             placeholder="이름"
@@ -160,14 +160,14 @@ return (
             onChangeText={value=>updateInput('gender',value)}
 />*/}
      
-        <Input
+        <TextInput
             value={form.phoneNum.value}
             type={form.phoneNum.type}
             keyboardType={'phone-pad'}
             placeholder="전화번호"
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('phoneNum',value)}
-            />
+          />
         {/* <Input
             value={form.birth.value}    //생년월일 틀
             type={form.birth.type}
@@ -177,17 +177,11 @@ return (
             onChangeText={value=>updateInput('birth',value)}
 />*/}
         <RadioGroup
-            radioButtons={radioButtons}
-            
-            onPress={value=>updateInput('isParent',value)}
-
-value={form.isParent.value}   //라디오버튼 내지 boolean -> 숨김기능 구현
-            type={form.isParent.type}
-            placeholder="부모, 자녀"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('isParent',value)}
+            radioButtons={CheckIsParent}
+            onPress={value=>updateInput('isParent',value[0].value)}
             />
        {/*
+       //isParent === false면 주소와 등교시간 입력창이 활성화
         <Input
             value={form.house.value}    //우편 번호 선택
             type={form.house.type}
@@ -211,7 +205,7 @@ value={form.isParent.value}   //라디오버튼 내지 boolean -> 숨김기능 �
             onChangeText={value=>updateInput('startTime',value)}
             />
 */}
-        <Input
+        <TextInput
             value={form.parentPhoneNum.value}
             type={form.parentPhoneNum.type}
             placeholder="부모님 전화번호"
@@ -222,7 +216,4 @@ value={form.isParent.value}   //라디오버튼 내지 boolean -> 숨김기능 �
     );
 };
 
-
-
-
-const styles = StyleSheet.create({});
+export default AuthForm;

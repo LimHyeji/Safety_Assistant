@@ -16,7 +16,7 @@ const [userId, setUserId] = useState('');
           blurOnSubmit={false}
         />
 
-        fetch('http://localhost:3001/api/user/login', {
+        fetch('http://localhost:3001/user/login', { //host명 필요
       method: 'POST',
       body: formBody,
       headers: {
@@ -31,7 +31,7 @@ const [userId, setUserId] = useState('');
         console.log(responseJson);
         // If server response message same as Data Matched
         if (responseJson.status === 'success') {
-          AsyncStorage.setItem('user_id', responseJson.data.stu_id);
+          AsyncStorage.setItem('userid', responseJson.data.stu_id);
           console.log(responseJson.data.stu_id);
           navigation.replace('DrawerNavigationRoutes');
         } else {
