@@ -1,20 +1,11 @@
 import {useNavigation} from '@react-navigation/native';
+import { forHorizontalIOS } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/CardStyleInterpolators';
 import React, {useState} from 'react';
 import {
   StyleSheet, Text, View, TextInput, Button, Platform,} from 'react-native';
-import RadioGroup from 'react-native-radio-buttons-group';
+import {RadioButton} from 'react-native-paper';
 //import Input from '../../utils/forms/input';
 
-const CheckIsParent=[{
-    id: '1',
-    label: '부모',
-    value: true
-},
-{
-    id: '2',
-    label: '자녀',
-    value: false
-}]
 
 function AuthForm() {    
   const [type, setType] = useState('Login');
@@ -70,7 +61,7 @@ function AuthForm() {
  */
       isParent: {
         value: '',
-        type: 'textInput',  //input 아님
+        type: 'boolean',  //input 아님
         rules: {},
         valid: false,
       },
@@ -131,6 +122,7 @@ confirmPassword = () => {
   };
 return (
     <View>
+        <Text>회원가입</Text>
         <TextInput
             value={form.userid.value}
             type={form.userid.type}
@@ -176,42 +168,55 @@ return (
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('birth',value)}
 />*/}
-        <RadioGroup
-            radioButtons={CheckIsParent}
-            onPress={value=>updateInput('isParent',value[0].value)}
-            />
-       {/*
-       //isParent === false면 주소와 등교시간 입력창이 활성화
-        <Input
-            value={form.house.value}    //우편 번호 선택
-            type={form.house.type}
-            placeholder="집 위치"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('house',value)}
-            />
-        <Input
-            value={form.school.value}   //우편 번호 선택
-            type={form.school.type}
-            placeholder="학교 위치"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('school',value)}
-            />
+        <RadioButton.Group onValueChange={newValue=>updateInput('isParent', newValue)} value={form.isParent.value}>
+          <View style={{flexDirection:'row'}}>
+            <RadioButton value={true}/>
+            <Text>부모</Text>
+            <RadioButton value={false}/>
+            <Text>자녀</Text>
+          </View>
+        </RadioButton.Group>
 
-            <Input
-            value={form.startTime.value}
-            type={form.startTime.type}
-            placeholder="등교 시간"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('startTime',value)}
-            />
-*/}
-        <TextInput
-            value={form.parentPhoneNum.value}
-            type={form.parentPhoneNum.type}
-            placeholder="부모님 전화번호"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('parentPhoneNum',value)}
-            />
+        {
+          form.isParent.value === false ? (
+            <View>
+              <TextInput
+                value={form.house.value}    //우편 번호 선택
+                type={form.house.type}
+                placeholder="집 위치"
+                placeholderTextColor={'#ddd'}
+                onChangeText={value=>updateInput('house',value)}
+              />
+              <TextInput
+                value={form.school.value}   //우편 번호 선택
+                type={form.school.type}
+                placeholder="학교 위치"
+                placeholderTextColor={'#ddd'}
+                onChangeText={value=>updateInput('school',value)}
+              />
+
+              <TextInput
+                value={form.startTime.value}
+                type={form.startTime.type}
+                placeholder="등교 시간"
+                placeholderTextColor={'#ddd'}
+                onChangeText={value=>updateInput('startTime',value)}
+              />
+              <TextInput
+                value={form.parentPhoneNum.value}
+                type={form.parentPhoneNum.type}
+                placeholder="부모님 전화번호"
+                placeholderTextColor={'#ddd'}
+                onChangeText={value=>updateInput('parentPhoneNum',value)}
+              />
+            </View>
+          ) : (
+            <></>
+          )
+        }
+        <View>
+          <Button title="회원가입" onPress={a = () =>  {console.log(form)}}></Button>
+        </View>
     </View>
     );
 };
