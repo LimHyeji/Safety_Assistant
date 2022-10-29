@@ -39,6 +39,7 @@ function App() {
       if(result === "granted") {
         const _watchId = Geolocation.watchPosition(
           position => {
+            
             const {latitude, longitude} = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
@@ -85,7 +86,8 @@ function App() {
           <Marker
             coordinate={{latitude: latitude, longitude: longitude}}
           />
-        
+
+          <Polyline coordinate={{latitude: latitude, longitude: longitude}} strokeColor="#CAEF53"/> 
         
         {dangerAreas.length === 0 ? (
             <View>
