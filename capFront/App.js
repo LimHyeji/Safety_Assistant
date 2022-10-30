@@ -18,23 +18,21 @@ async function requestPermission() {
 }
 
 function App() {
- 
-  useEffect(() => {
-    componentDidMount();
-  }, []);
 
   const [latitude, setLatitude] = useState(null)
-  const [longitude, setLongitude] = useState(null);
+  const [longitude, setLongitude] = useState(null)
+  const [route, setRoute] = useState([])
   useEffect(() => {
     requestPermission().then(result => {
       console.log({result});
       if(result === "granted") {
         const _watchId = Geolocation.watchPosition(
           position => {
-            
             const {latitude, longitude} = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
+            setRoute([...route, {latitude: latitude, longitude: longitude}]);
+            //console.log(route);
           },
           error => {
             console.log(error);
@@ -76,10 +74,10 @@ function App() {
           }}
         >
           <Marker
-            coordinate={{latitude: latitude, longitude: longitude}}
+            coordinate= {{latitude: latitude, longitude: longitude}}
           />
 
-          <Polyline coordinate={{latitude: latitude, longitude: longitude}} strokeColor="#CAEF53"/> 
+          <Polyline coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}/>
       
         </MapView>
       </View>
