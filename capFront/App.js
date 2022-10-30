@@ -21,7 +21,7 @@ function App() {
 
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
-  const [route, setRoute] = useState([])
+  const route = [];
   useEffect(() => {
     requestPermission().then(result => {
       console.log({result});
@@ -31,8 +31,8 @@ function App() {
             const {latitude, longitude} = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
-            setRoute([...route, {latitude: latitude, longitude: longitude}]);
-            //console.log(route);
+            route.push({latitude: latitude, longitude: longitude});
+            
           },
           error => {
             console.log(error);
@@ -40,8 +40,8 @@ function App() {
           {
             enableHighAccuracy: true,
             distanceFilter: 0,
-            interval: 1000,
-            fastestInterval: 0,
+            interval: 3000,
+            fastestInterval: 2000,
           },
         );
     
