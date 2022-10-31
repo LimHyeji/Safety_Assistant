@@ -21,7 +21,7 @@ function App() {
 
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
-  const route = [];
+  const [route, setRoute] = useState([]);
   useEffect(() => {
     requestPermission().then(result => {
       console.log({result});
@@ -31,8 +31,7 @@ function App() {
             const {latitude, longitude} = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
-            route.push({latitude: latitude, longitude: longitude});
-            
+            setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
           },
           error => {
             console.log(error);
