@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import { forHorizontalIOS } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/CardStyleInterpolators';
 import React, {useState} from 'react';
 import {
   StyleSheet, Text, View, TextInput, Button, Platform,} from 'react-native';
@@ -17,7 +16,7 @@ function AuthForm() {
       value: '',
       type: 'textInput',
       rules: {},
-      valid: true,
+      valid: true,  //중복된 아이디에 대한 예외처리
     },
     password: {
       value: '',
@@ -35,7 +34,7 @@ function AuthForm() {
         value: '',
         type: 'textInput',
         rules: {},
-        valid: true,
+        valid: false,
       },
 /*
       gender: {
@@ -49,7 +48,7 @@ function AuthForm() {
         value: '',
         type: 'textInput',  //번호 타입
         rules: {},
-        valid: true,
+        valid: true,  //중복된 번호에 대한 예외처리
       },
 /*
       birth: {
@@ -67,17 +66,17 @@ function AuthForm() {
       },
       house: {
         value: '',
-        type: 'textInput',  //다음 우편번호 가공 필요
+        type: 'textInput',  //우편번호 가공 필요
         rules: {},
         valid: false,
       },
       school: {
         value: '',
-        type: 'textInput',  //다음 우편번호 가공 필요
+        type: 'textInput',  //우편번호 가공 필요
         rules: {},
-        valid: true,
+        valid: false,
       },
-      startTime: {
+      startTime: {  //변수에 대한 고민 필요
         value: '',
         type: 'textInput',  //시간 타입
         rules: {},
@@ -115,7 +114,7 @@ confirmPassword = () => {
     return hasErrors ? (
       <View style={styles.errorContainer}>
         <Text style={styles.errorLabel}>
-          앗! 로그인 정보를 다시 확인해주세요~
+          로그인 정보를 다시 확인해주세요
         </Text>
       </View>
     ) : null;
@@ -216,6 +215,14 @@ return (
         }
         <View>
           <Button title="회원가입" onPress={a = () =>  {console.log(form)}}></Button>
+          {
+            /*
+            <할일>
+            입력 사항 log 찍기
+            api 보내기
+            + 집/학교 데이터 처리
+            */
+          }
         </View>
     </View>
     );
