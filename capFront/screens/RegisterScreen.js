@@ -124,7 +124,7 @@ return (
         <Text>회원가입</Text>
         <TextInput
             value={form.userid.value}
-            type={form.userid.type}
+            type={form.userid.type} // 미입력하면 못 넘어가게
             autoCapitalize={'none'}
             placeholder="아이디"
             placeholderTextColor={'#ddd'}
@@ -133,8 +133,10 @@ return (
         <TextInput
             value={form.password.value}
             type={form.password.type}
+            autoCapitalize={'none'}
             placeholder="비밀번호"
             placeholderTextColor={'#ddd'}
+            onChangeText={value=>updateInput('password',value)}
             />
         <TextInput
             value={form.username.value}
