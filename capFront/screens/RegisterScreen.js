@@ -9,7 +9,7 @@ function AuthFormAPI(){
 
   fetch('http://localhost:3001/user/login', { //host명 필요
   method: 'POST',
-  body: formBody,
+  body: JSON.stringify(form),
   headers: {
     //Header Defination
     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
