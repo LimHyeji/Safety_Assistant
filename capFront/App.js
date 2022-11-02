@@ -4,6 +4,7 @@ import { View, Text,  PermissionsAndroid, ActivityIndicator } from "react-native
 import MapView, {Marker, Polyline, AnimatedRegion} from "react-native-maps";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Geocoder from 'react-native-geocoding';
 
 
 //위치 접근 권한 받기
@@ -20,6 +21,15 @@ async function requestPermission() {
 
 function App() {
   /*
+  Geocoder.init("AIzaSyDuvTg4UcVw-hv863u3tN5SGvmeJzPeV8s");
+
+  Geocoder.from("Colosseum")
+		.then(json => {
+			var location = json.results[0].geometry.location;
+			console.log(location);
+		})
+		.catch(error => console.warn(error));
+
 //timer 컴포넌트 생성
 const Timer=({mm,ss})=>{
   const [minutes, setMinutes]=useState(parseInt(mm));
@@ -53,6 +63,8 @@ useEffect(() => {
 
 };
   */
+
+
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
   const [route, setRoute] = useState([]);
@@ -111,7 +123,7 @@ useEffect(() => {
           />
 
           <Polyline coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}/>
-      
+    
         </MapView>
       </View>
   );
