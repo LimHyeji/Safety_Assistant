@@ -6,33 +6,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
-function LoginAPI(){
-  fetch('http://localhost:3001/user/register', { //host명 필요
-  method: 'POST',
-  body: JSON.stringify(form),
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    //Hide Loader
-   // setLoading(false);
-    console.log(responseJson);
-    // If server response message same as Data Matched
-    /*
-    if (responseJson.status === 'success') {
-      AsyncStorage.setItem('userId', responseJson.data.stu_id);
-      console.log(responseJson.data.stu_id);
-      navigation.replace('DrawerNavigationRoutes');
-    } else {
-      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
-      console.log('Please check your id or password');
-    }*/
-  })
-  .catch((error) => {
-    //Hide Loader
-    console.error(error);
-  });
-};
-
 function Login(){
 
 const [type, setType] = useState('Login');
@@ -95,7 +68,7 @@ return (
             onChangeText={value=>updateInput('password',value)}
             />
           <View>
-          <Button title="로그인" onPress={a = () =>  LoginAPI(form)}></Button>
+          <Button title="로그인" onPress={() =>  LoginAPI(form)}></Button>
           {
             /*
             <할일>
@@ -108,4 +81,35 @@ return (
     );
   };
 
+  function LoginAPI(form){
+    fetch('http://url', { //host명 필요
+    method: 'POST',
+    body: JSON.stringify({
+      userId: form.userId.value,
+      password:form.password.value
+    } ),
+    headers : {'Content-Type' : 'application/json; charset=utf-8'}
+  })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      //Hide Loader
+     // setLoading(false);
+      console.log(responseJson);
+      // If server response message same as Data Matched
+      /*
+      if (responseJson.status === 'success') {
+        AsyncStorage.setItem('userId', responseJson.data.stu_id);
+        console.log(responseJson.data.stu_id);
+        navigation.replace('DrawerNavigationRoutes');
+      } else {
+        setErrortext('아이디와 비밀번호를 다시 확인해주세요');
+        console.log('Please check your id or password');
+      }*/
+    })
+    .catch((error) => {
+      //Hide Loader
+      console.error(error);
+    });
+  };
+  
     export default Login;

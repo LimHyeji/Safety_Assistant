@@ -5,35 +5,6 @@ import {
 import {RadioButton} from 'react-native-paper';
 //import Input from '../../utils/forms/input';
 
-function AuthFormAPI(form){
-
-  fetch('http://34.64.74.7:8081/user/signup', { //host명 필요
-  method: 'POST',
-  body: JSON.stringify(form),
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    //Hide Loader
-    //setLoading(false);
-    console.log(responseJson);
-    // If server response message same as Data Matched
-    //if (responseJson.status === 'success') {
-    /*  AsyncStorage.setItem('userId', responseJson.data.stu_id);
-      console.log(responseJson.data.stu_id);
-      navigation.replace('DrawerNavigationRoutes');
-    } else {
-      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
-      console.log('Please check your id or password');*/
-    ///  console.log(responseJson);
-  //  }
-  })
-  .catch((error) => {
-    //Hide Loader
-    //setLoading(false);
-    console.error(error);
-  });
-}
-
 function AuthForm() {    
   const [type, setType] = useState('Login');
   const [action, setAction] = useState('Login');
@@ -264,5 +235,44 @@ return (
     </View>
     );
 };
+
+function AuthFormAPI(form){
+  console.log(form.userId.value);
+  fetch('http://34.64.74.7:8081/user/signup', { //host명 필요
+  method: 'POST',
+  body: JSON.stringify({
+    userId:form.userId.value,
+    password:form.password.value,
+    gender:form.gender.value,
+    phoneNum:form.phoneNum.value,
+    idx:form.idx.value,
+    house:form.house.value,
+    school:form.school.value,
+    startTime:form.startTime.value
+  }  ),
+  headers : {'Content-Type' : 'application/json; charset=utf-8'}
+})
+  .then((response) => response.json())
+  .then((responseJson) => {
+    //Hide Loader
+    //setLoading(false);
+    console.log(responseJson);
+    // If server response message same as Data Matched
+    //if (responseJson.status === 'success') {
+    /*  AsyncStorage.setItem('userId', responseJson.data.stu_id);
+      console.log(responseJson.data.stu_id);
+      navigation.replace('DrawerNavigationRoutes');
+    } else {
+      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
+      console.log('Please check your id or password');*/
+    ///  console.log(responseJson);
+  //  }
+  })
+  .catch((error) => {
+    //Hide Loader
+    //setLoading(false);
+    console.error(error);
+  });
+}
 
 export default AuthForm;
