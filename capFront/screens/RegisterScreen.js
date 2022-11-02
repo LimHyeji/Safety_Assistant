@@ -5,6 +5,37 @@ import {
 import {RadioButton} from 'react-native-paper';
 //import Input from '../../utils/forms/input';
 
+function AuthFormAPI(){
+
+  fetch('http://localhost:3001/user/login', { //host명 필요
+  method: 'POST',
+  body: formBody,
+  headers: {
+    //Header Defination
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+  },
+})
+  .then((response) => response.json())
+  .then((responseJson) => {
+    //Hide Loader
+    setLoading(false);
+    console.log(responseJson);
+    // If server response message same as Data Matched
+    if (responseJson.status === 'success') {
+      AsyncStorage.setItem('userid', responseJson.data.stu_id);
+      console.log(responseJson.data.stu_id);
+      navigation.replace('DrawerNavigationRoutes');
+    } else {
+      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
+      console.log('Please check your id or password');
+    }
+  })
+  .catch((error) => {
+    //Hide Loader
+    setLoading(false);
+    console.error(error);
+  });
+}
 
 function AuthForm() {    
   const [type, setType] = useState('Login');
@@ -216,11 +247,10 @@ return (
           )
         }
         <View>
-          <Button title="회원가입" onPress={a = () =>  {console.log(form)}}></Button>
+          <Button title="회원가입" onPress={a = () =>  AuthFormAPI}></Button>
           {
             /*
             <할일>
-            입력 사항 log 찍기
             api 보내기
             + 집/학교 데이터 처리
             */

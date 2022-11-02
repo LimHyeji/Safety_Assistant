@@ -3,6 +3,7 @@ const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
 
+  function Login(){
   <TextInput
           style={styles.textFormTop}
           placeholder={'아이디'}
@@ -44,3 +45,6 @@ const [userId, setUserId] = useState('');
         setLoading(false);
         console.error(error);
       });
+    };
+
+    export default Login;
