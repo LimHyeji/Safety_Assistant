@@ -17,7 +17,7 @@ const [userId, setUserId] = useState('');
           blurOnSubmit={false}
         />
 
-        fetch('http://localhost:3001/user/login', { //host명 필요
+        fetch('http://localhost:3001/user/register', { //host명 필요
       method: 'POST',
       body: formBody,
       headers: {
