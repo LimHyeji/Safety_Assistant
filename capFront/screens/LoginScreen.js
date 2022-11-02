@@ -94,6 +94,7 @@ return (
         <TextInput
             value={form.password.value}
             type={form.password.type}
+            secureTextEntry={true}
             autoCapitalize={'none'}
             placeholder="비밀번호"
             placeholderTextColor={'#ddd'}
