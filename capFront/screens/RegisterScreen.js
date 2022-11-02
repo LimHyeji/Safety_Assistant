@@ -5,45 +5,13 @@ import {
 import {RadioButton} from 'react-native-paper';
 //import Input from '../../utils/forms/input';
 
-function AuthFormAPI(){
-
-  fetch('http://localhost:3001/user/login', { //host명 필요
-  method: 'POST',
-  body: JSON.stringify(form),
-  headers: {
-    //Header Defination
-    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-  },
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    //Hide Loader
-    setLoading(false);
-    console.log(responseJson);
-    // If server response message same as Data Matched
-    if (responseJson.status === 'success') {
-      AsyncStorage.setItem('userid', responseJson.data.stu_id);
-      console.log(responseJson.data.stu_id);
-      navigation.replace('DrawerNavigationRoutes');
-    } else {
-      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
-      console.log('Please check your id or password');
-    }
-  })
-  .catch((error) => {
-    //Hide Loader
-    setLoading(false);
-    console.error(error);
-  });
-}
-
 function AuthForm() {    
   const [type, setType] = useState('Login');
   const [action, setAction] = useState('Login');
   const [actionMode, setActionMode] = useState('새로 등록할게요~');
   const [hasErrors, setHasErrors] = useState(false);
   const [form, setForm] = useState({
-    userid: {
+    userId: {
       value: '',
       type: 'textInput',
       rules: {},
@@ -61,7 +29,7 @@ function AuthForm() {
       rules: {},
       valid: false,
     },
-    username: {
+    gender: {
         value: '',
         type: 'textInput',
         rules: {},
@@ -89,7 +57,7 @@ function AuthForm() {
         valid: true,
       },
  */
-      isParent: {
+      idx: {
         value: '',
         type: 'boolean',  //input 아님
         rules: {},
@@ -112,13 +80,16 @@ function AuthForm() {
         type: 'textInput',  //시간 타입
         rules: {},
         valid: false,
-      },
+      }
+      
+        /*
       parentPhoneNum: {
         value: '',
         type: 'textInput',  //번호 타입
         rules: {},
         valid: false,
       }
+      */
   });
   updateInput = (name, value) => {
     setHasErrors(false);
@@ -154,12 +125,12 @@ return (
     <View>
         <Text>회원가입</Text>
         <TextInput
-            value={form.userid.value}
-            type={form.userid.type} // 미입력하면 못 넘어가게
+            value={form.userId.value}
+            type={form.userId.type} // 미입력하면 못 넘어가게
             autoCapitalize={'none'}
             placeholder="아이디"
             placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('userid',value)}
+            onChangeText={value=>updateInput('userId',value)}
             />
         <TextInput
             value={form.password.value}
@@ -170,12 +141,12 @@ return (
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('password',value)}
             />
-        <TextInput
-            value={form.username.value}
-            type={form.username.type}
+         <TextInput
+            value={form.gender.value}
+            type={form.gender.type}
             placeholder="이름"
             placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('username',value)}
+            onChangeText={value=>updateInput('gender',value)}
             />
         {/*<Input
             value={form.gender.value}       //라디오버튼
@@ -201,7 +172,7 @@ return (
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('birth',value)}
 />*/}
-        <RadioButton.Group onValueChange={newValue=>updateInput('isParent', newValue)} value={form.isParent.value}>
+        <RadioButton.Group onValueChange={newValue=>updateInput('idx', newValue)} value={form.idx.value}>
           <View style={{flexDirection:'row'}}>
             <RadioButton value={true}/>
             <Text>부모</Text>
@@ -211,7 +182,7 @@ return (
         </RadioButton.Group>
 
         {
-          form.isParent.value === false ? (
+          form.idx.value === false ? (
             <View>
               <TextInput
                 value={form.house.value}    //우편 번호 선택
@@ -235,6 +206,8 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('startTime',value)}
               />
+              {
+                /*
               <TextInput
                 value={form.parentPhoneNum.value}
                 type={form.parentPhoneNum.type}
@@ -242,13 +215,15 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('parentPhoneNum',value)}
               />
+              */
+            }
             </View>
           ) : (
             <></>
           )
         }
         <View>
-          <Button title="회원가입" onPress={a = () =>  AuthFormAPI}></Button>
+          <Button title="회원가입" onPress={() =>  AuthFormAPI(form)}></Button>
           {
             /*
             <할일>
@@ -260,5 +235,44 @@ return (
     </View>
     );
 };
+
+function AuthFormAPI(form){
+  console.log(form.userId.value);
+  fetch('http://34.64.74.7:8081/user/signup', { //host명 필요
+  method: 'POST',
+  body: JSON.stringify({
+    userId:form.userId.value,
+    password:form.password.value,
+    gender:form.gender.value,
+    phoneNum:form.phoneNum.value,
+    idx:form.idx.value,
+    house:form.house.value,
+    school:form.school.value,
+    startTime:form.startTime.value
+  }  ),
+  headers : {'Content-Type' : 'application/json; charset=utf-8'}
+})
+  .then((response) => response.json())
+  .then((responseJson) => {
+    //Hide Loader
+    //setLoading(false);
+    console.log(responseJson);
+    // If server response message same as Data Matched
+    //if (responseJson.status === 'success') {
+    /*  AsyncStorage.setItem('userId', responseJson.data.stu_id);
+      console.log(responseJson.data.stu_id);
+      navigation.replace('DrawerNavigationRoutes');
+    } else {
+      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
+      console.log('Please check your id or password');*/
+    ///  console.log(responseJson);
+  //  }
+  })
+  .catch((error) => {
+    //Hide Loader
+    //setLoading(false);
+    console.error(error);
+  });
+}
 
 export default AuthForm;
