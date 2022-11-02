@@ -5,11 +5,21 @@ import {
 import {RadioButton} from 'react-native-paper';
 //import Input from '../../utils/forms/input';
 
-function AuthFormAPI(form){
+function AuthFormAPI(){
 
   fetch('http://34.64.74.7:8081/user/signup', { //host명 필요
   method: 'POST',
-  body: JSON.stringify(form),
+  body: JSON.stringify({
+    "userId":AuthForm.userId,
+    "password":AuthForm.password,
+    "gender":AuthForm.gender,
+    "phoneNum":AuthForm.phoneNum,
+    "idx":AuthForm.idx,
+    "house":AuthForm.house,
+    "school":AuthForm.school,
+    "startTime":AuthForm.startTime
+  }  ),
+  headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })
   .then((response) => response.json())
   .then((responseJson) => {
@@ -252,7 +262,7 @@ return (
           )
         }
         <View>
-          <Button title="회원가입" onPress={() =>  AuthFormAPI(form)}></Button>
+          <Button title="회원가입" onPress={() =>  AuthFormAPI()}></Button>
           {
             /*
             <할일>
