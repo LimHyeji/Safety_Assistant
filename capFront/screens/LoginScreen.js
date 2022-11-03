@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Geolocation from "react-native-geolocation-service";
 import { View, Text, TextInput, Button,  PermissionsAndroid, ActivityIndicator } from "react-native";
-import MapView, {Marker, Polyline, AnimatedRegion} from "react-native-maps";
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+//StyleSheet 추가 필요
 
 function Login(){
 
 const [type, setType] = useState('Login');
-const [action, setAction] = useState('Login');
-const [actionMode, setActionMode] = useState('새로 등록할게요~');
+//const [action, setAction] = useState('Login');
+//const [actionMode, setActionMode] = useState('문구 적기');
 const [hasErrors, setHasErrors] = useState(false);
 const [form, setForm] = useState({
   userId: {
     value: '',
     type: 'textInput',
     rules: {},
-    valid: true,  //중복된 아이디에 대한 예외처리
-  },
+    valid: true,
+    },
   password: {
     value: '',
-    type: 'textInput', // **로 입력되도록 조치 필요
+    type: 'textInput',
     rules: {},
     valid: false,
   }
@@ -34,14 +30,13 @@ updateInput = (name, value) => {
   setForm(form => {
     return {...formCopy};
   });
-  //console.warn(form);
 };
 
   formHasErrors = () => {
     return hasErrors ? (
       <View style={styles.errorContainer}>
         <Text style={styles.errorLabel}>
-          로그인 정보를 다시 확인해주세요
+          로그인 정보를 다시 확인해주세요.
         </Text>
       </View>
     ) : null;
@@ -69,13 +64,6 @@ return (
             />
           <View>
           <Button title="로그인" onPress={() =>  LoginAPI(form)}></Button>
-          {
-            /*
-            <할일>
-            api 보내기
-            + 집/학교 데이터 처리
-            */
-          }
           </View>
     </View>
     );
@@ -92,10 +80,8 @@ return (
   })
     .then((response) => response.json())
     .then((responseJson) => {
-      //Hide Loader
-     // setLoading(false);
       console.log(responseJson);
-      // If server response message same as Data Matched
+           // setLoading(false);
       /*
       if (responseJson.status === 'success') {
         AsyncStorage.setItem('userId', responseJson.data.stu_id);
@@ -107,7 +93,6 @@ return (
       }*/
     })
     .catch((error) => {
-      //Hide Loader
       console.error(error);
     });
   };
