@@ -1,95 +1,80 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {
-  StyleSheet, Text, View, TextInput, Button, Platform,} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Platform,} from 'react-native';
 import {RadioButton} from 'react-native-paper';
-//import Input from '../../utils/forms/input';
 
 function AuthForm() {    
-  const [type, setType] = useState('Login');
-  const [action, setAction] = useState('Login');
-  const [actionMode, setActionMode] = useState('새로 등록할게요~');
+  const [type, setType] = useState('signup');
+ //const [action, setAction] = useState('signup');
+ // const [actionMode, setActionMode] = useState('새로 등록할게요~');
   const [hasErrors, setHasErrors] = useState(false);
   const [form, setForm] = useState({
     userId: {
       value: '',
       type: 'textInput',
       rules: {},
-      valid: true,  //중복된 아이디에 대한 예외처리
+      valid: true,  
+      //중복된 아이디에 대한 예외처리
+      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
     },
     password: {
       value: '',
-      type: 'textInput', // **로 입력되도록 조치 필요
+      type: 'textInput',
       rules: {},
       valid: false,
     },
     confirmPassword: {
       value: '',
-      type: 'textInput', //비밀번호확인과 회원가입버튼 필요
+      type: 'textInput', //비밀번호확인 구현필요
       rules: {},
       valid: false,
     },
-    gender: {
+    userId: {
         value: '',
         type: 'textInput',
         rules: {},
         valid: false,
       },
-/*
-      gender: {
-        value: '',
-        type: 'textInput',  //성별 라디오버튼
-       rules: {},
-        valid: false,
-      },
- */
       phoneNum: {
         value: '',
-        type: 'textInput',  //번호 타입
-        rules: {},
-        valid: true,  //중복된 번호에 대한 예외처리
-      },
-/*
-      birth: {
-        value: '',
-        type: 'textInput',  //생년월일 타입
+        type: 'textInput',
         rules: {},
         valid: true,
+      //중복된 번호에 대한 예외처리
+      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
       },
- */
       idx: {
         value: '',
-        type: 'boolean',  //input 아님
+        type: 'boolean',
         rules: {},
         valid: false,
       },
       house: {
         value: '',
-        type: 'textInput',  //우편번호 가공 필요
+        type: 'textInput',  //우편번호 가공 구현 필요
         rules: {},
         valid: false,
       },
       school: {
         value: '',
-        type: 'textInput',  //우편번호 가공 필요
+        type: 'textInput',  //우편번호 가공 구현 필요
         rules: {},
         valid: false,
       },
-      startTime: {  //변수에 대한 고민 필요
+      startTime: {
         value: '',
-        type: 'textInput',  //시간 타입
+        type: 'textInput',  //드롭박스 구현?
         rules: {},
         valid: false,
-      }
-      
-        /*
+      },
       parentPhoneNum: {
         value: '',
-        type: 'textInput',  //번호 타입
+        type: 'textInput',
         rules: {},
         valid: false,
+        //존재하는 번호인지 확인필요
+        //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
       }
-      */
   });
   updateInput = (name, value) => {
     setHasErrors(false);
@@ -98,10 +83,9 @@ function AuthForm() {
     setForm(form => {
       return {...formCopy};
     });
-    //console.warn(form);
 };
 confirmPassword = () => {
-    return type != 'Login' ? (
+    return type != 'signup' ? ( //??
       <Input
         value={form.confirmPassword.value}
         type={form.confirmPassword.type}
@@ -116,7 +100,7 @@ confirmPassword = () => {
     return hasErrors ? (
       <View style={styles.errorContainer}>
         <Text style={styles.errorLabel}>
-          로그인 정보를 다시 확인해주세요
+          회원가입 정보를 다시 확인해주세요
         </Text>
       </View>
     ) : null;
@@ -142,20 +126,12 @@ return (
             onChangeText={value=>updateInput('password',value)}
             />
          <TextInput
-            value={form.gender.value}
-            type={form.gender.type}
+            value={form.userId.value}
+            type={form.userId.type}
             placeholder="이름"
             placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('gender',value)}
-            />
-        {/*<Input
-            value={form.gender.value}       //라디오버튼
-            type={form.gender.type}
-            placeholder="성별"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('gender',value)}
-/>*/}
-     
+            onChangeText={value=>updateInput('userId',value)}
+            />  
         <TextInput
             value={form.phoneNum.value}
             type={form.phoneNum.type}
@@ -164,14 +140,6 @@ return (
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('phoneNum',value)}
           />
-        {/* <Input
-            value={form.birth.value}    //생년월일 틀
-            type={form.birth.type}
-            keyboardType={'email-address'}  //
-            placeholder="생년월일"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('birth',value)}
-/>*/}
         <RadioButton.Group onValueChange={newValue=>updateInput('idx', newValue)} value={form.idx.value}>
           <View style={{flexDirection:'row'}}>
             <RadioButton value={true}/>
@@ -198,7 +166,6 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('school',value)}
               />
-
               <TextInput
                 value={form.startTime.value}
                 type={form.startTime.type}
@@ -206,8 +173,6 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('startTime',value)}
               />
-              {
-                /*
               <TextInput
                 value={form.parentPhoneNum.value}
                 type={form.parentPhoneNum.type}
@@ -215,8 +180,6 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('parentPhoneNum',value)}
               />
-              */
-            }
             </View>
           ) : (
             <></>
@@ -224,26 +187,18 @@ return (
         }
         <View>
           <Button title="회원가입" onPress={() =>  AuthFormAPI(form)}></Button>
-          {
-            /*
-            <할일>
-            api 보내기
-            + 집/학교 데이터 처리
-            */
-          }
         </View>
     </View>
     );
 };
 
 function AuthFormAPI(form){
-  console.log(form.userId.value);
-  fetch('http://34.64.74.7:8081/user/signup', { //host명 필요
+  fetch('http://34.64.74.7:8081/user/signup', {
   method: 'POST',
   body: JSON.stringify({
     userId:form.userId.value,
     password:form.password.value,
-    gender:form.gender.value,
+    userId:form.userId.value,
     phoneNum:form.phoneNum.value,
     idx:form.idx.value,
     house:form.house.value,
@@ -254,10 +209,8 @@ function AuthFormAPI(form){
 })
   .then((response) => response.json())
   .then((responseJson) => {
-    //Hide Loader
-    //setLoading(false);
     console.log(responseJson);
-    // If server response message same as Data Matched
+    //setLoading(false);
     //if (responseJson.status === 'success') {
     /*  AsyncStorage.setItem('userId', responseJson.data.stu_id);
       console.log(responseJson.data.stu_id);
@@ -269,7 +222,6 @@ function AuthFormAPI(form){
   //  }
   })
   .catch((error) => {
-    //Hide Loader
     //setLoading(false);
     console.error(error);
   });

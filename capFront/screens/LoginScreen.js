@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button,  PermissionsAndroid, ActivityIndicator } from "react-native";
+//import {useNavigation} from '@react-navigation/native';
+import React, {useState} from "react";
+import { StyleSheet, Text, View, TextInput, Button, Platform, } from "react-native";
 //StyleSheet 추가 필요
 
 function Login(){
