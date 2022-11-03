@@ -144,20 +144,24 @@ useEffect(() => {
                 size="large"
               />
           ) : (
-            dangerAreas.map(dangerArea => {
-              dangerArea.map((dan, i) => {
-                  return(
+            dangerAreas.map((dangerArea, index) => (
+              <View key={index}>
+                {
+                  dangerArea.map((dan, i) => (
                     <Circle
-                    key={i}
-                    center={{latitude: parseFloat(dan.la_crd), longitude: parseFloat(dan.lo_crd)}}
-                    radius={50}
-                    strokeColor="rgba(255,255,255,0.05)"
-                    strokeWidth={3}
-                    fillColor="rgba(255,0,0,0.1)"
-                />
-                  )
-              })
-            })
+                      key={i}
+                      center={{latitude: parseFloat(dan.la_crd), longitude: parseFloat(dan.lo_crd)}}
+                      radius={50}
+                      strokeColor="rgba(0,0,0,0)"
+                      strokeWidth={3}
+                      fillColor={dan.occrrnc_cnt >= 1 && dan.occrrnc_cnt <= 4 ? "rgba(255,255,0,0.1)" : (
+                        dan.occrrnc_cnt > 4 && dan.occrrnc_cnt <= 7 ? "rgba(255,127,0,0.1)" : "rgba(255,0,0,0.1)"
+                      )}
+                    />
+                  ))
+                }
+              </View>
+            ))
           )}
 
         </MapView>
