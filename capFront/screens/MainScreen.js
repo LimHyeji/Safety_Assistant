@@ -4,7 +4,7 @@ import { View, Text,  PermissionsAndroid, ActivityIndicator } from "react-native
 import MapView, {Marker, Polyline, AnimatedRegion, Circle} from "react-native-maps";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import Geocoder from 'react-native-geocoding';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -18,6 +18,51 @@ async function requestPermission() {
 }
 
 function App() {
+  /*
+  Geocoder.init("AIzaSyDuvTg4UcVw-hv863u3tN5SGvmeJzPeV8s");
+
+  Geocoder.from("Colosseum")
+		.then(json => {
+			var location = json.results[0].geometry.location;
+			console.log(location);
+		})
+		.catch(error => console.warn(error));
+
+//timer 컴포넌트 생성
+const Timer=({mm,ss})=>{
+  const [minutes, setMinutes]=useState(parseInt(mm));
+  const [seconds,setSeconds]=useState(parseInt(ss));
+
+  
+useEffect(() => {
+  const countdown = setInterval(() => {
+    if (parseInt(seconds) > 0) {
+      setSeconds(parseInt(seconds) - 1);
+    }
+    if (parseInt(seconds) === 0) {
+      if (parseInt(minutes) === 0) {
+          clearInterval(countdown);
+      } else {
+        setMinutes(parseInt(minutes) - 1);
+        setSeconds(59);
+      }
+    }
+  }, 1000);
+  return () => clearInterval(countdown);
+}, [minutes, seconds]);
+
+
+
+  return(
+    <div>
+      {minutes}:{seconds<10?'0${seconds}':seconds}
+    </div>
+  );
+
+};
+  */
+
+
   const [dangerAreas, setDangerAreas] = useState([]);
   const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
   const componentDidMount = async() => {
@@ -34,6 +79,8 @@ function App() {
 
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null);
+  const [route, setRoute] = useState([]);
+
   useEffect(() => {
     requestPermission().then(result => {
       console.log({result});
@@ -43,6 +90,7 @@ function App() {
             const {latitude, longitude} = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
+            setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
           },
           error => {
             console.log(error);
@@ -50,8 +98,8 @@ function App() {
           {
             enableHighAccuracy: true,
             distanceFilter: 0,
-            interval: 1000,
-            fastestInterval: 0,
+            interval: 3000,
+            fastestInterval: 2000,
           },
         );
     
@@ -86,7 +134,9 @@ function App() {
           <Marker
             coordinate={{latitude: latitude, longitude: longitude}}
           />
-       
+
+       <Polyline coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}/>
+    
         {dangerAreas.length === 0 ? (
               <ActivityIndicator
                 color="white"
