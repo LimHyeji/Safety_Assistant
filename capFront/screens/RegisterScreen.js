@@ -29,7 +29,7 @@ function AuthForm() {
       rules: {},
       valid: false,
     },
-    userId: {
+    username: {
         value: '',
         type: 'textInput',
         rules: {},
@@ -126,11 +126,11 @@ return (
             onChangeText={value=>updateInput('password',value)}
             />
          <TextInput
-            value={form.userId.value}
-            type={form.userId.type}
+            value={form.username.value}
+            type={form.username.type}
             placeholder="이름"
             placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('userId',value)}
+            onChangeText={value=>updateInput('username',value)}
             />  
         <TextInput
             value={form.phoneNum.value}
