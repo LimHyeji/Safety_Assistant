@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Geolocation from "react-native-geolocation-service";
 import { View, Text,  PermissionsAndroid, ActivityIndicator } from "react-native";
 import MapView, {Marker, Polyline, AnimatedRegion, Circle} from "react-native-maps";
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import Geocoder from 'react-native-geocoding';
 
 //위치 접근 권한 받기

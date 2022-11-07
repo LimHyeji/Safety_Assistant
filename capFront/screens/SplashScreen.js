@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {AsyncStorage} from '@react-native-community/async-storage';
+import {AsyncStorage} from '@react-native-async-storage/async-storage';
 import { ActivityIndicator,View,StyleSheet,Image } from 'react-native';
+import{navigation} from 'react-navigation'
 
 //코드보완 필요, expired 여부 체크
 const SplashScreen = ({navigation}) => {
