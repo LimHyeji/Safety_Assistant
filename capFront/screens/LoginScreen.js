@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import { View, Text, TextInput, Button, } from "react-native";
-//StyleSheet 추가 필요
 import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
 function Login(navigation){
