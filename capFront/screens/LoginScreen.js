@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import { StyleSheet, Text, View, TextInput, Button, Platform, } from "react-native";
+import { View, Text, TextInput, Button, } from "react-native";
 //StyleSheet 추가 필요
 import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
-function Login(){
+function Login(navigation){
 
 const [type, setType] = useState('Login');
 //const [action, setAction] = useState('Login');
@@ -66,6 +66,9 @@ return (
           <View>
           <Button title="로그인" onPress={() =>  LoginAPI(form)}></Button>
           </View>
+          <View>
+          <Button title="회원가입" onPress={() => navigation.navigate('Registerpage')}></Button>
+          </View>
     </View>
     );
   };
@@ -82,6 +85,7 @@ return (
     .then((response) => response.json())
     .then((responseJson) => {
       console.log(responseJson);
+      
       //jwt 토큰 저장해야함!(에러)
       //AsyncStorage.setItem('userId',JSON.stringify({'userId':form.userId.value});
       //userId, username, phoneNum, idx, house, school, startTime 저장 필요

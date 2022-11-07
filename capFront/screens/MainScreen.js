@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Geolocation from "react-native-geolocation-service";
-import { View, Text,  PermissionsAndroid, ActivityIndicator } from "react-native";
-import MapView, {Marker, Polyline, AnimatedRegion, Circle} from "react-native-maps";
-import Geocoder from 'react-native-geocoding';
+import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "react-native";
+import MapView, {Marker, Polyline, Circle} from "react-native-maps";
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -15,7 +14,7 @@ async function requestPermission() {
   }
 }
 
-function App() {
+function App(navigation) {
   /*
   Geocoder.init("AIzaSyDuvTg4UcVw-hv863u3tN5SGvmeJzPeV8s");
 
@@ -163,6 +162,9 @@ useEffect(() => {
           )}
 
         </MapView>
+        <View>
+          <Button title="설정" onPress={() =>  navigation.navigate('SetUppage')}></Button> 
+        </View>
       </View>
   );
 }

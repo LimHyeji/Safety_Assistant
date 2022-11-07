@@ -1,6 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Platform,} from 'react-native';
+import { View, Text, TextInput, Button, } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 
 function AuthForm() {    

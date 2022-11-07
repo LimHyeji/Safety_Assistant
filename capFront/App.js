@@ -7,16 +7,34 @@ import RegisterScreen from './screens/RegisterScreen';
 import MainScreen from './screens/MainScreen';
 import SetUpScreen from './screens/SetUpScreen';
 
-const AppStack = createStackNavigator({Main:MainScreen});
-const AuthStack = createStackNavigator({Login:LoginScreen});
-
-export default createAppContainer(createSwitchNavigator(
+const AppStack = createStackNavigator(
   {
-    Splash:SplashScreen,
-    App:AppStack,
-    Auth:AuthStack, //setup이랑 register 잊지말기
+    Mainpage:MainScreen,
+    SetUppage:SetUpScreen,
   },
   {
-    initialRouteName:'Splash',
+    initialRouteName:'Mainpage',
   }
-))
+  );
+const AuthStack = createStackNavigator(
+  {
+    Loginpage:LoginScreen,
+    Registerpage:RegisterScreen,
+  },
+  {
+    initialRouteName:'Loginpage',
+  }
+  );
+
+  const switchScreen=createSwitchNavigator(
+  {
+    Splashpage:SplashScreen,
+    App:AppStack,
+    Auth:AuthStack,
+  },
+  {
+    initialRouteName:'Splashpage',
+  }
+  );
+
+  export default createAppContainer(switchScreen);
