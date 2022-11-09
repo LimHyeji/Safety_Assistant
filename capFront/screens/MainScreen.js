@@ -158,8 +158,39 @@ useEffect(() => {
         <View>
           <Button title="설정" onPress={() =>  navigation.navigate('SetUppage')}></Button> 
         </View>
+        <View>
+          <Button title="위치보내기" onPress={() =>  MainAPI({latitude: latitude, longitude: longitude})}></Button>
+        </View>
       </View>
   );
+}
+
+function MainAPI({latitude: latitude, longitude: longitude}){
+  fetch('http://34.64.74.7:8081/user/signup', {
+  method: 'POST',
+  body: JSON.stringify({
+    latitude: latitude, longitude: longitude
+  }  ),
+  headers : {'Content-Type' : 'application/json; charset=utf-8'}
+})
+  .then((response) => response.json())
+  .then((responseJson) => {
+    console.log(responseJson);
+    //setLoading(false);
+    //if (responseJson.status === 'success') {
+    /*  AsyncStorage.setItem('userId', responseJson.data.stu_id);
+      console.log(responseJson.data.stu_id);
+      navigation.replace('DrawerNavigationRoutes');
+    } else {
+      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
+      console.log('Please check your id or password');*/
+    ///  console.log(responseJson);
+  //  }
+  })
+  .catch((error) => {
+    //setLoading(false);
+    console.error(error);
+  });
 }
 
 export default App;
