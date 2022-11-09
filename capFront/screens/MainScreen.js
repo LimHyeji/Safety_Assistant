@@ -14,7 +14,8 @@ async function requestPermission() {
   }
 }
 
-function App(navigation) {
+
+function App({navigation}) {
   /*
   Geocoder.init("AIzaSyDuvTg4UcVw-hv863u3tN5SGvmeJzPeV8s");
 

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, Button, } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 
-function AuthForm() {    
+function AuthForm({navigation}) {    
   const [type, setType] = useState('signup');
  //const [action, setAction] = useState('signup');
  // const [actionMode, setActionMode] = useState('새로 등록할게요~');

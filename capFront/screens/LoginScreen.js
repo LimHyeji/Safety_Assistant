@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { View, Text, TextInput, Button, } from "react-native";
 import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
-function Login(navigation){
+function Login({navigation}){
 
 const [type, setType] = useState('Login');
 //const [action, setAction] = useState('Login');
