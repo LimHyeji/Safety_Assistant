@@ -159,22 +159,25 @@ useEffect(() => {
           <Button title="설정" onPress={() =>  navigation.navigate('SetUppage')}></Button> 
         </View>
         <View>
-          <Button title="위치보내기" onPress={() =>  MainAPI({latitude: latitude, longitude: longitude})}></Button>
+          <Button title="위치보내기" onPress={() =>  MainAPI(latitude,longitude)}></Button>
         </View>
       </View>
   );
 }
 
-function MainAPI({latitude: latitude, longitude: longitude}){
-  fetch('http://34.64.74.7:8081/user/signup', {
+function MainAPI(latitude,longitude){
+  fetch('http://34.64.74.7:8081/user/child', {
   method: 'POST',
   body: JSON.stringify({
-    latitude: latitude, longitude: longitude
+    "phoneNum": "01012341234",
+    "latitude":latitude,
+    "longitude":longitude
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })
   .then((response) => response.json())
   .then((responseJson) => {
+    //console.log(latitude, longitude);
     console.log(responseJson);
     //setLoading(false);
     //if (responseJson.status === 'success') {
