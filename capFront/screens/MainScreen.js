@@ -17,14 +17,6 @@ async function requestPermission() {
 
 function App({navigation}) {
   /*
-  Geocoder.init("AIzaSyDuvTg4UcVw-hv863u3tN5SGvmeJzPeV8s");
-
-  Geocoder.from("Colosseum")
-		.then(json => {
-			var location = json.results[0].geometry.location;
-			console.log(location);
-		})
-		.catch(error => console.warn(error));
 
 //timer 컴포넌트 생성
 const Timer=({mm,ss})=>{
@@ -60,9 +52,12 @@ useEffect(() => {
 };
   */
 
-
-  const [dangerAreas, setDangerAreas] = useState([]);
+  const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
+  const [latitude, setLatitude] = useState(null)
+  const [longitude, setLongitude] = useState(null);
+  const [route, setRoute] = useState([]); // 이동 경로
   const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
+
   const componentDidMount = async() => {
       for(let g in guGun) {
         const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=L6AJCRUtjxzVfZqqHFgIvQf4%2BwvvY3qA63M7pxG0TPwVKUiZZMu08Pq0sIg77mQa&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
@@ -71,15 +66,7 @@ useEffect(() => {
       }
   }
 
-  useEffect(() => {
-    componentDidMount();
-  }, []);
-
-  const [latitude, setLatitude] = useState(null)
-  const [longitude, setLongitude] = useState(null);
-  const [route, setRoute] = useState([]);
-
-  useEffect(() => {
+  const trackPosition = () => {
     requestPermission().then(result => {
       console.log({result});
       if(result === "granted") {
@@ -108,6 +95,11 @@ useEffect(() => {
         }
       }
     });
+  }
+
+  useEffect(() => {
+    componentDidMount();
+    trackPosition();
   }, []);
   
   if(!latitude && !longitude) {
