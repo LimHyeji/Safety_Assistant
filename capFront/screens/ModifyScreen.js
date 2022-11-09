@@ -108,7 +108,7 @@ confirmPassword = () => {
   };
 return (
     <View>
-        <Text>회원가입</Text>
+        <Text>회원정보수정</Text>
         <TextInput
             value={form.userId.value}
             type={form.userId.type} // 미입력하면 못 넘어가게
@@ -187,7 +187,7 @@ return (
           )
         }
         <View>
-          <Button title="회원가입" onPress={() =>  AuthFormAPI(form)}></Button>
+          <Button title="회원정보수정" onPress={() =>  AuthFormAPI(form)}></Button>
         </View>
     </View>
     );
@@ -229,3 +229,4 @@ function ModifyAuthFormAPI(form){
 }
 
 export default ModifyAuthForm;
+

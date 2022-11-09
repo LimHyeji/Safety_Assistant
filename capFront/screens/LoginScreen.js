@@ -71,6 +71,9 @@ return (
           <View>
           <Button title="회원정보수정" onPress={() => navigation.navigate('Modifypage')}></Button>
           </View>
+          <View>
+          <Button title="Test" onPress={() => navigation.navigate('Testpage')}></Button>
+          </View>
     </View>
     );
   };
