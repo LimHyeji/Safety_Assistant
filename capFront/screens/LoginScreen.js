@@ -4,11 +4,8 @@ import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
 function Login({navigation}){
 
-//const [type, setType] = useState('Login');
-//const [action, setAction] = useState('Login');
-//const [actionMode, setActionMode] = useState('문구 적기');
-
 const [hasErrors, setHasErrors] = useState(false);
+
 const [form, setForm] = useState({
   userId: {
     value: '',
@@ -33,16 +30,6 @@ updateInput = (name, value) => {
   });
 };
 
-formHasErrors = () => {
-    return hasErrors ? (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorLabel}>
-          로그인 정보를 다시 확인해주세요.
-        </Text>
-      </View>
-    ) : null;
-  };
-
 return (
     <View>
         <Text>로그인</Text>
@@ -63,21 +50,13 @@ return (
             placeholderTextColor={'#ddd'}
             onChangeText={value=>updateInput('password',value)}
             />
+
           <View>
           <Button title="로그인" onPress={() =>  LoginAPI(form)}></Button>
           </View>
           <View>
           <Button title="회원가입" onPress={() => navigation.navigate('Registerpage')}></Button>
-          </View>
-          {
-            //임의
-          }
-          <View>
-          <Button title="회원정보수정" onPress={() => navigation.navigate('Modifypage')}></Button>
-          </View>
-          <View>
-          <Button title="Test" onPress={() => navigation.navigate('Testpage')}></Button>
-          </View>
+          </View>         
     </View>
     );
   };
@@ -91,56 +70,10 @@ return (
     } ),
     headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-    .then((response) => 
-    /*{
-        const cookie=res.headers['map']['set-cookie'];
-
-        AsyncStorage.setItem('token',cookie);
-        if(res.status===200||res.status===201){
-          res.json()
-          .then((data)=>{
-            const refreshtoken=data["refreshToken"];
-            AsyncStorage.setItem('refreshtoken',refreshtoken);
-
-          })
-        }
-
-    }
-    */
-    
+    .then((response) =>   
     response.json())
     .then((responseJson) => {
       console.log(responseJson);
-      /*
-      const cookie=responseJson.headers['map']['set-cookie'];
-      AsyncStorage.setItem('token',cookie);
-
-      AsyncStorage.setItem('userId',JSON.stringify({'userId':form.userId.value});
-      //userId, username, phoneNum, idx, house, school, startTime 저장 필요
-      */
-    /*
-      idx에 대한 처리?
-
-AsyncStorage.getItem('nickname', (err, result) => {
-  const UserInfo = Json.parse(result);
-
-});
-
-    */
-
-
-
-
-           // setLoading(false);
-      /*
-      if (responseJson.status === 'success') {
-        AsyncStorage.setItem('userId', responseJson.data.stu_id);
-        console.log(responseJson.data.stu_id);
-        navigation.replace('DrawerNavigationRoutes');
-      } else {
-        setErrortext('아이디와 비밀번호를 다시 확인해주세요');
-        console.log('Please check your id or password');
-      }*/
     })
     .catch((error) => {
       console.error(error);

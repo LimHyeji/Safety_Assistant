@@ -5,9 +5,7 @@ import {AppStyles} from '../AppStyles';
 
 
 function AuthForm({navigation}) {    
-  const [type, setType] = useState('signup');
- //const [action, setAction] = useState('signup');
- // const [actionMode, setActionMode] = useState('새로 등록할게요~');
+
   const [hasErrors, setHasErrors] = useState(false);
   const [form, setForm] = useState({
     userId: {
@@ -64,7 +62,7 @@ function AuthForm({navigation}) {
       },
       duration: {
         value: '',
-        type: 'textInput',  //드롭박스 구현?
+        type: 'textInput',
         rules: {},
         valid: false,
       },
@@ -77,6 +75,7 @@ function AuthForm({navigation}) {
         //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
       }
   });
+
   updateInput = (name, value) => {
     setHasErrors(false);
     let formCopy = form;
@@ -85,6 +84,8 @@ function AuthForm({navigation}) {
       return {...formCopy};
     });
 };
+
+/*
 confirmPassword = () => {
     return type != 'signup' ? ( //??
       <Input
@@ -107,6 +108,7 @@ confirmPassword = () => {
       </View>
     ) : null;
   };
+  */
 
 return (
     <ScrollView>
@@ -140,6 +142,7 @@ return (
               style={styles.body}
               value={form.userName.value}
               type={form.userName.type}
+              autoCapitalize={'none'}
               placeholder="이름"
               placeholderTextColor={'#ddd'}
               onChangeText={value=>updateInput('userName',value)}
@@ -173,7 +176,7 @@ return (
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
-                    value={form.house.value}    //우편 번호 선택
+                    value={form.house.value}    //우편 번호 선택으로 수정 필요
                     type={form.house.type}
                     placeholder="집 위치"
                     placeholderTextColor={'#ddd'}
@@ -183,7 +186,7 @@ return (
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
-                    value={form.school.value}   //우편 번호 선택
+                    value={form.school.value}   //우편 번호 선택으로 수정 필요
                     type={form.school.type}
                     placeholder="학교 위치"
                     placeholderTextColor={'#ddd'}
@@ -215,7 +218,8 @@ return (
               <></>
             )
           }
-          <View>
+
+          <View>  
             <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form)}>
               <Text>회원가입</Text>
             </TouchableOpacity>
@@ -243,21 +247,9 @@ function AuthFormAPI(form){
 })
   .then((response) => response.json())
   .then((responseJson) => {
-    console.log(form.parentPhoneNum.value);
     console.log(responseJson);
-    //setLoading(false);
-    //if (responseJson.status === 'success') {
-    /*  AsyncStorage.setItem('userId', responseJson.data.stu_id);
-      console.log(responseJson.data.stu_id);
-      navigation.replace('DrawerNavigationRoutes');
-    } else {
-      setErrortext('아이디와 비밀번호를 다시 확인해주세요');
-      console.log('Please check your id or password');*/
-    ///  console.log(responseJson);
-  //  }
   })
   .catch((error) => {
-    //setLoading(false);
     console.error(error);
   });
 }
