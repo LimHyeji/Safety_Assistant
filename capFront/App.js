@@ -4,26 +4,37 @@ import{createStackNavigator} from 'react-navigation-stack'
 import SplashScreen from './screens/SplashScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import MainScreen from './screens/MainScreen';
-import SetUpScreen from './screens/SetUpScreen';
-import ModifyScreen from './screens/ModifyScreen';
-import Test from './screens/Test';
+import ParentMainScreen from './screens/ParentMainScreen';
+import ParentSetUpScreen from './screens/ParentSetUpScreen';
+import ChildMainScreen from './screens/ChildMainScreen';
+import ChildSetUpScreen from './screens/ChildSetUpScreen';
+import ModifyScreen from './screens/ModifyScreen';  //위치 수정 필요
+import Test from './screens/Test';  //임시
 
-const AppStack = createStackNavigator(
+const ParentAppStack = createStackNavigator(
   {
-    Mainpage:MainScreen,
-    SetUppage:SetUpScreen,
+    ParentMainpage:ParentMainScreen,
+    ParentSetUppage:ParentSetUpScreen,
   },
   {
-    initialRouteName:'Mainpage',
+    initialRouteName:'ParentMainpage',
   }
   );
+
+  const ChildAppStack = createStackNavigator(
+    {
+      ChildMainpage:ChildMainScreen,
+      ChildSetUppage:ChildSetUpScreen,
+    },
+    {
+      initialRouteName:'ChildMainpage',
+    }
+    );
+
 const AuthStack = createStackNavigator(
   {
     Loginpage:LoginScreen,
     Registerpage:RegisterScreen,
-    Modifypage:ModifyScreen,
-    Testpage:Test,
   },
   {
     initialRouteName:'Loginpage',
@@ -33,7 +44,10 @@ const AuthStack = createStackNavigator(
   const switchScreen=createSwitchNavigator(
   {
     Splashpage:SplashScreen,
-    App:AppStack,
+    Modifypage:ModifyScreen,
+    Testpage:Test,
+    ParentApp:ParentAppStack,
+    ChildApp:ChildAppStack,
     Auth:AuthStack,
   },
   {
