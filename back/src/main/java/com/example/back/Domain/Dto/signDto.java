@@ -11,26 +11,22 @@ import javax.persistence.Column;
 public class signDto {
 
     private String userId;
+    private String userName;
     private String password;
-    private String gender;
     private String phoneNum;
     @Nullable private String parentPhoneNum;
     private boolean idx;
-    private String house;
-    private String school;
-    private String startTime;
+    @Nullable private String house;
+    @Nullable private String school;
+    @Nullable private int duration;
 
     public user toEntity(){
         user user = new user();
         user.setUserId(userId);
         user.setPassword(password);
-        user.setGender(gender);
         user.setPhoneNum(phoneNum);
         user.setIdx(idx);
         user.setHouse(house);
-        user.setSchool(school);
-        user.setStartTime(startTime);
-
         return user;
     }
 
