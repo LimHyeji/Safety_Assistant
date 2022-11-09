@@ -10,23 +10,23 @@ import java.util.List;
 
 @Getter @Setter
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class user {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(length = 30, nullable = false)
-    private String userId;
+    private String userId; //닉네임
+
+    @Column(length = 30, nullable = false)
+    private String userName; //본명
 
     @Column(length = 100, nullable = false)
     private String password;
 
     @Column
-    private String gender;
-
-    @Column
-    private String phoneNum;
+    private String phoneNum; //parentPhoneNum은 필요가없다.
 
     @Column
     private boolean idx; // idx = true면 부모, false면 자녀.
@@ -38,7 +38,7 @@ public class user {
     private String school;  //학교위치
 
     @Column
-    private String startTime; //등교시간
+    private int duration; //등교시간
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")

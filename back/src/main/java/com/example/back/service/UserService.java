@@ -1,10 +1,7 @@
 package com.example.back.service;
 
 
-import com.example.back.Domain.Dto.LoginRequest;
-import com.example.back.Domain.Dto.ResponseDto;
-import com.example.back.Domain.Dto.locationDto;
-import com.example.back.Domain.Dto.signDto;
+import com.example.back.Domain.Dto.*;
 import com.example.back.Domain.Entity.user;
 import com.example.back.JwtTokenProvider;
 import com.example.back.repository.userRepository;
@@ -34,6 +31,9 @@ public class UserService {
             user parentUser = userRepository.findByPhoneNum(signDto.getParentPhoneNum());
             user.setParent(parentUser);
             parentUser.getChildren().add(user);
+            user.setHouse(signDto.getHouse());
+            user.setSchool(signDto.getSchool());
+            user.setDuration(signDto.getDuration());
         }
         userRepository.save(user);
     }
@@ -69,15 +69,29 @@ public class UserService {
                 }
             }
             else{
-                responseDto.setStatus(404);
-                return responseDto;
+                throw new RuntimeException("bad request");
             }
         }
         else{
-            responseDto.setStatus(404);
-            return responseDto;
+            throw new RuntimeException("bad request");
         }
     }
+
+
+    public childrenDto childrenRequest(childrenDto childrenDto) {
+        Optional<user> byPhoneNumWithParent = userRepository.findByPhoneNumWithParent(childrenDto.getPhoneNum());
+        if(byPhoneNumWithParent.isPresent()){
+            user user = byPhoneNumWithParent.get();
+            childrenDto dto = new childrenDto();
+            dto.setPhoneNum(user.getParent().getPhoneNum());
+            dto.setLocation(childrenDto.getLocation());
+            return dto;
+        }
+        else{
+            throw new RuntimeException("bad request");
+        }
+    }
+
 
 
 
