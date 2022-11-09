@@ -2,10 +2,8 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, Button, } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 
-//계정정보 띄우기
-
-function ModifyAuthForm({navigation}) {    
-  const [type, setType] = useState('modify');
+function AuthForm({navigation}) {    
+  const [type, setType] = useState('signup');
  //const [action, setAction] = useState('signup');
  // const [actionMode, setActionMode] = useState('새로 등록할게요~');
   const [hasErrors, setHasErrors] = useState(false);
@@ -30,7 +28,7 @@ function ModifyAuthForm({navigation}) {
       rules: {},
       valid: false,
     },
-    username: {
+    userName: {
         value: '',
         type: 'textInput',
         rules: {},
@@ -62,7 +60,7 @@ function ModifyAuthForm({navigation}) {
         rules: {},
         valid: false,
       },
-      startTime: {
+      duration: {
         value: '',
         type: 'textInput',  //드롭박스 구현?
         rules: {},
@@ -108,7 +106,7 @@ confirmPassword = () => {
   };
 return (
     <View>
-        <Text>회원정보수정</Text>
+        <Text>회원가입</Text>
         <TextInput
             value={form.userId.value}
             type={form.userId.type} // 미입력하면 못 넘어가게
@@ -127,11 +125,11 @@ return (
             onChangeText={value=>updateInput('password',value)}
             />
          <TextInput
-            value={form.username.value}
-            type={form.username.type}
+            value={form.userName.value}
+            type={form.userName.type}
             placeholder="이름"
             placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('username',value)}
+            onChangeText={value=>updateInput('userName',value)}
             />  
         <TextInput
             value={form.phoneNum.value}
@@ -168,11 +166,11 @@ return (
                 onChangeText={value=>updateInput('school',value)}
               />
               <TextInput
-                value={form.startTime.value}
-                type={form.startTime.type}
+                value={form.duration.value}
+                type={form.duration.type}
                 placeholder="등교 시간"
                 placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('startTime',value)}
+                onChangeText={value=>updateInput('duration',value)}
               />
               <TextInput
                 value={form.parentPhoneNum.value}
@@ -187,29 +185,31 @@ return (
           )
         }
         <View>
-          <Button title="회원정보수정" onPress={() =>  AuthFormAPI(form)}></Button>
+          <Button title="회원가입" onPress={() =>  AuthFormAPI(form)}></Button>
         </View>
     </View>
     );
 };
 
-function ModifyAuthFormAPI(form){
-  fetch('http://34.64.74.7:8081/url', {
+function AuthFormAPI(form){
+  fetch('http://34.64.74.7:8081/user/signup', {
   method: 'POST',
   body: JSON.stringify({
     userId:form.userId.value,
+    userName:form.userName.value,
     password:form.password.value,
-    userId:form.userId.value,
     phoneNum:form.phoneNum.value,
+    parentPhoneNum:form.parentPhoneNum.value,
     idx:form.idx.value,
     house:form.house.value,
     school:form.school.value,
-    startTime:form.startTime.value
+    duration:form.duration.value
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })
   .then((response) => response.json())
   .then((responseJson) => {
+    console.log(form.parentPhoneNum.value);
     console.log(responseJson);
     //setLoading(false);
     //if (responseJson.status === 'success') {
@@ -228,5 +228,4 @@ function ModifyAuthFormAPI(form){
   });
 }
 
-export default ModifyAuthForm;
-
+export default AuthForm;
