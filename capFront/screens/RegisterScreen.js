@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, Button, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {RadioButton} from 'react-native-paper';
+import {AppStyles} from '../AppStyles';
+
 
 function AuthForm({navigation}) {    
   const [type, setType] = useState('signup');
@@ -95,7 +97,8 @@ confirmPassword = () => {
       />
     ) : null;
   };
-  formHasErrors = () => {
+
+  const formHasErrors = () => {
     return hasErrors ? (
       <View style={styles.errorContainer}>
         <Text style={styles.errorLabel}>
@@ -104,90 +107,121 @@ confirmPassword = () => {
       </View>
     ) : null;
   };
-return (
-    <View>
-        <Text>회원가입</Text>
-        <TextInput
-            value={form.userId.value}
-            type={form.userId.type} // 미입력하면 못 넘어가게
-            autoCapitalize={'none'}
-            placeholder="아이디"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('userId',value)}
-            />
-        <TextInput
-            value={form.password.value}
-            type={form.password.type}
-            secureTextEntry={true}
-            autoCapitalize={'none'}
-            placeholder="비밀번호"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('password',value)}
-            />
-         <TextInput
-            value={form.userName.value}
-            type={form.userName.type}
-            placeholder="이름"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('userName',value)}
-            />  
-        <TextInput
-            value={form.phoneNum.value}
-            type={form.phoneNum.type}
-            keyboardType={'phone-pad'}
-            placeholder="전화번호"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('phoneNum',value)}
-          />
-        <RadioButton.Group onValueChange={newValue=>updateInput('idx', newValue)} value={form.idx.value}>
-          <View style={{flexDirection:'row'}}>
-            <RadioButton value={true}/>
-            <Text>부모</Text>
-            <RadioButton value={false}/>
-            <Text>자녀</Text>
-          </View>
-        </RadioButton.Group>
 
-        {
-          form.idx.value === false ? (
-            <View>
-              <TextInput
-                value={form.house.value}    //우편 번호 선택
-                type={form.house.type}
-                placeholder="집 위치"
+return (
+    <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.title}>회원가입</Text>
+          <View style={styles.InputContainer}>
+            <TextInput
+                style={styles.body}
+                value={form.userId.value}
+                type={form.userId.type} // 미입력하면 못 넘어가게
+                autoCapitalize={'none'}
+                placeholder="아이디"
                 placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('house',value)}
+                onChangeText={value=>updateInput('userId',value)}
               />
-              <TextInput
-                value={form.school.value}   //우편 번호 선택
-                type={form.school.type}
-                placeholder="학교 위치"
-                placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('school',value)}
-              />
-              <TextInput
-                value={form.duration.value}
-                type={form.duration.type}
-                placeholder="등교 시간"
-                placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('duration',value)}
-              />
-              <TextInput
-                value={form.parentPhoneNum.value}
-                type={form.parentPhoneNum.type}
-                placeholder="부모님 전화번호"
-                placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('parentPhoneNum',value)}
-              />
-            </View>
-          ) : (
-            <></>
-          )
-        }
-        <View>
-          <Button title="회원가입" onPress={() =>  AuthFormAPI(form)}></Button>
+          </View>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.body}
+              value={form.password.value}
+              type={form.password.type}
+              secureTextEntry={true}
+              autoCapitalize={'none'}
+              placeholder="비밀번호"
+              placeholderTextColor={'#ddd'}
+              onChangeText={value=>updateInput('password',value)}
+            />
+          </View>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.body}
+              value={form.userName.value}
+              type={form.userName.type}
+              placeholder="이름"
+              placeholderTextColor={'#ddd'}
+              onChangeText={value=>updateInput('userName',value)}
+            />  
+          </View>  
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.body}
+              value={form.phoneNum.value}
+              type={form.phoneNum.type}
+              keyboardType={'phone-pad'}
+              placeholder="전화번호"
+              placeholderTextColor={'#ddd'}
+              onChangeText={value=>updateInput('phoneNum',value)}
+            />
+          </View>
+          <View style={styles.RadioButtonContainer}>
+            <RadioButton.Group onValueChange={newValue=>updateInput('idx', newValue)} value={form.idx.value}>
+              <View style={styles.RadioButtonBody} >
+                <RadioButton value={true}/>
+                <Text>부모</Text>
+                <RadioButton value={false}/>
+                <Text>자녀</Text>
+              </View>
+            </RadioButton.Group>
+          </View>
+
+          {
+            form.idx.value === false ? (
+              <View style={styles.container}>
+                <View style={styles.InputContainer}>
+                  <TextInput
+                    style={styles.body}
+                    value={form.house.value}    //우편 번호 선택
+                    type={form.house.type}
+                    placeholder="집 위치"
+                    placeholderTextColor={'#ddd'}
+                    onChangeText={value=>updateInput('house',value)}
+                  />
+                </View>
+                <View style={styles.InputContainer}>
+                  <TextInput
+                    style={styles.body}
+                    value={form.school.value}   //우편 번호 선택
+                    type={form.school.type}
+                    placeholder="학교 위치"
+                    placeholderTextColor={'#ddd'}
+                    onChangeText={value=>updateInput('school',value)}
+                  />
+                </View>
+                <View style={styles.InputContainer}>
+                  <TextInput
+                    style={styles.body}
+                    value={form.duration.value}
+                    type={form.duration.type}
+                    placeholder="등교 시간"
+                    placeholderTextColor={'#ddd'}
+                    onChangeText={value=>updateInput('duration',value)}
+                  />
+                </View>
+                <View style={styles.InputContainer}>
+                  <TextInput
+                    style={styles.body}
+                    value={form.parentPhoneNum.value}
+                    type={form.parentPhoneNum.type}
+                    placeholder="부모님 전화번호"
+                    placeholderTextColor={'#ddd'}
+                    onChangeText={value=>updateInput('parentPhoneNum',value)}
+                  />
+                </View>
+              </View>
+            ) : (
+              <></>
+            )
+          }
+          <View>
+            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form)}>
+              <Text>회원가입</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-    </View>
+    </ScrollView>
     );
 };
 
@@ -227,5 +261,77 @@ function AuthFormAPI(form){
     console.error(error);
   });
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "white"
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: "black",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  leftTitle: {
+    alignSelf: 'stretch',
+    textAlign: 'left',
+    marginLeft: 20,
+  },
+  content: {
+    paddingLeft: 50,
+    paddingRight: 50,
+    textAlign: 'center',
+    fontSize: 20,
+    color: "#696969",
+  },
+  button: {
+    width: 60,
+    height: 60,
+    backgroundColor: "#CAEF53",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  loginContainer: {
+    width: "70%",
+    backgroundColor: "#ff5a66",
+    borderRadius: 25,
+    padding: 10,
+    marginTop: 30,
+  },
+  loginText: {
+    color: "white",
+  },
+  placeholder: {
+    color: 'red',
+  },
+  InputContainer: {
+    width: "80%",
+    marginTop: 30,
+    backgroundColor: "#EFEFEF",
+    borderRadius: 10,
+  },
+  RadioButtonContainer: {
+    width: "80%",
+    marginTop: 30,
+    alignItems: "center",
+  },
+  body: {
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "#696969",
+  },
+  RadioButtonBody: {
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+});
+
 
 export default AuthForm;
