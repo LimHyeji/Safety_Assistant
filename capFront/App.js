@@ -6,6 +6,7 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import MainScreen from './screens/MainScreen';
 import SetUpScreen from './screens/SetUpScreen';
+import ModifyScreen from './screens/ModifyScreen';
 
 const AppStack = createStackNavigator(
   {
@@ -20,6 +21,7 @@ const AuthStack = createStackNavigator(
   {
     Loginpage:LoginScreen,
     Registerpage:RegisterScreen,
+    Modifypage:ModifyScreen,
   },
   {
     initialRouteName:'Loginpage',

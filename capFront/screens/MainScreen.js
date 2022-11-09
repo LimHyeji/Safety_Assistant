@@ -134,7 +134,7 @@ useEffect(() => {
           />
 
        <Polyline coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}/>
-    
+
         {dangerAreas.length === 0 ? (
               <ActivityIndicator
                 color="white"

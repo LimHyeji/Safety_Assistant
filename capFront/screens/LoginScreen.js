@@ -68,6 +68,9 @@ return (
           <View>
           <Button title="회원가입" onPress={() => navigation.navigate('Registerpage')}></Button>
           </View>
+          <View>
+          <Button title="회원정보수정" onPress={() => navigation.navigate('Modifypage')}></Button>
+          </View>
     </View>
     );
   };
