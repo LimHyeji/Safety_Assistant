@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import {AppStyles} from '../AppStyles';
 
@@ -169,7 +169,7 @@ return (
 
           {
             form.idx.value === false ? (
-              <View style={styles.container}>
+              <View style={styles.idxContainer}>
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
@@ -267,6 +267,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "white"
+  },
+  idxContainer: {
+    width: Dimensions.get('window').width,
+    alignItems: "center",
   },
   title: {
     fontSize: 30,
