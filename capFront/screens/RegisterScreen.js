@@ -28,7 +28,7 @@ function AuthForm({navigation}) {
       rules: {},
       valid: false,
     },
-    username: {
+    userName: {
         value: '',
         type: 'textInput',
         rules: {},
@@ -60,7 +60,7 @@ function AuthForm({navigation}) {
         rules: {},
         valid: false,
       },
-      startTime: {
+      duration: {
         value: '',
         type: 'textInput',  //드롭박스 구현?
         rules: {},
@@ -125,11 +125,11 @@ return (
             onChangeText={value=>updateInput('password',value)}
             />
          <TextInput
-            value={form.username.value}
-            type={form.username.type}
+            value={form.userName.value}
+            type={form.userName.type}
             placeholder="이름"
             placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('username',value)}
+            onChangeText={value=>updateInput('userName',value)}
             />  
         <TextInput
             value={form.phoneNum.value}
@@ -166,11 +166,11 @@ return (
                 onChangeText={value=>updateInput('school',value)}
               />
               <TextInput
-                value={form.startTime.value}
-                type={form.startTime.type}
+                value={form.duration.value}
+                type={form.duration.type}
                 placeholder="등교 시간"
                 placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('startTime',value)}
+                onChangeText={value=>updateInput('duration',value)}
               />
               <TextInput
                 value={form.parentPhoneNum.value}
@@ -196,18 +196,20 @@ function AuthFormAPI(form){
   method: 'POST',
   body: JSON.stringify({
     userId:form.userId.value,
+    userName:form.userName.value,
     password:form.password.value,
-    userId:form.userId.value,
     phoneNum:form.phoneNum.value,
+    parentPhoneNum:form.parentPhoneNum.value,
     idx:form.idx.value,
     house:form.house.value,
     school:form.school.value,
-    startTime:form.startTime.value
+    duration:form.duration.value
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })
   .then((response) => response.json())
   .then((responseJson) => {
+    console.log(form.parentPhoneNum.value);
     console.log(responseJson);
     //setLoading(false);
     //if (responseJson.status === 'success') {

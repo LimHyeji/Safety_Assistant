@@ -4,9 +4,10 @@ import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
 function Login({navigation}){
 
-const [type, setType] = useState('Login');
+//const [type, setType] = useState('Login');
 //const [action, setAction] = useState('Login');
 //const [actionMode, setActionMode] = useState('문구 적기');
+
 const [hasErrors, setHasErrors] = useState(false);
 const [form, setForm] = useState({
   userId: {
@@ -32,7 +33,7 @@ updateInput = (name, value) => {
   });
 };
 
-  formHasErrors = () => {
+formHasErrors = () => {
     return hasErrors ? (
       <View style={styles.errorContainer}>
         <Text style={styles.errorLabel}>
@@ -68,6 +69,9 @@ return (
           <View>
           <Button title="회원가입" onPress={() => navigation.navigate('Registerpage')}></Button>
           </View>
+          {
+            //임의
+          }
           <View>
           <Button title="회원정보수정" onPress={() => navigation.navigate('Modifypage')}></Button>
           </View>
@@ -79,7 +83,7 @@ return (
   };
 
   function LoginAPI(form){
-    fetch('http://url', { //host명 필요
+    fetch('http://34.64.74.7:8081/user/login', { //host명 필요
     method: 'POST',
     body: JSON.stringify({
       userId: form.userId.value,
@@ -87,13 +91,33 @@ return (
     } ),
     headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-    .then((response) => response.json())
+    .then((response) => 
+    /*{
+        const cookie=res.headers['map']['set-cookie'];
+
+        AsyncStorage.setItem('token',cookie);
+        if(res.status===200||res.status===201){
+          res.json()
+          .then((data)=>{
+            const refreshtoken=data["refreshToken"];
+            AsyncStorage.setItem('refreshtoken',refreshtoken);
+
+          })
+        }
+
+    }
+    */
+    
+    response.json())
     .then((responseJson) => {
       console.log(responseJson);
-      
-      //jwt 토큰 저장해야함!(에러)
-      //AsyncStorage.setItem('userId',JSON.stringify({'userId':form.userId.value});
+      /*
+      const cookie=responseJson.headers['map']['set-cookie'];
+      AsyncStorage.setItem('token',cookie);
+
+      AsyncStorage.setItem('userId',JSON.stringify({'userId':form.userId.value});
       //userId, username, phoneNum, idx, house, school, startTime 저장 필요
+      */
     /*
       idx에 대한 처리?
 
