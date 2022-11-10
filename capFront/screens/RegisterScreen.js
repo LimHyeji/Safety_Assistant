@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image} from 'react-native';
 import {RadioButton} from 'react-native-paper';
-import {AppStyles} from '../AppStyles';
 
 
 function AuthForm({navigation}) {    
@@ -113,6 +112,7 @@ confirmPassword = () => {
 return (
     <ScrollView>
         <View style={styles.container}>
+          <Image source={require("../logo.png")}  style={styles.image}/>
           <Text style={styles.title}>회원가입</Text>
           <View style={styles.InputContainer}>
             <TextInput
@@ -172,7 +172,7 @@ return (
 
           {
             form.idx.value === false ? (
-              <View style={styles.idxContainer}>
+              <View style={styles.container}>
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
@@ -260,10 +260,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white"
   },
-  idxContainer: {
-    width: Dimensions.get('window').width,
-    alignItems: "center",
-  },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
@@ -290,19 +286,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  loginContainer: {
-    width: "70%",
-    backgroundColor: "#ff5a66",
-    borderRadius: 25,
-    padding: 10,
-    marginTop: 30,
-  },
-  loginText: {
-    color: "white",
-  },
-  placeholder: {
-    color: 'red',
-  },
   InputContainer: {
     width: "80%",
     marginTop: 30,
@@ -327,6 +310,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between"
   },
+  image: {
+    width: 175,
+    height: 200,
+  }
 });
 
 
