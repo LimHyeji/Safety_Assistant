@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "react-native";
+import { View, Text, Button, StyleSheet, Platform , PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle} from "react-native-maps";
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -20,6 +21,7 @@ function ParentMain({navigation}) {
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null);
   const [route, setRoute] = useState([]); // 이동 경로
+  const [show, setShow] = useState(false);
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
 
@@ -61,6 +63,14 @@ function ParentMain({navigation}) {
       }
     });
   }
+  const showChildRoute = async() => {
+    /*
+    const childRoute = await fetch('', {method: 'GET'});
+    console.log(childRoute);
+    setRoute(childRoute);*/
+    if(show === true) setShow(false);
+    else setShow(true);
+  }
 
   useEffect(() => {
     componentDidMount();
@@ -86,13 +96,23 @@ function ParentMain({navigation}) {
             longitudeDelta: 0.005,
           }}
         >
+        
         <Marker
-            coordinate={{latitude: latitude, longitude: longitude}}
+          coordinate={{latitude: latitude, longitude: longitude}}
         />
 
-        <Polyline
-            coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
-        />
+        {show === true ? (
+          <Polyline
+            coordinates={route}
+            strokeColor="#000"
+            strokeColors={['#7F0000']}
+            strokeWidth={5}
+          />
+        ) : (
+          <></>
+        )
+        
+        }
 
         {dangerAreas.length === 0 ? (
               <ActivityIndicator
@@ -101,9 +121,8 @@ function ParentMain({navigation}) {
                 size="large"
               />
           ) : (
-            dangerAreas.map((dangerArea, index) => (
-              <View key={index}>
-                {
+            
+            dangerAreas.map(dangerArea => (
                   dangerArea.map((dan, i) => (
                     <Circle
                       key={i}
@@ -116,12 +135,16 @@ function ParentMain({navigation}) {
                       )}
                     />
                   ))
-                }
-              </View>
             ))
           )}
-
+          
+          
         </MapView>
+        <View>
+          <TouchableOpacity style={styles.routeButton} onPress={() => showChildRoute()}>
+            <Icon name="route" size={30} color={"#000"}/>
+          </TouchableOpacity>
+        </View>
         <View>
           <Button title="설정" onPress={() =>  navigation.navigate('ParentSetUppage')}></Button> 
         </View>
@@ -130,3 +153,28 @@ function ParentMain({navigation}) {
 }
 
 export default ParentMain;
+
+const styles = StyleSheet.create({
+  routeButton: {
+    backgroundColor: "#CAEF53",
+    alignItems: "center",
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowOpacity: 1,
+        shadowOffset: {height: 2, width: 2},
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      }
+    })
+  }
+})
