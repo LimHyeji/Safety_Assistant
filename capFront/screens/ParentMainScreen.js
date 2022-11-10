@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Platform , PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle} from "react-native-maps";
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -68,8 +68,18 @@ function ParentMain({navigation}) {
     const childRoute = await fetch('', {method: 'GET'});
     console.log(childRoute);
     setRoute(childRoute);*/
-    if(show === true) setShow(false);
-    else setShow(true);
+    setShow(true);
+  }
+
+  const showInfo = () => {
+    Alert.alert(
+      '경로 정보',
+      '여기에 정보가 보이게?', 
+      [
+        {text: '확인', onPress: () => {setShow(false)}},
+        {text: '취소', onPress: () => {}},
+      ]
+    )
   }
 
   useEffect(() => {
@@ -107,6 +117,8 @@ function ParentMain({navigation}) {
             strokeColor="#000"
             strokeColors={['#7F0000']}
             strokeWidth={5}
+            tappable={true}
+            onPress={() => showInfo()}
           />
         ) : (
           <></>
