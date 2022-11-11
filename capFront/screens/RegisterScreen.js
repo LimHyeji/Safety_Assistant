@@ -172,7 +172,7 @@ return (
 
           {
             form.idx.value === false ? (
-              <View style={styles.container}>
+              <View style={styles.childContainer}>
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
@@ -219,11 +219,9 @@ return (
             )
           }
 
-          <View>  
             <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form)}>
               <Text>회원가입</Text>
             </TouchableOpacity>
-          </View>
         </View>
     </ScrollView>
     );
@@ -260,6 +258,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white"
   },
+  childContainer: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "white",
+    width: Dimensions.get('window').width,
+  },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
@@ -280,16 +284,21 @@ const styles = StyleSheet.create({
     color: "#696969",
   },
   button: {
-    width: 60,
-    height: 60,
+    width: "40%",
+    marginTop: 30,
+    marginBottom: 30,
+    height: 50,
     backgroundColor: "#CAEF53",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    borderRadius: 10,
   },
   InputContainer: {
     width: "80%",
     marginTop: 30,
-    backgroundColor: "#EFEFEF",
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: "#CAEF53",
     borderRadius: 10,
   },
   RadioButtonContainer: {
@@ -304,7 +313,6 @@ const styles = StyleSheet.create({
     color: "#696969",
   },
   RadioButtonBody: {
-    height: 42,
     paddingLeft: 20,
     paddingRight: 20,
     flexDirection: "row",
@@ -313,6 +321,7 @@ const styles = StyleSheet.create({
   image: {
     width: 175,
     height: 200,
+    marginTop: 80,
   }
 });
 

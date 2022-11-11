@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { View, Text, TextInput, Button, } from "react-native";
+import { View, Text, TextInput, Button, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
 import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
 function Login({navigation}){
@@ -31,35 +31,44 @@ updateInput = (name, value) => {
 };
 
 return (
-    <View>
-        <Text>로그인</Text>
+  <ScrollView>
+    <View style={styles.container}>
+      <Image source={require("../logo.png")}  style={styles.image}/>
+      <Text style={styles.title}>로그인</Text>
+      <View style={styles.InputContainer}>
         <TextInput
-            value={form.userId.value}
-            type={form.userId.type} // 미입력하면 못 넘어가게
-            autoCapitalize={'none'}
-            placeholder="아이디"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('userId',value)}
-            />
+          style={styles.body}
+          value={form.userId.value}
+          type={form.userId.type} // 미입력하면 못 넘어가게
+          autoCapitalize={'none'}
+          placeholder="아이디"
+          placeholderTextColor={'#ddd'}
+          onChangeText={value=>updateInput('userId',value)}
+        />
+      </View>
+      <View style={styles.InputContainer}>
         <TextInput
-            value={form.password.value}
-            type={form.password.type}
-            secureTextEntry={true}
-            autoCapitalize={'none'}
-            placeholder="비밀번호"
-            placeholderTextColor={'#ddd'}
-            onChangeText={value=>updateInput('password',value)}
-            />
+          style={styles.body}
+          value={form.password.value}
+          type={form.password.type}
+          secureTextEntry={true}
+          autoCapitalize={'none'}
+          placeholder="비밀번호"
+          placeholderTextColor={'#ddd'}
+          onChangeText={value=>updateInput('password',value)}
+        />
+      </View>
 
-          <View>
-          <Button title="로그인" onPress={() =>  LoginAPI(form)}></Button>
-          </View>
-          <View>
-          <Button title="회원가입" onPress={() => navigation.navigate('Registerpage')}></Button>
-          </View>         
+      <TouchableOpacity style={styles.button} onPress={() =>  LoginAPI(form)}>
+        <Text>로그인</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.signup} onPress={() => navigation.navigate('Registerpage')}>
+          <Text>회원가입</Text>
+      </TouchableOpacity>    
     </View>
-    );
-  };
+  </ScrollView>
+  );
+};
 
   function LoginAPI(form){
     fetch('http://34.64.74.7:8081/user/login', { //host명 필요
@@ -81,3 +90,53 @@ return (
   };
   
     export default Login;
+
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        height: Dimensions.get('window').height,
+        alignItems: "center",
+        backgroundColor: "white"
+      },
+      title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: "black",
+        marginTop: 20,
+        marginBottom: 20,
+      },
+      InputContainer: {
+        width: "80%",
+        marginTop: 30,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: "#CAEF53",
+        borderRadius: 10,
+      },
+      body: {
+        height: 42,
+        paddingLeft: 20,
+        paddingRight: 20,
+        color: "#696969",
+      },
+      button: {
+        width: "40%",
+        marginTop: 30,
+        height: 50,
+        backgroundColor: "#CAEF53",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 10,
+      },
+      image: {
+        width: 175,
+        height: 200,
+        marginTop: 80,
+      },
+      signup: {
+        width: "30%",
+        marginTop: 10,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+    })
