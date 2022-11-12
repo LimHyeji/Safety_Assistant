@@ -219,7 +219,7 @@ return (
             )
           }
 
-            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form)}>
+            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form, {navigation})}>
               <Text>회원가입</Text>
             </TouchableOpacity>
         </View>
@@ -227,7 +227,7 @@ return (
     );
 };
 
-function AuthFormAPI(form){
+function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
   method: 'POST',
   body: JSON.stringify({
@@ -246,6 +246,9 @@ function AuthFormAPI(form){
   .then((response) => response.json())
   .then((responseJson) => {
     console.log(responseJson);
+    if(responseJson.msg === "It is Check to communicate"){
+      navigation.navigate('Loginpage')
+    }
   })
   .catch((error) => {
     console.error(error);
