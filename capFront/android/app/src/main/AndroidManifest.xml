@@ -20,9 +20,15 @@
       android:usesCleartextTraffic="true"
       >
     
+    <!--Maps-->
     <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyDKianemUYaPYLOSa0xT67re_DsXMtthxs"/>
+        <!--Geocoder-->
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyDuvTg4UcVw-hv863u3tN5SGvmeJzPeV8s"
+    />
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     <meta-data
     android:name="com.google.android.gms.version"
