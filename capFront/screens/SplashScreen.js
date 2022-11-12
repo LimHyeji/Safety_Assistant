@@ -2,8 +2,25 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, Button,} from 'react-native';
 import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
-const SplashScreen = ({navigation}) => {
 
+
+const SplashScreen = ({navigation}) => {
+   /*const userData = AsyncStorage.getItem('userData');
+    const [isReady,setisReady]=useState(false);
+
+    if(userData===null){
+      navigation.navigate('Loginpage');
+    }
+    else if(userData.idx==true){
+      navigation.navigate('PareantMainpage');
+    }
+    else if(userData.idx==false){
+      navigation.navigate('ChildMainpage');
+    }
+    else{
+      console.log('error');
+    }  
+*/
     return (
       <View>
           <View>

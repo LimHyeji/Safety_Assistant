@@ -4,6 +4,7 @@ import {AsyncStorage} from '@react-native-async-storage/async-storage';
 
 function Login({navigation}){
 
+const [data,setData]=useState(null);
 const [hasErrors, setHasErrors] = useState(false);
 
 const [form, setForm] = useState({
@@ -82,7 +83,27 @@ return (
     .then((response) =>   
     response.json())
     .then((responseJson) => {
-      console.log(responseJson);
+      
+      setData(responseJson);
+      AsyncStorage.setItem(
+        'userData',
+        JSON.stringify({
+          userId:data.userId,
+          userName:data.userName,
+          token:data.token,
+          idx:data.idx,
+          //idx==true라면 날아오는가, idx==false일 때엔 null인가
+          childId:data.childrenInfo.userId
+        })
+      )
+
+      if(data.idx==true){
+        navigation.navigate('PareantMainpage');
+      }
+      else{
+        navigation.navigate('ChildMainpage');
+      }
+      
     })
     .catch((error) => {
       console.error(error);
