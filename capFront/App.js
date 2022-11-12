@@ -18,6 +18,7 @@ const ParentAppStack = createStackNavigator(
   },
   {
     initialRouteName:'ParentMainpage',
+    headerMode: 'none',
   }
   );
 
@@ -28,6 +29,7 @@ const ParentAppStack = createStackNavigator(
     },
     {
       initialRouteName:'ChildMainpage',
+      headerMode: 'none',
     }
     );
 
@@ -38,6 +40,7 @@ const AuthStack = createStackNavigator(
   },
   {
     initialRouteName:'Loginpage',
+    headerMode: 'none',
   }
   );
 
@@ -52,6 +55,7 @@ const AuthStack = createStackNavigator(
   },
   {
     initialRouteName:'Splashpage',
+    headerMode: 'none',
   }
   );
 
