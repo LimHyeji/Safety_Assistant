@@ -24,11 +24,11 @@
     <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyDKianemUYaPYLOSa0xT67re_DsXMtthxs"/>
-        <!--Geocoder-->
+        <!--Geocoder
     <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY"
-    />
+    />-->
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     <meta-data
     android:name="com.google.android.gms.version"

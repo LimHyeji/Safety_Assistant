@@ -1,10 +1,9 @@
 import React, {useState} from "react";
 import { View, Text, TextInput, Button, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
-import {AsyncStorage} from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Login({navigation}){
 
-const [data,setData]=useState(null);
 const [hasErrors, setHasErrors] = useState(false);
 
 const [form, setForm] = useState({
@@ -60,7 +59,7 @@ return (
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={() =>  LoginAPI(form)}>
+      <TouchableOpacity style={styles.button} onPress={() =>  LoginAPI(form, {navigation})}>
         <Text>로그인</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.signup} onPress={() => navigation.navigate('Registerpage')}>
@@ -71,7 +70,8 @@ return (
   );
 };
 
-  function LoginAPI(form){
+  function LoginAPI(form, {navigation}){
+
     fetch('http://34.64.74.7:8081/user/login', { //host명 필요
     method: 'POST',
     body: JSON.stringify({
@@ -80,30 +80,28 @@ return (
     } ),
     headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-    .then((response) =>   
-    response.json())
-    .then((responseJson) => {
-      
-      setData(responseJson);
-      AsyncStorage.setItem(
+    .then((response) =>   response.json())
+    .then(async(responseJson)=> {
+      console.log(responseJson.childrenInfo[0].idx);
+      await AsyncStorage.setItem(
         'userData',
         JSON.stringify({
-          userId:data.userId,
-          userName:data.userName,
-          token:data.token,
-          idx:data.idx,
+          userId:responseJson.userId,
+          userName:responseJson.userName,
+          token:responseJson.token,
+          idx:responseJson.idx,
           //idx==true라면 날아오는가, idx==false일 때엔 null인가
-          childId:data.childrenInfo.userId
+          childId:responseJson.childrenInfo.userId
         })
       )
-
-      if(data.idx==true){
-        navigation.navigate('PareantMainpage');
+    
+      if(responseJson.idx===true){
+        navigation.navigate('ParentMainpage');
       }
       else{
         navigation.navigate('ChildMainpage');
       }
-      
+
     })
     .catch((error) => {
       console.error(error);
