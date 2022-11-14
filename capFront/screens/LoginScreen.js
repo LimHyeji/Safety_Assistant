@@ -82,7 +82,7 @@ return (
   })
     .then((response) =>   response.json())
     .then(async(responseJson)=> {
-      console.log(responseJson.childrenInfo[0].idx);
+
       await AsyncStorage.setItem(
         'userData',
         JSON.stringify({
