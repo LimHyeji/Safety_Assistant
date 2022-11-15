@@ -2,6 +2,14 @@ import React, {useState} from "react";
 import { View, Text, TextInput, Button, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+/*
+테스트용 아이디/비번
+부모
+parent parent 0000
+child child 1111
+*/
+
 function Login({navigation}){
 
 const [hasErrors, setHasErrors] = useState(false);

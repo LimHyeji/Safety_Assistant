@@ -65,6 +65,7 @@ function ChildMain({navigation}) {
   useEffect(() => {
     componentDidMount();
     trackPosition();
+    let timeId=setInterval(()=>ChildMainAPI(latitude,longitude),5000);
   }, []);
   
   if(!latitude && !longitude) {
@@ -121,18 +122,18 @@ function ChildMain({navigation}) {
         <View>
           <Button title="설정" onPress={() =>  navigation.navigate('ChildSetUppage')}></Button> 
         </View>
-        <View>
+        {/*<View>
           <Button title="자녀위치보내기" onPress={() =>  ChildMainAPI(latitude,longitude)}></Button>
-        </View>
+          </View>*/}
       </View>
   );
 }
 
 function ChildMainAPI(latitude,longitude){
-  fetch('http://34.64.74.7:8081/user/child', {
+  fetch('http://34.64.74.7:8081/user/login/child', {
   method: 'POST',
   body: JSON.stringify({
-    "phoneNum": "01012341234",
+    "phoneNum": "child",
     "latitude":latitude,
     "longitude":longitude
   }  ),
@@ -140,10 +141,10 @@ function ChildMainAPI(latitude,longitude){
 })
   .then((response) => response.json())
   .then((responseJson) => {
-    console.log(responseJson);
+    console.log("ok");
   })
   .catch((error) => {
-    console.error(error);
+    console.error("no");
   });
 }
 
