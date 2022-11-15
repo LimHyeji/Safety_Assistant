@@ -31,28 +31,57 @@ function ParentMain({navigation}) {
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
   }
-
-  /*
-  const trackPosition = () => {
-    requestPermission().then(async(result) => {
-      console.log({result});
-      if(result === "granted") {
-        const childLocation = await fetch('http://34.64.74.7:8081/user/login/parent');
-        console.log(childLocation);
-        setLatitude(childLocation.latitude);
-        setLongitude(childLocation.latitude);
-      }
-    });
-  }*/
-  const showChildLocation = async() => {
-    /*const childLocation = await fetch('http://34.64.74.7:8081/user/login/parent');
-    console.log(childLocation);
-    setLatitude(childLocation.latitude);
-    setLongitude(childLocation.latitude);
-    setShow(true);*/
-    console.log("touch");
+/*
+  const trackPosition = async() => {
+    requestPermission();
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parsevalue = JSON.parse(value);
+      fetch('http://34.64.74.7:8081/user/login/parent', {
+        method: "POST",
+        body: JSON.stringify({
+          userId: parsevalue.childrenInfo[0].userId,
+        }),
+        headers : {'Content-Type' : 'application/json; charset=utf-8'}
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        setLatitude(responseJson.latitude);
+        setLongitude(responseJson.longitude);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }catch(error){
+      console.log(error);
+    }
   }
-
+  const showChildLocation = async() => {
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parsevalue = JSON.parse(value);
+      fetch('http://34.64.74.7:8081/user/login/parent', {
+        method: "POST",
+        body: JSON.stringify({
+          userId: parsevalue.childrenInfo[0].userId,
+        }),
+        headers : {'Content-Type' : 'application/json; charset=utf-8'}
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        setLatitude(responseJson.latitude);
+        setLongitude(responseJson.longitude);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }catch(error){
+      console.log(error);
+    }
+  }
+*/
   const showInfo = () => {
     Alert.alert(
       '경로 정보',
