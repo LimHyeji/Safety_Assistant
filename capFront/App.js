@@ -1,4 +1,7 @@
-import React from 'react';
+import React,{useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Alert} from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 import{createSwitchNavigator, createAppContainer} from 'react-navigation'
 import{createStackNavigator} from 'react-navigation-stack'
 import SplashScreen from './screens/SplashScreen';
@@ -59,4 +62,18 @@ const AuthStack = createStackNavigator(
   }
   );
 
-  export default createAppContainer(switchScreen);
+const AppContainer=createAppContainer(switchScreen);
+
+function App({navigation}){
+  const unsubscribe = messaging().onMessage(async remoteMessage => {
+    Alert.alert('알림 테스트', JSON.stringify(remoteMessage));
+  });
+  useEffect(() => {
+    return unsubscribe;
+  }, []);
+    return (
+      <AppContainer/>
+    );
+};
+
+export default  App;
