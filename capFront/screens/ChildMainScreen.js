@@ -22,6 +22,7 @@ function ChildMain({navigation}) {
   const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
+  const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
 
   const componentDidMount = async() => {
       for(let g in guGun) {
@@ -41,6 +42,7 @@ function ChildMain({navigation}) {
             setLatitude(latitude);
             setLongitude(longitude);
             setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
+            //setInterval(()=>ChildMainAPI(latitude,longitude),5000);
           },
           error => {
             console.log(error);
@@ -65,7 +67,9 @@ function ChildMain({navigation}) {
   useEffect(() => {
     componentDidMount();
     trackPosition();
-    let timeId=setInterval(()=>ChildMainAPI(latitude,longitude),5000);
+    //ChildMainAPI(latitude,longitude);
+    
+    setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
   
   if(!latitude && !longitude) {
@@ -128,12 +132,12 @@ function ChildMain({navigation}) {
       </View>
   );
 }
-
+/*
 function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/user/login/child', {
   method: 'POST',
   body: JSON.stringify({
-    "phoneNum": "child",
+    "userId": "child",
     "latitude":latitude,
     "longitude":longitude
   }  ),
@@ -142,6 +146,47 @@ function ChildMainAPI(latitude,longitude){
   .then((response) => response.json())
   .then((responseJson) => {
     console.log("ok");
+  })
+  .catch((error) => {
+    console.error("no");
+  });
+}
+*/
+/*
+//테스트용1
+function ChildMainAPI(latitude,longitude){
+  fetch('http://34.64.74.7:8081/test/loc', {
+  method: 'POST',
+  body: JSON.stringify({
+    "latitude":latitude,
+    "longitude":longitude
+  }  ),
+  headers : {'Content-Type' : 'application/json; charset=utf-8'}
+})
+  .then((response) => response.json())
+  .then((responseJson) => {
+    console.log(latitude);
+    console.log(longitude);
+    console.log(responseJson);
+  })
+  .catch((error) => {
+    console.error("no");
+  });
+}
+*/
+//테스트용2
+function ChildMainAPI(routetest){
+  fetch('http://34.64.74.7:8081/test/loc2', {
+  method: 'POST',
+  body: JSON.stringify({
+      list : routetest
+  }),
+  headers : {'Content-Type' : 'application/json; charset=utf-8'}
+})
+  .then((response) => response.json())
+  .then((responseJson) => {
+    console.log(routetest);
+    console.log(responseJson);
   })
   .catch((error) => {
     console.error("no");
