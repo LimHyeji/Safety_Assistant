@@ -42,7 +42,6 @@ function ChildMain({navigation}) {
             setLatitude(latitude);
             setLongitude(longitude);
             setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
-            //setInterval(()=>ChildMainAPI(latitude,longitude),5000);
           },
           error => {
             console.log(error);
@@ -67,9 +66,9 @@ function ChildMain({navigation}) {
   useEffect(() => {
     componentDidMount();
     trackPosition();
-    //ChildMainAPI(latitude,longitude);
-    
-    setInterval(()=>ChildMainAPI(routetest),5000);
+
+    setInterval(()=>ChildMainAPI(latitude,longitude),5000);
+    //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
   
   if(!latitude && !longitude) {
@@ -152,7 +151,7 @@ function ChildMainAPI(latitude,longitude){
   });
 }
 */
-/*
+//*
 //테스트용1
 function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/test/loc', {
@@ -173,7 +172,7 @@ function ChildMainAPI(latitude,longitude){
     console.error("no");
   });
 }
-*/
+/*/
 //테스트용2
 function ChildMainAPI(routetest){
   fetch('http://34.64.74.7:8081/test/loc2', {
@@ -192,5 +191,5 @@ function ChildMainAPI(routetest){
     console.error("no");
   });
 }
-
+*/
 export default ChildMain;
