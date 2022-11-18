@@ -22,7 +22,9 @@ function ChildMain({navigation}) {
   const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
+  const [crossWalks,setCrossWalks] =useState([]); //횡단보도
   const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
+
 
   const componentDidMount = async() => {
       for(let g in guGun) {
@@ -30,6 +32,9 @@ function ChildMain({navigation}) {
         const danger = await response.json();
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
+      const crossWalk=await fetch('http://34.64.74.7:8081/user/login/crosswalk');
+      const crossWalkData=await crossWalk.json();
+      setCrossWalks(crossWalks=>[...crossWalks,crossWalkData.data]);  //아마 data명을 수정해야할지도
   }
 
   const trackPosition = () => {
@@ -98,6 +103,9 @@ function ChildMain({navigation}) {
             coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
         />
 
+        {//횡단보도 띄워야함
+        }
+
         {dangerAreas.length === 0 ? (
               <ActivityIndicator
                 color="white"
@@ -120,6 +128,8 @@ function ChildMain({navigation}) {
               ))
             ))
           )}
+
+          
 
         </MapView>
         <View>
