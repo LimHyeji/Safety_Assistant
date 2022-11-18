@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle} from "react-native-maps";
+import Boundary, {Events} from 'react-native-boundary';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -10,6 +11,16 @@ async function requestPermission() {
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
   }catch(e) {
+    console.log(e);
+  }
+}
+
+async function requestBackPermission() {
+  try{
+    return await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+    );
+  } catch(e) {
     console.log(e);
   }
 }
@@ -27,7 +38,7 @@ function ChildMain({navigation}) {
 
   const componentDidMount = async() => {
       for(let g in guGun) {
-        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=L6AJCRUtjxzVfZqqHFgIvQf4%2BwvvY3qA63M7pxG0TPwVKUiZZMu08Pq0sIg77mQa&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
+        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=Wamet5QoAtdrevWTUcRvZV8ey5UsqtkcjGwmpVfYsay5RJnrDMFwFE4yUE4WldPf&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
         const danger = await response.json();
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
@@ -68,11 +79,52 @@ function ChildMain({navigation}) {
     });
   }
 
+  /*
+  function removeFence() {
+    // Remove the events
+    Boundary.off(Events.ENTER)
+    Boundary.off(Events.EXIT)
+
+    // Remove the boundary from native API´s
+    Boundary.removeAll()
+      .then(() => console.log('Goodbye all Chipotle :('))
+      .catch(e => console.log('Failed to delete Chipotle :)', e))
+  }
+
+  function ononon() {
+    console.log(`Get out of my zone!!`);
+  }
+
+  function ofof() {
+    console.log(`tlqkf!!`);
+  }
+
+  function testGeofence() {
+    requestBackPermission().then(
+      requestPermission().then(result => {
+        console.log({result});
+        if(result === "granted") {
+          
+          Boundary.add({
+            lat: 37.45317285194905,
+            lng: 126.6416058060284,
+            radius: 50, // in meters
+            id: "School",
+          })
+            .then(() => console.log("success!"))
+            .catch(e => console.error("error :(", e));
+        }
+      })
+    )
+  }
+*/
   useEffect(() => {
     componentDidMount();
     trackPosition();
-
-    setInterval(()=>ChildMainAPI(latitude,longitude),5000);
+/*
+    removeFence();
+    testGeofence();*/
+    //setInterval(()=>ChildMainAPI(latitude,longitude),5000);
     //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
   
@@ -134,6 +186,12 @@ function ChildMain({navigation}) {
           <Button title="설정" onPress={() =>  navigation.navigate('ChildSetUppage')}></Button> 
         </View>
         {/*<View>
+          <Button title="ON" onPress={() =>  {Boundary.on(Events.ENTER, ononon());}}></Button> 
+        </View>
+        <View>
+          <Button title="OFF" onPress={() =>  {Boundary.on(Events.EXIT, ofof());}}></Button> 
+        </View>
+        <View>
           <Button title="자녀위치보내기" onPress={() =>  ChildMainAPI(latitude,longitude)}></Button>
           </View>*/}
       </View>
