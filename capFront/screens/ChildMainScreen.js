@@ -33,7 +33,7 @@ function ChildMain({navigation}) {
   const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
-  const [crossWalks,setCrossWalks] =useState([]); //횡단보도
+  const [crossWalks,setCrossWalks] = useState([]); //횡단보도
   const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
 
   const componentDidMount = async() => {
@@ -43,9 +43,10 @@ function ChildMain({navigation}) {
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
 
-      const crossWalk=await fetch('http://34.64.74.7:8081/user/login/crosswalk');
-      const crossWalkData=await crossWalk.json();
-      setCrossWalks(crossWalks=>[...crossWalks,crossWalkData.data]);  //아마 data명을 수정해야할지도
+      const crossWalk = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false')
+      const crossWalkData = await crossWalk.json();
+      setCrossWalks(crossWalks => [...crossWalks, crossWalkData.crosses]);  // 변수에 값 안들어감
+      console.log(crossWalks);
   }
 
   const trackPosition = () => {
@@ -58,6 +59,7 @@ function ChildMain({navigation}) {
             setLatitude(latitude);
             setLongitude(longitude);
             setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
+            //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출해야 위경도값 넘어감 왜지...?
           },
           error => {
             console.log(error);
@@ -124,7 +126,7 @@ function ChildMain({navigation}) {
 /*
     removeFence();
     testGeofence();*/
-    //setInterval(()=>ChildMainAPI(latitude,longitude),5000);
+    //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
   
@@ -203,6 +205,7 @@ function ChildMainAPI(latitude,longitude){
   method: 'POST',
   body: JSON.stringify({
     "userId": "child",
+    "idx": false,
     "latitude":latitude,
     "longitude":longitude
   }  ),
@@ -210,7 +213,7 @@ function ChildMainAPI(latitude,longitude){
 })
   .then((response) => response.json())
   .then((responseJson) => {
-    console.log("ok");
+    console.log(responseJson);
   })
   .catch((error) => {
     console.error("no");

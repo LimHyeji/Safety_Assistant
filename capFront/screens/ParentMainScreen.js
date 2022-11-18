@@ -27,7 +27,7 @@ function ParentMain({navigation}) {
 
   const componentDidMount = async() => {
       for(let g in guGun) {
-        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=L6AJCRUtjxzVfZqqHFgIvQf4%2BwvvY3qA63M7pxG0TPwVKUiZZMu08Pq0sIg77mQa&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
+        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=Wamet5QoAtdrevWTUcRvZV8ey5UsqtkcjGwmpVfYsay5RJnrDMFwFE4yUE4WldPf&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
         const danger = await response.json();
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
@@ -42,7 +42,8 @@ function ParentMain({navigation}) {
         method: "POST",
         body: JSON.stringify({
           //userId: parsevalue.childrenInfo[0].userId,
-          "userId": "child"
+          "userId": "child",
+          "idx": true,
         }),
         headers : {'Content-Type' : 'application/json; charset=utf-8'}
       })
@@ -69,6 +70,7 @@ function ParentMain({navigation}) {
         body: JSON.stringify({
           //userId: parsevalue.childrenInfo[0].userId,
           "userId": "child",
+          "idx": true,
         }),
         headers : {'Content-Type' : 'application/json; charset=utf-8'}
       })
@@ -77,6 +79,7 @@ function ParentMain({navigation}) {
         console.log(responseJson);
         setLatitude(parseFloat(responseJson.latitude));
         setLongitude(parseFloat(responseJson.longitude));
+        setShow(true);
       })
       .catch((error) => {
         console.error(error);
@@ -115,7 +118,7 @@ function ParentMain({navigation}) {
   return (
       <View style={{ flex: 1 }}>
         <View>
-          <TouchableOpacity style={styles.alarmButton} onPress={() => showChildLocation()}>
+          <TouchableOpacity style={styles.alarmButton} onPress={() => {console.log("touch")}}>
             <Icon name="bell" size={25} color={"#000"}/>
           </TouchableOpacity>
         </View>
@@ -129,9 +132,11 @@ function ParentMain({navigation}) {
           }}
         >
         
-        <Marker
+        {show === true ? (
+          <Marker
           coordinate={{latitude: latitude, longitude: longitude}}
         />
+        ) : (<></>)}
 
         {dangerAreas.length === 0 ? (
               <ActivityIndicator
