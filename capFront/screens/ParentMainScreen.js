@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
 import MapView, {Marker, Polyline, Circle} from "react-native-maps";
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -31,24 +32,25 @@ function ParentMain({navigation}) {
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
   }
-/*
+
   const trackPosition = async() => {
     requestPermission();
     try{
-      const value = await AsyncStorage.getItem('userData');
-      const parsevalue = JSON.parse(value);
+      //const value = await AsyncStorage.getItem('userData');
+      //const parsevalue = JSON.parse(value);
       fetch('http://34.64.74.7:8081/user/login/parent', {
         method: "POST",
         body: JSON.stringify({
-          userId: parsevalue.childrenInfo[0].userId,
+          //userId: parsevalue.childrenInfo[0].userId,
+          "userId": "child"
         }),
         headers : {'Content-Type' : 'application/json; charset=utf-8'}
       })
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-        setLatitude(responseJson.latitude);
-        setLongitude(responseJson.longitude);
+        setLatitude(parseFloat(responseJson.latitude));
+        setLongitude(parseFloat(responseJson.longitude));
       })
       .catch((error) => {
         console.error(error);
@@ -57,22 +59,24 @@ function ParentMain({navigation}) {
       console.log(error);
     }
   }
+
   const showChildLocation = async() => {
     try{
-      const value = await AsyncStorage.getItem('userData');
-      const parsevalue = JSON.parse(value);
+      //const value = await AsyncStorage.getItem('userData');
+      //const parsevalue = JSON.parse(value);
       fetch('http://34.64.74.7:8081/user/login/parent', {
         method: "POST",
         body: JSON.stringify({
-          userId: parsevalue.childrenInfo[0].userId,
+          //userId: parsevalue.childrenInfo[0].userId,
+          "userId": "child",
         }),
         headers : {'Content-Type' : 'application/json; charset=utf-8'}
       })
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-        setLatitude(responseJson.latitude);
-        setLongitude(responseJson.longitude);
+        setLatitude(parseFloat(responseJson.latitude));
+        setLongitude(parseFloat(responseJson.longitude));
       })
       .catch((error) => {
         console.error(error);
@@ -81,7 +85,8 @@ function ParentMain({navigation}) {
       console.log(error);
     }
   }
-*/
+
+  /*
   const showInfo = () => {
     Alert.alert(
       '경로 정보',
@@ -92,12 +97,11 @@ function ParentMain({navigation}) {
       ]
     )
   }
+  */
 
   useEffect(() => {
     componentDidMount();
-    setLatitude(37); // 임시
-    setLongitude(127); 
-    //trackPosition();
+    trackPosition();
   }, []);
   
   if(!latitude && !longitude) {

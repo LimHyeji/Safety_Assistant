@@ -141,7 +141,7 @@ function ChildMain({navigation}) {
       </View>
   );
 }
-/*
+
 function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/user/login/child', {
   method: 'POST',
@@ -160,8 +160,8 @@ function ChildMainAPI(latitude,longitude){
     console.error("no");
   });
 }
-*/
-//*
+
+/*
 //테스트용1
 function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/test/loc', {
@@ -182,6 +182,7 @@ function ChildMainAPI(latitude,longitude){
     console.error("no");
   });
 }
+*/
 /*/
 //테스트용2
 function ChildMainAPI(routetest){
