@@ -32,13 +32,13 @@ function ChildMain({navigation}) {
   const [longitude, setLongitude] = useState(null);
   const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
-  const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
+  const searchYear = [2021030, 2020055, 2019066];
   const [crossWalks,setCrossWalks] = useState([]); //횡단보도
   const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
 
   const componentDidMount = async() => {
-      for(let g in guGun) {
-        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=Wamet5QoAtdrevWTUcRvZV8ey5UsqtkcjGwmpVfYsay5RJnrDMFwFE4yUE4WldPf&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
+      for(let g in searchYear) {
+        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pdestrians/jaywalking?authKey=uGpJdaxQtbuAGYqjJwwZlSaqI9J0gtYFiPlpCXHuYCQtrv%2FoR74lAmJ9FK9QQsKJ&searchYearCd=' + searchYear[g] + '&siDo=28&guGun=177&type=json');
         const danger = await response.json();
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
