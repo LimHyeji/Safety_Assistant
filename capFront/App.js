@@ -13,6 +13,7 @@ import ChildMainScreen from './screens/ChildMainScreen';
 import ChildSetUpScreen from './screens/ChildSetUpScreen';
 import ModifyScreen from './screens/ModifyScreen';  //위치 수정 필요
 import Test from './screens/Test';  //임시
+import Test2 from './screens/Test2'; //임시
 
 const ParentAppStack = createStackNavigator(
   {
@@ -51,7 +52,8 @@ const AuthStack = createStackNavigator(
   {
     Splashpage:SplashScreen,
     Modifypage:ModifyScreen,
-    Testpage:Test,
+    Testpage:Test,  //임시
+    Test2page:Test2, //임시
     ParentApp:ParentAppStack,
     ChildApp:ChildAppStack,
     Auth:AuthStack,

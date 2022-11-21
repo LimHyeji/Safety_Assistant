@@ -22,9 +22,7 @@ const loading =async({navigation})=>{
 }
 
 const SplashScreen = ({navigation}) => {
-    
-   // loading({navigation});
-    
+
     return (
       <View>
           <View>
@@ -41,6 +39,9 @@ const SplashScreen = ({navigation}) => {
           </View>
           <View>
           <Button title="(임시)Test" onPress={() => navigation.navigate('Testpage')}></Button>
+          </View>
+          <View>
+          <Button title="(임시)Test2" onPress={() => navigation.navigate('Test2page')}></Button>
           </View>
       </View>
     );
