@@ -52,6 +52,7 @@ function ParentMain({navigation}) {
         console.log(responseJson);
         setLatitude(parseFloat(responseJson.latitude));
         setLongitude(parseFloat(responseJson.longitude));
+        setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
       })
       .catch((error) => {
         console.error(error);
@@ -79,6 +80,7 @@ function ParentMain({navigation}) {
         console.log(responseJson);
         setLatitude(parseFloat(responseJson.latitude));
         setLongitude(parseFloat(responseJson.longitude));
+        setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
         setShow(true);
       })
       .catch((error) => {
