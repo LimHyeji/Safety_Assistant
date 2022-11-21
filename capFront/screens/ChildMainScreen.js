@@ -81,7 +81,7 @@ function ChildMain({navigation}) {
     });
   }
 
-  /*
+
   function removeFence() {
     // Remove the events
     Boundary.off(Events.ENTER)
@@ -93,12 +93,8 @@ function ChildMain({navigation}) {
       .catch(e => console.log('Failed to delete Chipotle :)', e))
   }
 
-  function ononon() {
-    console.log(`Get out of my zone!!`);
-  }
-
-  function ofof() {
-    console.log(`tlqkf!!`);
+  function ononon(id) {
+    console.log(`Get out of my ${id}!!`);
   }
 
   function testGeofence() {
@@ -108,24 +104,34 @@ function ChildMain({navigation}) {
         if(result === "granted") {
           
           Boundary.add({
-            lat: 37.45317285194905,
-            lng: 126.6416058060284,
+            lat: 37.600020465178645,
+            lng: 126.66487554774204,
             radius: 50, // in meters
             id: "School",
           })
             .then(() => console.log("success!"))
             .catch(e => console.error("error :(", e));
+
+          Boundary.on(Events.ENTER, id => {
+            // Prints 'Get out of my Chipotle!!'
+            ononon(id);
+          });
+            
+          Boundary.on(Events.EXIT, id => {
+            // Prints 'Ya! You better get out of my Chipotle!!'
+            console.log(`Ya! You better get out of my ${id}!!`)
+          });
         }
       })
     )
   }
-*/
+
   useEffect(() => {
     componentDidMount();
     trackPosition();
-/*
+
     removeFence();
-    testGeofence();*/
+    testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
