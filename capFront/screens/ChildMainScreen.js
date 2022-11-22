@@ -33,20 +33,27 @@ function ChildMain({navigation}) {
   const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const searchYear = [2021030, 2020055, 2019066];
-  const [crossWalks,setCrossWalks] = useState([]); //횡단보도
+  const [allCrossWalks, setAllCrossWalks] = useState([]); // 미추홀구 모든 횡단보도
+  const [fenceCrossWalks, setFenceCrossWalks] = useState([]) // 미추홀구 70m이상 횡단보도
   const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
 
   const componentDidMount = async() => {
+      // 위험지역
       for(let g in searchYear) {
         const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pdestrians/jaywalking?authKey=uGpJdaxQtbuAGYqjJwwZlSaqI9J0gtYFiPlpCXHuYCQtrv%2FoR74lAmJ9FK9QQsKJ&searchYearCd=' + searchYear[g] + '&siDo=28&guGun=177&type=json');
         const danger = await response.json();
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
 
-      const crossWalk = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false')
-      const crossWalkData = await crossWalk.json();
-      setCrossWalks(crossWalks => [...crossWalks, crossWalkData.crosses]);  // 변수에 값 안들어감
-      console.log(crossWalks);
+      // 모든 횡단보도 가져오기
+      const allCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false');
+      const crossWalkData = await allCrossWalk.json();
+      setAllCrossWalks(allCrossWalks => [...allCrossWalks, crossWalkData.crosses]);  // 변수에 값 안들어감
+      
+      // 70m 이상의 횡단보도 가져오기
+      const fenceCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross/cond?idx=false');
+      const fenceCrossWalkData = await fenceCrossWalk.json();
+      setFenceCrossWalks(fenceCrossWalks => [...fenceCrossWalks, fenceCrossWalkData.crosses]);
   }
 
   const trackPosition = () => {
