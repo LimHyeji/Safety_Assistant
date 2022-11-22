@@ -38,9 +38,6 @@ const SplashScreen = ({navigation}) => {
           <Button title="(임시)회원정보수정" onPress={() => navigation.navigate('Modifypage')}></Button>
           </View>
           <View>
-          <Button title="(임시)Test" onPress={() => navigation.navigate('Testpage')}></Button>
-          </View>
-          <View>
           <Button title="(임시)Test2" onPress={() => navigation.navigate('Test2page')}></Button>
           </View>
       </View>
