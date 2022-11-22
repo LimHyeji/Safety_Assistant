@@ -136,7 +136,7 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('userId',value)}
               />
-              <TouchableOpacity style={styles.checkButton} onPress={() => console.log("중복 확인")}>
+              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId)}>
                 <Text>중복 확인</Text>
               </TouchableOpacity>
           </View>
@@ -248,6 +248,17 @@ return (
     );
 };
 
+function idDoubleCheck(userId){
+ // const res = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false')
+ // const resData = await res.json();
+ // console.log(resData);
+  fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
+  method: 'GET',
+}).then((response) => response.json())
+.then((responseJson) => {
+  console.log(responseJson);
+})
+}
 function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
   method: 'POST',
@@ -258,8 +269,12 @@ function AuthFormAPI(form, {navigation}){
     phoneNum:form.phoneNum.value,
     parentPhoneNum:form.parentPhoneNum.value,
     idx:form.idx.value,
-    house:form.house.value,
-    school:form.school.value,
+    //house:form.house.value,
+    //school:form.school.value,
+    houselat:37,
+    houselng:128,
+    schoollat:38,
+    schoollng:129,
     duration:form.duration.value
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
