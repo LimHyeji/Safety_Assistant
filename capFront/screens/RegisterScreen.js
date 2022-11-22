@@ -28,51 +28,63 @@ function AuthForm({navigation}) {
       valid: false,
     },
     userName: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-      },
-      phoneNum: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: true,
-      //중복된 번호에 대한 예외처리
-      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
-      },
-      idx: {
-        value: '',
-        type: 'boolean',
-        rules: {},
-        valid: false,
-      },
-      house: {
-        value: '',
-        type: 'textInput',  //우편번호 가공 구현 필요
-        rules: {},
-        valid: false,
-      },
-      school: {
-        value: '',
-        type: 'textInput',  //우편번호 가공 구현 필요
-        rules: {},
-        valid: false,
-      },
-      duration: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-      },
-      parentPhoneNum: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-        //존재하는 번호인지 확인필요
-        //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
-      }
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: false,
+    },
+    phoneNum: {
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: true,
+    //중복된 번호에 대한 예외처리
+    //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
+    },
+    idx: {
+      value: '',
+      type: 'boolean',
+      rules: {},
+      valid: false,
+    },
+    houseLat: { // geoCoder 적용 전까지는 숫자가 Lat으로 들어옴
+      value: '',
+      type: 'textInput',  //우편번호 가공 구현 필요
+      rules: {},
+      valid: false,
+    },
+    houseLng: {
+      value: '',
+      type: 'textInput',  //우편번호 가공 구현 필요
+      rules: {},
+      valid: false,
+    },
+    schoolLat: {
+      value: '',
+      type: 'textInput',  //우편번호 가공 구현 필요
+      rules: {},
+      valid: false,
+    },
+    schoolLng: {
+      value: '',
+      type: 'textInput',  //우편번호 가공 구현 필요
+      rules: {},
+      valid: false,
+    },
+    duration: {
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: false,
+    },
+    parentPhoneNum: {
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: false,
+      //존재하는 번호인지 확인필요
+      //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
+    }
   });
 
   updateInput = (name, value) => {
@@ -124,6 +136,9 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('userId',value)}
               />
+              <TouchableOpacity style={styles.checkButton} onPress={() => console.log("중복 확인")}>
+                <Text>중복 확인</Text>
+              </TouchableOpacity>
           </View>
           <View style={styles.InputContainer}>
             <TextInput
@@ -154,7 +169,7 @@ return (
               value={form.phoneNum.value}
               type={form.phoneNum.type}
               keyboardType={'phone-pad'}
-              placeholder="전화번호"
+              placeholder="전화번호('-' 없이 입력)"
               placeholderTextColor={'#ddd'}
               onChangeText={value=>updateInput('phoneNum',value)}
             />
@@ -176,22 +191,28 @@ return (
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
-                    value={form.house.value}    //우편 번호 선택으로 수정 필요
-                    type={form.house.type}
+                    value={form.houseLat.value}    //우편 번호 선택으로 수정 필요
+                    type={form.houseLat.type}
                     placeholder="집 위치"
                     placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('house',value)}
+                    onChangeText={value=>updateInput('houseLat',value)}
                   />
+                  <TouchableOpacity style={styles.checkButton} onPress={() => console.log("주소 찾기")}>
+                    <Text>주소 찾기</Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
-                    value={form.school.value}   //우편 번호 선택으로 수정 필요
-                    type={form.school.type}
+                    value={form.schoolLat.value}   //우편 번호 선택으로 수정 필요
+                    type={form.schoolLat.type}
                     placeholder="학교 위치"
                     placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('school',value)}
+                    onChangeText={value=>updateInput('schoolLat',value)}
                   />
+                  <TouchableOpacity style={styles.checkButton} onPress={() => console.log("주소 찾기")}>
+                    <Text>주소 찾기</Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
                   <TextInput
@@ -296,6 +317,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
   },
+  checkButton: {
+    width: "25%",
+    height: 30,
+    marginTop: 6,
+    marginRight: 5,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: "black",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   InputContainer: {
     width: "80%",
     marginTop: 30,
@@ -303,6 +336,8 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: "#CAEF53",
     borderRadius: 10,
+    justifyContent: "space-between",
+    flexDirection: "row",
   },
   RadioButtonContainer: {
     width: "80%",
