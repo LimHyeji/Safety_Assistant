@@ -360,6 +360,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
+    width: "70%",
     height: 42,
     paddingLeft: 20,
     paddingRight: 20,
