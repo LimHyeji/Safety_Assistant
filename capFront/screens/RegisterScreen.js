@@ -1,7 +1,13 @@
 import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image} from 'react-native';
 import {RadioButton} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const loadLatLng=async()=>{
+  const value = await AsyncStorage.getItem('gpsdata');
+  const parsevalue=JSON.parse(value);
+  console.log(parsevalue.idx);
+}
 
 function AuthForm({navigation}) {    
 
@@ -189,6 +195,7 @@ return (
             form.idx.value === false ? (
               <View style={styles.childContainer}>
                 <View style={styles.InputContainer}>
+                {/*
                   <TextInput
                     style={styles.body}
                     value={form.houseLat.value}    //우편 번호 선택으로 수정 필요
@@ -197,10 +204,13 @@ return (
                     placeholderTextColor={'#ddd'}
                     onChangeText={value=>updateInput('houseLat',value)}
                   />
-                  <TouchableOpacity style={styles.checkButton} onPress={() => console.log("주소 찾기")}>
+                  */
+            }
+                  <TouchableOpacity style={styles.checkButton} onPress={() => navigation.navigate("addresspage")}>
                     <Text>주소 찾기</Text>
                   </TouchableOpacity>
                 </View>
+                {loadLatLng()}
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
