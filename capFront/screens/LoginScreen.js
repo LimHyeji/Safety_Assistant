@@ -90,7 +90,7 @@ return (
   })
     .then((response) =>   response.json())
     .then(async(responseJson)=> {
-
+      console.log(responseJson);
       await AsyncStorage.setItem(
         'userData',
         JSON.stringify({
