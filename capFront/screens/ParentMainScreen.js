@@ -137,7 +137,9 @@ function ParentMain({navigation}) {
         {show === true ? (
           <Marker
           coordinate={{latitude: latitude, longitude: longitude}}
-        />
+          >
+            <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+          </Marker>
         ) : (<></>)}
 
         {dangerAreas.length === 0 ? (

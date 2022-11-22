@@ -3,6 +3,7 @@ import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "reac
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle} from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -164,7 +165,9 @@ function ChildMain({navigation}) {
         >
         <Marker
             coordinate={{latitude: latitude, longitude: longitude}}
-        />
+        >
+          <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+        </Marker>
 
         <Polyline
             coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
