@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "react-native";
 import Geolocation from "react-native-geolocation-service";
-import MapView, {Marker, Polyline, Circle} from "react-native-maps";
+import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -173,7 +173,16 @@ function ChildMain({navigation}) {
             coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
         />
 
-        {//횡단보도 띄워야함
+        {// 모든 횡단보도 표시
+          allCrossWalks.map(crossWalk => (
+            crossWalk.map((cross, index) => (
+              <Marker
+              key={index}
+              icon={require('../traffic_light_icon.png')}
+              coordinate={{latitude: parseFloat(cross.latitude), longitude: parseFloat(cross.longitude)}}
+            />
+            ))
+          ))
         }
 
         {dangerAreas.length === 0 ? (
