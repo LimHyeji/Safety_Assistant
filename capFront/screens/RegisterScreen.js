@@ -3,10 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimens
 import {RadioButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const loadLatLng=async()=>{
+const loadLatLng = async() => {
   const value = await AsyncStorage.getItem('gpsdata');
   const parsevalue=JSON.parse(value);
-  console.log(parsevalue.idx);
+  console.log(parsevalue.lat);
+  console.log(parsevalue.lng);
 }
 
 function AuthForm({navigation}) {    
@@ -209,8 +210,10 @@ return (
                   <TouchableOpacity style={styles.checkButton} onPress={() => navigation.navigate("addresspage")}>
                     <Text>주소 찾기</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
+                    <Text>로그 찍기</Text>
+                  </TouchableOpacity>
                 </View>
-                {loadLatLng()}
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}

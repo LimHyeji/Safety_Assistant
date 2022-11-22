@@ -12,6 +12,7 @@ const storeLatLng=async(lat,lng,{navigation})=>{
       lng:lng
     })
   )
+  navigation.navigate("Registerpage");
 };
 
 function toLatLng(address,{navigation}){
@@ -26,7 +27,6 @@ function toLatLng(address,{navigation}){
       console.log(lat, lng);
     
       storeLatLng(lat,lng,{navigation});
-      navigation.navigate("Registerpage");
 
     },
     (error) => {
