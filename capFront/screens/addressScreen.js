@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View,} from 'react-native';
 import Postcode from '@actbase/react-daum-postcode';
 import Geocode from "react-geocode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const storeLatLng=async(lat,lng,{navigation})=>{
+const storeLatLng=async(lat,lng,address,{navigation})=>{
   await AsyncStorage.setItem(
-    'gpsdata',
+    'gpsData',
     JSON.stringify({
       lat:lat,
-      lng:lng
+      lng:lng,
+      address:address
     })
   )
   navigation.navigate("Registerpage");
@@ -20,13 +21,14 @@ function toLatLng(address,{navigation}){
   Geocode.setLanguage("en");
   Geocode.setRegion("es");
   Geocode.setLocationType("ROOFTOP");
+
   Geocode.fromAddress(address).then(
     (response) => {
       console.log(address);
       const { lat, lng } = response.results[0].geometry.location;
       console.log(lat, lng);
     
-      storeLatLng(lat,lng,{navigation});
+      storeLatLng(lat,lng,address,{navigation});
 
     },
     (error) => {
@@ -34,11 +36,12 @@ function toLatLng(address,{navigation}){
     }
   );
 }
+
 function app({navigation}){
   return(
     <View>
       <Postcode
-      style={{ width: 320, height: 320 }}
+      style={{ width: '100%', height: '100%' }}
       jsOptions={{ animation: true }}
       onSelected={data => toLatLng(data.addressEnglish,{navigation})}
     />

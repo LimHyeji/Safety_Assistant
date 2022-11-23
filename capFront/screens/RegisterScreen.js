@@ -4,23 +4,21 @@ import {RadioButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const loadLatLng = async() => {
-  const value = await AsyncStorage.getItem('gpsdata');
+  const value = await AsyncStorage.getItem('gpsData');
   const parsevalue=JSON.parse(value);
   console.log(parsevalue.lat);
   console.log(parsevalue.lng);
+  console.log(parsevalue.address);
 }
 
 function AuthForm({navigation}) {    
 
-  const [hasErrors, setHasErrors] = useState(false);
   const [form, setForm] = useState({
     userId: {
       value: '',
       type: 'textInput',
       rules: {},
       valid: true,  
-      //중복된 아이디에 대한 예외처리
-      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
     },
     password: {
       value: '',
@@ -45,8 +43,6 @@ function AuthForm({navigation}) {
       type: 'textInput',
       rules: {},
       valid: true,
-    //중복된 번호에 대한 예외처리
-    //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
     },
     idx: {
       value: '',
@@ -54,27 +50,27 @@ function AuthForm({navigation}) {
       rules: {},
       valid: false,
     },
-    houseLat: { // geoCoder 적용 전까지는 숫자가 Lat으로 들어옴
+    houselat: { 
       value: '',
-      type: 'textInput',  //우편번호 가공 구현 필요
+      type: 'text', 
       rules: {},
       valid: false,
     },
-    houseLng: {
+    houselng: {
       value: '',
-      type: 'textInput',  //우편번호 가공 구현 필요
+      type: 'text',  
       rules: {},
       valid: false,
     },
-    schoolLat: {
+    schoollat: {
       value: '',
-      type: 'textInput',  //우편번호 가공 구현 필요
+      type: 'text',  
       rules: {},
       valid: false,
     },
-    schoolLng: {
+    schoollng: {
       value: '',
-      type: 'textInput',  //우편번호 가공 구현 필요
+      type: 'text',  
       rules: {},
       valid: false,
     },
@@ -89,13 +85,10 @@ function AuthForm({navigation}) {
       type: 'textInput',
       rules: {},
       valid: false,
-      //존재하는 번호인지 확인필요
-      //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
     }
   });
 
   updateInput = (name, value) => {
-    setHasErrors(false);
     let formCopy = form;
     formCopy[name].value = value;
     setForm(form => {
@@ -103,30 +96,9 @@ function AuthForm({navigation}) {
     });
 };
 
-/*
 confirmPassword = () => {
-    return type != 'signup' ? ( //??
-      <Input
-        value={form.confirmPassword.value}
-        type={form.confirmPassword.type}
-        secureTextEntry={true}
-        placeholder="비밀번호 재입력"
-        placeholderTextColor={'#ddd'}
-        onChangeText={value => updateInput('confirmPassword', value)}
-      />
-    ) : null;
+      //비밀번호 재확인 로직 작성
   };
-
-  const formHasErrors = () => {
-    return hasErrors ? (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorLabel}>
-          회원가입 정보를 다시 확인해주세요
-        </Text>
-      </View>
-    ) : null;
-  };
-  */
 
 return (
     <ScrollView>
@@ -157,6 +129,18 @@ return (
               placeholder="비밀번호"
               placeholderTextColor={'#ddd'}
               onChangeText={value=>updateInput('password',value)}
+            />
+          </View>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.body}
+              value={form.confirmPassword.value}
+              type={form.confirmPassword.type}
+              secureTextEntry={true}
+              autoCapitalize={'none'}
+              placeholder="비밀번호 확인"
+              placeholderTextColor={'#ddd'}
+              onChangeText={value=>updateInput('confirmPassword',value)}
             />
           </View>
           <View style={styles.InputContainer}>
@@ -196,35 +180,37 @@ return (
             form.idx.value === false ? (
               <View style={styles.childContainer}>
                 <View style={styles.InputContainer}>
-                {/*
-                  <TextInput
+                  <Text
                     style={styles.body}
-                    value={form.houseLat.value}    //우편 번호 선택으로 수정 필요
-                    type={form.houseLat.type}
+                    value={form.houselat.value} 
+                    type={form.houselat.type}
                     placeholder="집 위치"
                     placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('houseLat',value)}
+                    onChangeText={value=>updateInput('houselat',value)}
                   />
-                  */
-            }
                   <TouchableOpacity style={styles.checkButton} onPress={() => navigation.navigate("addresspage")}>
                     <Text>주소 찾기</Text>
                   </TouchableOpacity>
+
                   <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
                     <Text>로그 찍기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
-                  <TextInput
+                  <Text
                     style={styles.body}
-                    value={form.schoolLat.value}   //우편 번호 선택으로 수정 필요
-                    type={form.schoolLat.type}
+                    value={form.schoollat.value}
+                    type={form.schoollat.type}
                     placeholder="학교 위치"
                     placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('schoolLat',value)}
+                    onChangeText={value=>updateInput('schoollat',value)}
                   />
                   <TouchableOpacity style={styles.checkButton} onPress={() => console.log("주소 찾기")}>
                     <Text>주소 찾기</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
+                    <Text>로그 찍기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
@@ -262,9 +248,6 @@ return (
 };
 
 function idDoubleCheck(userId){
- // const res = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false')
- // const resData = await res.json();
- // console.log(resData);
   fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
   method: 'GET',
 }).then((response) => response.json())
@@ -272,6 +255,7 @@ function idDoubleCheck(userId){
   console.log(responseJson);
 })
 }
+
 function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
   method: 'POST',
@@ -282,12 +266,10 @@ function AuthFormAPI(form, {navigation}){
     phoneNum:form.phoneNum.value,
     parentPhoneNum:form.parentPhoneNum.value,
     idx:form.idx.value,
-    //house:form.house.value,
-    //school:form.school.value,
-    houselat:37,
-    houselng:128,
-    schoollat:38,
-    schoollng:129,
+    houseat:form.houselat.value,
+    houselng:form.houselng.value,
+    schoollat:form.schoollat.value,
+    schoollng:form.schoollng.value,
     duration:form.duration.value
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
@@ -301,6 +283,13 @@ function AuthFormAPI(form, {navigation}){
   })
   .catch((error) => {
     console.error(error);
+    return(
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorLabel}>
+          회원가입 정보를 다시 확인해주세요.
+        </Text>
+      </View>
+    );
   });
 }
 
@@ -391,6 +380,5 @@ const styles = StyleSheet.create({
     marginTop: 80,
   }
 });
-
 
 export default AuthForm;
