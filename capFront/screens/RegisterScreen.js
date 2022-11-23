@@ -108,13 +108,16 @@ return (
           <View style={styles.InputContainer}>
             <TextInput
                 style={styles.body}
-                value={form.userId.value}
+                value={form.userId.value} 
                 type={form.userId.type} // 미입력하면 못 넘어가게
                 autoCapitalize={'none'}
                 placeholder="아이디"
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('userId',value)}
               />
+              {
+                //id가 이미 존재할 때 true 반환, alert문 필요
+              }
               <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId)}>
                 <Text>중복 확인</Text>
               </TouchableOpacity>

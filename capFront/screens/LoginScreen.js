@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import { View, Text, TextInput, Button, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 /*
 테스트용 아이디/비번
 부모
@@ -11,8 +10,6 @@ child child 1111
 */
 
 function Login({navigation}){
-
-const [hasErrors, setHasErrors] = useState(false);
 
 const [form, setForm] = useState({
   userId: {
@@ -30,7 +27,6 @@ const [form, setForm] = useState({
 });
 
 updateInput = (name, value) => {
-  setHasErrors(false);
   let formCopy = form;
   formCopy[name].value = value;
   setForm(form => {
@@ -80,7 +76,7 @@ return (
 
   function LoginAPI(form, {navigation}){
 
-    fetch('http://34.64.74.7:8081/user/login', { //host명 필요
+    fetch('http://34.64.74.7:8081/user/login', { 
     method: 'POST',
     body: JSON.stringify({
       userId: form.userId.value,
