@@ -76,7 +76,7 @@ function ParentMain({navigation}) {
         if(responseJson.latitude!==null){
         setChildLat(parseFloat(responseJson.latitude));
         setChildLng(parseFloat(responseJson.longitude));
-        setRoute(route => [...route, {latitude:childLat, longitude: childLng}]);
+        setRoute(route => [...route, {latitude:parseFloat(responseJson.latitude), longitude: parseFloat(responseJson.longitude)}]);
         setShow(true);
       }
       })
