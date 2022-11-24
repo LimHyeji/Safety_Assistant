@@ -156,6 +156,10 @@ function ParentMain({navigation}) {
           >
             <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
           </Marker>
+
+          <Polyline
+            coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
+           />
           
         </MapView>
         ) : (<></>)}
