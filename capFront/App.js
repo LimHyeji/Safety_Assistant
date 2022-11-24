@@ -1,5 +1,4 @@
 import React,{useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import{createSwitchNavigator, createAppContainer} from 'react-navigation'

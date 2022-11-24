@@ -120,13 +120,7 @@ return (
     })
     .catch((error) => {
       console.error(error);
-      return(
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorLabel}>
-            로그인 정보를 다시 확인해주세요.
-          </Text>
-        </View>
-      );
+      Alert.alert("로그인 정보를 다시 확인해주세요!");
     });
   };
   

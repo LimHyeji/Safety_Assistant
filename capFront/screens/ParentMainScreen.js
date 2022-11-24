@@ -10,8 +10,8 @@ async function requestPermission() {
     return await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
-  }catch(e) {
-    console.log(e);
+  }catch(error) {
+    console.log(error);
   }
 }
 
@@ -23,16 +23,7 @@ function ParentMain({navigation}) {
   const [route, setRoute] = useState([]); // 이동 경로
   const [show, setShow] = useState(false);
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
-  const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
-
-  const componentDidMount = async() => {
-      for(let g in guGun) {
-        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=Wamet5QoAtdrevWTUcRvZV8ey5UsqtkcjGwmpVfYsay5RJnrDMFwFE4yUE4WldPf&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
-        const danger = await response.json();
-        setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
-      }
-  }
-
+  
   const trackPosition = async() => {
     requestPermission();
     try{
@@ -141,32 +132,7 @@ function ParentMain({navigation}) {
             <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
           </Marker>
         ) : (<></>)}
-
-        {dangerAreas.length === 0 ? (
-              <ActivityIndicator
-                color="white"
-                style={{margin: 10}}
-                size="large"
-              />
-          ) : (
-            
-            dangerAreas.map(dangerArea => (
-                  dangerArea.map((dan, i) => (
-                    <Circle
-                      key={i}
-                      center={{latitude: parseFloat(dan.la_crd), longitude: parseFloat(dan.lo_crd)}}
-                      radius={50}
-                      strokeColor="rgba(0,0,0,0)"
-                      strokeWidth={3}
-                      fillColor={dan.occrrnc_cnt >= 1 && dan.occrrnc_cnt <= 4 ? "rgba(255,255,0,0.1)" : (
-                        dan.occrrnc_cnt > 4 && dan.occrrnc_cnt <= 7 ? "rgba(255,127,0,0.1)" : "rgba(255,0,0,0.1)"
-                      )}
-                    />
-                  ))
-            ))
-          )}
-          
-          
+  
         </MapView>
         <View>
           <TouchableOpacity style={styles.reloadButton} onPress={() => showChildLocation()}>
