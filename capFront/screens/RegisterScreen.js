@@ -11,6 +11,10 @@ const loadLatLng = async() => {
   console.log(parsevalue.address);
 }
 
+const findHome = ({navigation}) => {
+  navigation.navigate("addresspage"); // 변수 set할 방법 찾기
+}
+
 function AuthForm({navigation}) {    
 
   const [form, setForm] = useState({
@@ -191,12 +195,8 @@ return (
                     placeholderTextColor={'#ddd'}
                     onChangeText={value=>updateInput('houselat',value)}
                   />
-                  <TouchableOpacity style={styles.checkButton} onPress={() => navigation.navigate("addresspage")}>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => findHome({navigation})}>
                     <Text>주소 찾기</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
-                    <Text>로그 찍기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
