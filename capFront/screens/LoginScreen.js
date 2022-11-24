@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { View, Text, TextInput, Button, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
+import { View, Text, TextInput, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /*
@@ -67,7 +67,7 @@ return (
         <Text>로그인</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.signup} onPress={() => navigation.navigate('Registerpage')}>
-          <Text>회원가입</Text>
+        <Text>회원가입</Text>
       </TouchableOpacity>    
     </View>
   </ScrollView>
@@ -75,7 +75,7 @@ return (
 };
 
   function LoginAPI(form, {navigation}){
-
+    
     fetch('http://34.64.74.7:8081/user/login', { 
     method: 'POST',
     body: JSON.stringify({
@@ -87,28 +87,46 @@ return (
     .then((response) =>   response.json())
     .then(async(responseJson)=> {
       console.log(responseJson);
+      if(responseJson.idx===true){  //부모일 경우의 저장 내용
       await AsyncStorage.setItem(
         'userData',
         JSON.stringify({
+          idx:responseJson.idx,
           userId:responseJson.userId,
           userName:responseJson.userName,
           token:responseJson.token,
-          idx:responseJson.idx,
-          //idx==true라면 날아오는가, idx==false일 때엔 null인가
-          childId:responseJson.childrenInfo.userId
+
+          childId:responseJson.childrenInfo.userId,
+          childHouseLat:responseJson.childrenInfo.houselat, //집 학교 표시 시 사용
+          childHouseLng:responseJson.childrenInfo.houselng,
+          childSchoolLat:responseJson.childrenInfo.schoollat,
+          childSchoolLng:responseJson.childrenInfo.schoollng
         })
       )
-    
-      if(responseJson.idx===true){
-        navigation.navigate('ParentMainpage');
-      }
-      else{
-        navigation.navigate('ChildMainpage');
-      }
-
+      navigation.navigate('ParentMainpage');
+    }
+    else{ //자녀일 경우의 저장 내용
+      await AsyncStorage.setItem(
+        'userData',
+        JSON.stringify({
+          idx:responseJson.idx,
+          userId:responseJson.userId,
+          userName:responseJson.userName,
+          token:responseJson.token,
+        })
+      )
+      navigation.navigate('ChildMainpage');
+    }
     })
     .catch((error) => {
       console.error(error);
+      return(
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorLabel}>
+            로그인 정보를 다시 확인해주세요.
+          </Text>
+        </View>
+      );
     });
   };
   
