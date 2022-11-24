@@ -36,7 +36,7 @@ return(
         />
         </View>
       </Modal>
-      <Button title="주소찾기" onClick={() => setModal(true)}></Button>
+      <Button title="주소찾기" onPress={() => setModal(true)}></Button>
     </View>
 );
 }
