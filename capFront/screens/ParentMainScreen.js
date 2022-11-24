@@ -117,7 +117,7 @@ function ParentMain({navigation}) {
   return (
       <View style={{ flex: 1 }}>
         <View>
-          <TouchableOpacity style={styles.alarmButton} onPress={() => {console.log("touch")}}>
+          <TouchableOpacity style={styles.alarmButton} onPress={() =>  navigation.navigate('ParentAlertpage')}>
             <Icon name="bell" size={25} color={"#000"}/>
           </TouchableOpacity>
         </View>
