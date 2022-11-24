@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image, Alert} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,7 +16,6 @@ const findHome = ({navigation}) => {
 }
 
 function AuthForm({navigation}) {    
-
   const [form, setForm] = useState({
     userId: {
       value: '',
@@ -92,12 +91,37 @@ function AuthForm({navigation}) {
     }
   });
 
-  updateInput = (name, value) => {
-    let formCopy = form;
-    formCopy[name].value = value;
-    setForm(form => {
-      return {...formCopy};
-    });
+updateInput = (name, value) => {
+  let formCopy = form;
+  formCopy[name].value = value;
+  setForm(form => {
+    return {...formCopy};
+  });
+};
+
+const [validId, setValidId] = useState(false);
+function idDoubleCheck(userId){
+  fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
+    method: 'GET',
+  }).then((response) => response.json())
+  .then((responseJson) => {
+    if(responseJson === true) {
+      Alert.alert("중복 확인", "사용 불가한 아이디입니다.", [
+        {
+          text: "확인",
+          onPress: () => setValidId(false)
+        }
+      ])
+    }
+    else {
+      Alert.alert("중복 확인", "사용 가능한 아이디입니다.", [
+        {
+          text: "확인",
+          onPress: () => setValidId(true)
+        }
+      ])
+    }
+  })
 };
 
 confirmPassword = () => {
@@ -122,7 +146,7 @@ return (
               {
                 //id가 이미 존재할 때 true 반환, alert문 필요
               }
-              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId)}>
+              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId, validId)}>
                 <Text>중복 확인</Text>
               </TouchableOpacity>
           </View>
@@ -242,7 +266,7 @@ return (
             )
           }
 
-            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form, {navigation})}>
+            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form, validId, {navigation})}>
               <Text>회원가입</Text>
             </TouchableOpacity>
         </View>
@@ -250,50 +274,50 @@ return (
     );
 };
 
-function idDoubleCheck(userId){
-  fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
-  method: 'GET',
-}).then((response) => response.json())
-.then((responseJson) => {
-  console.log(responseJson);
-})
-}
-
-function AuthFormAPI(form, {navigation}){
-  fetch('http://34.64.74.7:8081/user/signup', {
-  method: 'POST',
-  body: JSON.stringify({
-    userId:form.userId.value,
-    userName:form.userName.value,
-    password:form.password.value,
-    phoneNum:form.phoneNum.value,
-    parentPhoneNum:form.parentPhoneNum.value,
-    idx:form.idx.value,
-    houseat:form.houselat.value,
-    houselng:form.houselng.value,
-    schoollat:form.schoollat.value,
-    schoollng:form.schoollng.value,
-    duration:form.duration.value
-  }  ),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    console.log(responseJson);
-    if(responseJson.msg === "It is Check to communicate"){
-      navigation.navigate('Loginpage')
-    }
+function AuthFormAPI(form, validId, {navigation}){
+  if(validId === true) {
+    fetch('http://34.64.74.7:8081/user/signup', {
+    method: 'POST',
+    body: JSON.stringify({
+      userId:form.userId.value,
+      userName:form.userName.value,
+      password:form.password.value,
+      phoneNum:form.phoneNum.value,
+      parentPhoneNum:form.parentPhoneNum.value,
+      idx:form.idx.value,
+      houseat:form.houselat.value,
+      houselng:form.houselng.value,
+      schoollat:form.schoollat.value,
+      schoollng:form.schoollng.value,
+      duration:form.duration.value
+    }  ),
+    headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-  .catch((error) => {
-    console.error(error);
-    return(
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorLabel}>
-          회원가입 정보를 다시 확인해주세요.
-        </Text>
-      </View>
-    );
-  });
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      if(responseJson.msg === "It is Check to communicate"){
+        navigation.navigate('Loginpage')
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return(
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorLabel}>
+            회원가입 정보를 다시 확인해주세요.
+          </Text>
+        </View>
+      );
+    });
+  }
+  else if(validId === false) {
+    Alert.alert("회원가입 실패", "아이디 중복 확인을 해주세요.", [
+      {
+        text: "확인"
+      }
+    ])
+  }
 }
 
 const styles = StyleSheet.create({
