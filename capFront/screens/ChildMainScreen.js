@@ -58,35 +58,37 @@ function ChildMain({navigation}) {
   }
 
   const trackPosition = () => {
-    requestPermission().then(result => {
-      console.log({result});
-      if(result === "granted") {
-        const _watchId = Geolocation.watchPosition(
-          position => {
-            const {latitude, longitude} = position.coords;
-            setLatitude(latitude);
-            setLongitude(longitude);
-            setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
-            //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출해야 위경도값 넘어감 왜지...?
-          },
-          error => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            distanceFilter: 0,
-            interval: 3000,
-            fastestInterval: 2000,
-          },
-        );
-    
-        return () => {
-          if(_watchId) {
-            Geolocation.clearWatch(_watchId);
+    requestBackPermission().then(result => {
+      requestPermission().then(result => {
+        console.log({result});
+        if(result === "granted") {
+          const _watchId = Geolocation.watchPosition(
+            position => {
+              const {latitude, longitude} = position.coords;
+              setLatitude(latitude);
+              setLongitude(longitude);
+              setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
+              //ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
+            },
+            error => {
+              console.log(error);
+            },
+            {
+              enableHighAccuracy: true,
+              distanceFilter: 0,
+              interval: 3000,
+              fastestInterval: 2000,
+            },
+          );
+      
+          return () => {
+            if(_watchId) {
+              Geolocation.clearWatch(_watchId);
+            }
           }
         }
-      }
-    });
+      });
+    })
   }
 
 
@@ -139,7 +141,7 @@ function ChildMain({navigation}) {
     trackPosition();
 
     removeFence();
-    testGeofence();
+    //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
