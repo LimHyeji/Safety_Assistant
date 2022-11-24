@@ -1,21 +1,17 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image, Alert} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image, Alert, Modal } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Postcode from '@actbase/react-daum-postcode';
+import Geocode from "react-geocode";
 
-const loadLatLng = async() => {
-  const value = await AsyncStorage.getItem('gpsData');
-  const parsevalue=JSON.parse(value);
-  console.log(parsevalue.lat);
-  console.log(parsevalue.lng);
-  console.log(parsevalue.address);
-}
-
-const findHome = ({navigation}) => {
-  navigation.navigate("addresspage"); // 변수 set할 방법 찾기
-}
-
-function AuthForm({navigation}) {    
+function AuthForm({navigation}) {   
+  
+  const [isHomeModalVisible, setIsHomeModalVisible] = useState(false);
+  const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false);
+  const [homeAddress, setHomeAddress] = useState('');
+  const [schoolAddress, setSchoolAddress] = useState('');
+  
   const [form, setForm] = useState({
     userId: {
       value: '',
@@ -99,7 +95,40 @@ updateInput = (name, value) => {
   });
 };
 
-const [validId, setValidId] = useState(false);
+const storeLatLng = (lat, lng, address, flag)=>{
+  if(flag === 1) {
+    updateInput('houselat', lat);
+    updateInput('houselng', lng);
+    console.log(form.houselat.value, form.houselng.value);
+    setHomeAddress(address);
+  }
+  else if (flag === 2) {
+    updateInput('schoollat', lat);
+    updateInput('schoollng', lng);
+    console.log(form.schoollat.value, form.schoollng.value);
+    setSchoolAddress(address);
+  }
+};
+
+function toLatLng(addressEng, addressKor, flag){
+  Geocode.setApiKey("AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY");
+  Geocode.setLanguage("en");
+  Geocode.setRegion("es");
+  Geocode.setLocationType("ROOFTOP");
+  Geocode.fromAddress(addressEng).then(
+    (response) => {
+      console.log(addressKor);
+      const { lat, lng } = response.results[0].geometry.location;
+      console.log(lat, lng);
+
+      storeLatLng(lat,lng, addressKor, flag);
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
+}
+
 function idDoubleCheck(userId){
   fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
     method: 'GET',
@@ -211,33 +240,35 @@ return (
             form.idx.value === false ? (
               <View style={styles.childContainer}>
                 <View style={styles.InputContainer}>
-                  <Text
-                    style={styles.body}
-                    value={form.houselat.value} 
-                    type={form.houselat.type}
-                    placeholder="집 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('houselat',value)}
-                  />
-                  <TouchableOpacity style={styles.checkButton} onPress={() => findHome({navigation})}>
+                  <Text style={styles.context}> {homeAddress} </Text>
+                  <Modal visible={isHomeModalVisible}>
+                    <Postcode
+                      style={{width: "100%", height: "100%"}}
+                      jsOptions={{ animation: true }}
+                      onSelected={data => {
+                        toLatLng(data.addressEnglish, data.address, 1);
+                        setIsHomeModalVisible(!isHomeModalVisible);
+                      }}
+                    />
+                  </Modal>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => setIsHomeModalVisible(true)}>
                     <Text>주소 찾기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
-                  <Text
-                    style={styles.body}
-                    value={form.schoollat.value}
-                    type={form.schoollat.type}
-                    placeholder="학교 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('schoollat',value)}
-                  />
-                  <TouchableOpacity style={styles.checkButton} onPress={() => console.log("주소 찾기")}>
+                <Text style={styles.context}> {schoolAddress} </Text>
+                  <Modal visible={isSchoolModalVisible}>
+                    <Postcode
+                      style={{width: "100%", height: "100%"}}
+                      jsOptions={{ animation: true }}
+                      onSelected={data => {
+                        toLatLng(data.addressEnglish, data.address, 2);
+                        setIsSchoolModalVisible(!isSchoolModalVisible);
+                      }}
+                    />
+                  </Modal>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => setIsSchoolModalVisible(true)}>
                     <Text>주소 찾기</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
-                    <Text>로그 찍기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
@@ -266,7 +297,7 @@ return (
             )
           }
 
-            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form, validId, {navigation})}>
+            <TouchableOpacity style={styles.button} onPress={() =>  AuthFormAPI(form, {navigation})}>
               <Text>회원가입</Text>
             </TouchableOpacity>
         </View>
@@ -274,9 +305,8 @@ return (
     );
 };
 
-function AuthFormAPI(form, validId, {navigation}){
-  if(validId === true) {
-    fetch('http://34.64.74.7:8081/user/signup', {
+function AuthFormAPI(form, {navigation}){
+  fetch('http://34.64.74.7:8081/user/signup', {
     method: 'POST',
     body: JSON.stringify({
       userId:form.userId.value,
@@ -310,21 +340,13 @@ function AuthFormAPI(form, validId, {navigation}){
         </View>
       );
     });
-  }
-  else if(validId === false) {
-    Alert.alert("회원가입 실패", "아이디 중복 확인을 해주세요.", [
-      {
-        text: "확인"
-      }
-    ])
-  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   childContainer: {
     flex: 1,
@@ -394,6 +416,12 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     color: "#696969",
+  },
+  context: {
+    width: "70%",
+    height: 42,
+    justifyContent: 'flex-start',
+    textAlignVertical: 'center',
   },
   RadioButtonBody: {
     paddingLeft: 20,
