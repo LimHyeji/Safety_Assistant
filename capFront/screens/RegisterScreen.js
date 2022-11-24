@@ -295,7 +295,7 @@ function AuthFormAPI(form, {navigation}){
     );
   });
 }
-
+sssssss
 const styles = StyleSheet.create({
   container: {
     flex: 1,
