@@ -72,7 +72,10 @@ function ParentMain({navigation}) {
         setLatitude(parseFloat(responseJson.latitude));
         setLongitude(parseFloat(responseJson.longitude));
         setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
+        setChildLng(parseFloat(responseJson.longitude));
+        setRoute(route => [...route, {latitude:childLat, longitude: childLng}]);
         setShow(true);
+      }
       })
       .catch((error) => {
         console.error(error);
@@ -96,11 +99,11 @@ function ParentMain({navigation}) {
   */
 
   useEffect(() => {
-    componentDidMount();
     trackPosition();
+    setInterval(()=>showChildLocation(),5000); //과연 넘어올것인가
   }, []);
   
-  if(!latitude && !longitude) {
+  if(!latitude && !longitude) { //부모 위치정보 없을 때 로딩
     return (
       <View style={{ flex: 1 }}>
         <Text style={{ flex: 1 }}>Loading...</Text>
@@ -115,6 +118,7 @@ function ParentMain({navigation}) {
             <Icon name="bell" size={25} color={"#000"}/>
           </TouchableOpacity>
         </View>
+        {show === false ? (  //부모 위치 띄우기
         <MapView
           style={{ flex: 1, width:'100%', height:'100%' }}
           initialRegion={{
@@ -124,16 +128,36 @@ function ParentMain({navigation}) {
             longitudeDelta: 0.005,
           }}
         >
-        
-        {show === true ? (
+
           <Marker
           coordinate={{latitude: latitude, longitude: longitude}}
           >
             <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
           </Marker>
-        ) : (<></>)}
-  
+          
         </MapView>
+        ) : (<></>)}
+
+        {show === true ? (  //자녀 위치 띄우기
+        <MapView
+        style={{ flex: 1, width:'100%', height:'100%' }}
+        initialRegion={{
+          latitude: childLat, 
+          longitude: childLng,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }}
+        >
+          <Marker
+          coordinate={{latitude: childLat, longitude: childLng}}
+          >
+            <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+          </Marker>
+          
+        </MapView>
+        ) : (<></>)}
+
+
         <View>
           <TouchableOpacity style={styles.reloadButton} onPress={() => showChildLocation()}>
             <Icon name="redo-alt" size={30} color={"#000"}/>
