@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!--현위치-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <!--백그라운드 위치 정보 수집-->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
@@ -24,11 +26,7 @@
     <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyDKianemUYaPYLOSa0xT67re_DsXMtthxs"/>
-        <!--Geocoder
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY"
-    />-->
+
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     <meta-data
     android:name="com.google.android.gms.version"

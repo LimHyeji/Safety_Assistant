@@ -1,19 +1,23 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image, Alert, Modal } from 'react-native';
 import {RadioButton} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Postcode from '@actbase/react-daum-postcode';
+import Geocode from "react-geocode";
 
-
-function AuthForm({navigation}) {    
-
-  const [hasErrors, setHasErrors] = useState(false);
+function AuthForm({navigation}) {   
+  
+  const [isHomeModalVisible, setIsHomeModalVisible] = useState(false);
+  const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false);
+  const [homeAddress, setHomeAddress] = useState('');
+  const [schoolAddress, setSchoolAddress] = useState('');
+  
   const [form, setForm] = useState({
     userId: {
       value: '',
       type: 'textInput',
       rules: {},
       valid: true,  
-      //중복된 아이디에 대한 예외처리
-      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
     },
     password: {
       value: '',
@@ -28,86 +32,130 @@ function AuthForm({navigation}) {
       valid: false,
     },
     userName: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-      },
-      phoneNum: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: true,
-      //중복된 번호에 대한 예외처리
-      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
-      },
-      idx: {
-        value: '',
-        type: 'boolean',
-        rules: {},
-        valid: false,
-      },
-      house: {
-        value: '',
-        type: 'textInput',  //우편번호 가공 구현 필요
-        rules: {},
-        valid: false,
-      },
-      school: {
-        value: '',
-        type: 'textInput',  //우편번호 가공 구현 필요
-        rules: {},
-        valid: false,
-      },
-      duration: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-      },
-      parentPhoneNum: {
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-        //존재하는 번호인지 확인필요
-        //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
-      }
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: false,
+    },
+    phoneNum: {
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: true,
+    },
+    idx: {
+      value: '',
+      type: 'boolean',
+      rules: {},
+      valid: false,
+    },
+    houselat: { 
+      value: '',
+      type: 'text', 
+      rules: {},
+      valid: false,
+    },
+    houselng: {
+      value: '',
+      type: 'text',  
+      rules: {},
+      valid: false,
+    },
+    schoollat: {
+      value: '',
+      type: 'text',  
+      rules: {},
+      valid: false,
+    },
+    schoollng: {
+      value: '',
+      type: 'text',  
+      rules: {},
+      valid: false,
+    },
+    duration: {
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: false,
+    },
+    parentPhoneNum: {
+      value: '',
+      type: 'textInput',
+      rules: {},
+      valid: false,
+    }
   });
 
-  updateInput = (name, value) => {
-    setHasErrors(false);
-    let formCopy = form;
-    formCopy[name].value = value;
-    setForm(form => {
-      return {...formCopy};
-    });
+updateInput = (name, value) => {
+  let formCopy = form;
+  formCopy[name].value = value;
+  setForm(form => {
+    return {...formCopy};
+  });
 };
 
-/*
-confirmPassword = () => {
-    return type != 'signup' ? ( //??
-      <Input
-        value={form.confirmPassword.value}
-        type={form.confirmPassword.type}
-        secureTextEntry={true}
-        placeholder="비밀번호 재입력"
-        placeholderTextColor={'#ddd'}
-        onChangeText={value => updateInput('confirmPassword', value)}
-      />
-    ) : null;
-  };
+const storeLatLng = (lat, lng, address, flag)=>{
+  if(flag === 1) {
+    updateInput('houselat', lat);
+    updateInput('houselng', lng);
+    console.log(form.houselat.value, form.houselng.value);
+    setHomeAddress(address);
+  }
+  else if (flag === 2) {
+    updateInput('schoollat', lat);
+    updateInput('schoollng', lng);
+    console.log(form.schoollat.value, form.schoollng.value);
+    setSchoolAddress(address);
+  }
+};
 
-  const formHasErrors = () => {
-    return hasErrors ? (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorLabel}>
-          회원가입 정보를 다시 확인해주세요
-        </Text>
-      </View>
-    ) : null;
+function toLatLng(addressEng, addressKor, flag){
+  Geocode.setApiKey("AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY");
+  Geocode.setLanguage("en");
+  Geocode.setRegion("es");
+  Geocode.setLocationType("ROOFTOP");
+  Geocode.fromAddress(addressEng).then(
+    (response) => {
+      console.log(addressKor);
+      const { lat, lng } = response.results[0].geometry.location;
+      console.log(lat, lng);
+
+      storeLatLng(lat,lng, addressKor, flag);
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
+}
+
+function idDoubleCheck(userId){
+  fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
+    method: 'GET',
+  }).then((response) => response.json())
+  .then((responseJson) => {
+    if(responseJson === true) {
+      Alert.alert("중복 확인", "사용 불가한 아이디입니다.", [
+        {
+          text: "확인",
+          onPress: () => setValidId(false)
+        }
+      ])
+    }
+    else {
+      Alert.alert("중복 확인", "사용 가능한 아이디입니다.", [
+        {
+          text: "확인",
+          onPress: () => setValidId(true)
+        }
+      ])
+    }
+  })
+};
+
+confirmPassword = () => {
+      //비밀번호 재확인 로직 작성
   };
-  */
 
 return (
     <ScrollView>
@@ -117,13 +165,19 @@ return (
           <View style={styles.InputContainer}>
             <TextInput
                 style={styles.body}
-                value={form.userId.value}
+                value={form.userId.value} 
                 type={form.userId.type} // 미입력하면 못 넘어가게
                 autoCapitalize={'none'}
                 placeholder="아이디"
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('userId',value)}
               />
+              {
+                //id가 이미 존재할 때 true 반환, alert문 필요
+              }
+              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId, validId)}>
+                <Text>중복 확인</Text>
+              </TouchableOpacity>
           </View>
           <View style={styles.InputContainer}>
             <TextInput
@@ -135,6 +189,18 @@ return (
               placeholder="비밀번호"
               placeholderTextColor={'#ddd'}
               onChangeText={value=>updateInput('password',value)}
+            />
+          </View>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.body}
+              value={form.confirmPassword.value}
+              type={form.confirmPassword.type}
+              secureTextEntry={true}
+              autoCapitalize={'none'}
+              placeholder="비밀번호 확인"
+              placeholderTextColor={'#ddd'}
+              onChangeText={value=>updateInput('confirmPassword',value)}
             />
           </View>
           <View style={styles.InputContainer}>
@@ -154,7 +220,7 @@ return (
               value={form.phoneNum.value}
               type={form.phoneNum.type}
               keyboardType={'phone-pad'}
-              placeholder="전화번호"
+              placeholder="전화번호('-' 없이 입력)"
               placeholderTextColor={'#ddd'}
               onChangeText={value=>updateInput('phoneNum',value)}
             />
@@ -174,24 +240,36 @@ return (
             form.idx.value === false ? (
               <View style={styles.childContainer}>
                 <View style={styles.InputContainer}>
-                  <TextInput
-                    style={styles.body}
-                    value={form.house.value}    //우편 번호 선택으로 수정 필요
-                    type={form.house.type}
-                    placeholder="집 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('house',value)}
-                  />
+                  <Text style={styles.context}> {homeAddress} </Text>
+                  <Modal visible={isHomeModalVisible}>
+                    <Postcode
+                      style={{width: "100%", height: "100%"}}
+                      jsOptions={{ animation: true }}
+                      onSelected={data => {
+                        toLatLng(data.addressEnglish, data.address, 1);
+                        setIsHomeModalVisible(!isHomeModalVisible);
+                      }}
+                    />
+                  </Modal>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => setIsHomeModalVisible(true)}>
+                    <Text>주소 찾기</Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
-                  <TextInput
-                    style={styles.body}
-                    value={form.school.value}   //우편 번호 선택으로 수정 필요
-                    type={form.school.type}
-                    placeholder="학교 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('school',value)}
-                  />
+                <Text style={styles.context}> {schoolAddress} </Text>
+                  <Modal visible={isSchoolModalVisible}>
+                    <Postcode
+                      style={{width: "100%", height: "100%"}}
+                      jsOptions={{ animation: true }}
+                      onSelected={data => {
+                        toLatLng(data.addressEnglish, data.address, 2);
+                        setIsSchoolModalVisible(!isSchoolModalVisible);
+                      }}
+                    />
+                  </Modal>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => setIsSchoolModalVisible(true)}>
+                    <Text>주소 찾기</Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
                   <TextInput
@@ -229,37 +307,46 @@ return (
 
 function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
-  method: 'POST',
-  body: JSON.stringify({
-    userId:form.userId.value,
-    userName:form.userName.value,
-    password:form.password.value,
-    phoneNum:form.phoneNum.value,
-    parentPhoneNum:form.parentPhoneNum.value,
-    idx:form.idx.value,
-    house:form.house.value,
-    school:form.school.value,
-    duration:form.duration.value
-  }  ),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    console.log(responseJson);
-    if(responseJson.msg === "It is Check to communicate"){
-      navigation.navigate('Loginpage')
-    }
+    method: 'POST',
+    body: JSON.stringify({
+      userId:form.userId.value,
+      userName:form.userName.value,
+      password:form.password.value,
+      phoneNum:form.phoneNum.value,
+      parentPhoneNum:form.parentPhoneNum.value,
+      idx:form.idx.value,
+      houseat:form.houselat.value,
+      houselng:form.houselng.value,
+      schoollat:form.schoollat.value,
+      schoollng:form.schoollng.value,
+      duration:form.duration.value
+    }  ),
+    headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-  .catch((error) => {
-    console.error(error);
-  });
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      if(responseJson.msg === "It is Check to communicate"){
+        navigation.navigate('Loginpage')
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return(
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorLabel}>
+            회원가입 정보를 다시 확인해주세요.
+          </Text>
+        </View>
+      );
+    });
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   childContainer: {
     flex: 1,
@@ -296,6 +383,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
   },
+  checkButton: {
+    width: "25%",
+    height: 30,
+    marginTop: 6,
+    marginRight: 5,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: "black",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   InputContainer: {
     width: "80%",
     marginTop: 30,
@@ -303,6 +402,8 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: "#CAEF53",
     borderRadius: 10,
+    justifyContent: "space-between",
+    flexDirection: "row",
   },
   RadioButtonContainer: {
     width: "80%",
@@ -310,10 +411,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
+    width: "70%",
     height: 42,
     paddingLeft: 20,
     paddingRight: 20,
     color: "#696969",
+  },
+  context: {
+    width: "70%",
+    height: 42,
+    justifyContent: 'flex-start',
+    textAlignVertical: 'center',
   },
   RadioButtonBody: {
     paddingLeft: 20,
@@ -327,6 +435,5 @@ const styles = StyleSheet.create({
     marginTop: 80,
   }
 });
-
 
 export default AuthForm;

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "react-native";
 import Geolocation from "react-native-geolocation-service";
-import MapView, {Marker, Polyline, Circle} from "react-native-maps";
+import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
+import Boundary, {Events} from 'react-native-boundary';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -14,6 +16,16 @@ async function requestPermission() {
   }
 }
 
+async function requestBackPermission() {
+  try{
+    return await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+    );
+  } catch(e) {
+    console.log(e);
+  }
+}
+
 
 function ChildMain({navigation}) {
 
@@ -21,53 +33,116 @@ function ChildMain({navigation}) {
   const [longitude, setLongitude] = useState(null);
   const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
-  const guGun = [680, 740, 305, 500, 620, 215, 530, 545, 350, 320, 230, 590, 440, 410, 650, 200, 290, 710, 470, 560, 170, 380, 110, 140, 260];
+  const searchYear = [2021030, 2020055, 2019066];
+  const [allCrossWalks, setAllCrossWalks] = useState([]); // 미추홀구 모든 횡단보도
+  const [fenceCrossWalks, setFenceCrossWalks] = useState([]) // 미추홀구 70m이상 횡단보도
   const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
 
   const componentDidMount = async() => {
-      for(let g in guGun) {
-        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pedstrians?authKey=L6AJCRUtjxzVfZqqHFgIvQf4%2BwvvY3qA63M7pxG0TPwVKUiZZMu08Pq0sIg77mQa&searchYearCd=2022032&siDo=11&guGun=' + guGun[g] + '&type=json');
+      // 위험지역
+      for(let g in searchYear) {
+        const response = await fetch('http://taas.koroad.or.kr/data/rest/frequentzone/pdestrians/jaywalking?authKey=uGpJdaxQtbuAGYqjJwwZlSaqI9J0gtYFiPlpCXHuYCQtrv%2FoR74lAmJ9FK9QQsKJ&searchYearCd=' + searchYear[g] + '&siDo=28&guGun=177&type=json');
         const danger = await response.json();
         setDangerAreas(dangerAreas => [...dangerAreas, danger.items.item]);
       }
+
+      // 모든 횡단보도 가져오기
+      const allCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false');
+      const crossWalkData = await allCrossWalk.json();
+      setAllCrossWalks(allCrossWalks => [...allCrossWalks, crossWalkData.crosses]);  // 변수에 값 안들어감
+      
+      // 70m 이상의 횡단보도 가져오기
+      const fenceCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross/cond?idx=false');
+      const fenceCrossWalkData = await fenceCrossWalk.json();
+      setFenceCrossWalks(fenceCrossWalks => [...fenceCrossWalks, fenceCrossWalkData.crosses]);
   }
 
   const trackPosition = () => {
-    requestPermission().then(result => {
-      console.log({result});
-      if(result === "granted") {
-        const _watchId = Geolocation.watchPosition(
-          position => {
-            const {latitude, longitude} = position.coords;
-            setLatitude(latitude);
-            setLongitude(longitude);
-            setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
-          },
-          error => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            distanceFilter: 0,
-            interval: 3000,
-            fastestInterval: 2000,
-          },
-        );
-    
-        return () => {
-          if(_watchId) {
-            Geolocation.clearWatch(_watchId);
+    requestBackPermission().then(result => {
+      requestPermission().then(result => {
+        console.log({result});
+        if(result === "granted") {
+          const _watchId = Geolocation.watchPosition(
+            position => {
+              const {latitude, longitude} = position.coords;
+              setLatitude(latitude);
+              setLongitude(longitude);
+              setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
+              //ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
+            },
+            error => {
+              console.log(error);
+            },
+            {
+              enableHighAccuracy: true,
+              distanceFilter: 0,
+              interval: 3000,
+              fastestInterval: 2000,
+            },
+          );
+      
+          return () => {
+            if(_watchId) {
+              Geolocation.clearWatch(_watchId);
+            }
           }
         }
-      }
-    });
+      });
+    })
+  }
+
+
+  function removeFence() {
+    // Remove the events
+    Boundary.off(Events.ENTER)
+    Boundary.off(Events.EXIT)
+
+    // Remove the boundary from native API´s
+    Boundary.removeAll()
+      .then(() => console.log('Goodbye all Chipotle :('))
+      .catch(e => console.log('Failed to delete Chipotle :)', e))
+  }
+
+  function ononon(id) {
+    console.log(`Get out of my ${id}!!`);
+  }
+
+  function testGeofence() {
+    requestBackPermission().then(
+      requestPermission().then(result => {
+        console.log({result});
+        if(result === "granted") {
+          
+          Boundary.add({
+            lat: 37.600020465178645,
+            lng: 126.66487554774204,
+            radius: 50, // in meters
+            id: "School",
+          })
+            .then(() => console.log("success!"))
+            .catch(e => console.error("error :(", e));
+
+          Boundary.on(Events.ENTER, id => {
+            // Prints 'Get out of my Chipotle!!'
+            ononon(id);
+          });
+            
+          Boundary.on(Events.EXIT, id => {
+            // Prints 'Ya! You better get out of my Chipotle!!'
+            console.log(`Ya! You better get out of my ${id}!!`)
+          });
+        }
+      })
+    )
   }
 
   useEffect(() => {
     componentDidMount();
     trackPosition();
 
-    setInterval(()=>ChildMainAPI(latitude,longitude),5000);
+    removeFence();
+    //testGeofence();
+    //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
   
@@ -92,11 +167,25 @@ function ChildMain({navigation}) {
         >
         <Marker
             coordinate={{latitude: latitude, longitude: longitude}}
-        />
+        >
+          <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+        </Marker>
 
         <Polyline
             coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
         />
+
+        {// 모든 횡단보도 표시
+          allCrossWalks.map(crossWalk => (
+            crossWalk.map((cross, index) => (
+              <Marker
+              key={index}
+              icon={require('../traffic_light_icon.png')}
+              coordinate={{latitude: parseFloat(cross.latitude), longitude: parseFloat(cross.longitude)}}
+            />
+            ))
+          ))
+        }
 
         {dangerAreas.length === 0 ? (
               <ActivityIndicator
@@ -126,17 +215,24 @@ function ChildMain({navigation}) {
           <Button title="설정" onPress={() =>  navigation.navigate('ChildSetUppage')}></Button> 
         </View>
         {/*<View>
+          <Button title="ON" onPress={() =>  {Boundary.on(Events.ENTER, ononon());}}></Button> 
+        </View>
+        <View>
+          <Button title="OFF" onPress={() =>  {Boundary.on(Events.EXIT, ofof());}}></Button> 
+        </View>
+        <View>
           <Button title="자녀위치보내기" onPress={() =>  ChildMainAPI(latitude,longitude)}></Button>
           </View>*/}
       </View>
   );
 }
-/*
+
 function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/user/login/child', {
   method: 'POST',
   body: JSON.stringify({
     "userId": "child",
+    "idx": false,
     "latitude":latitude,
     "longitude":longitude
   }  ),
@@ -144,14 +240,14 @@ function ChildMainAPI(latitude,longitude){
 })
   .then((response) => response.json())
   .then((responseJson) => {
-    console.log("ok");
+    console.log(responseJson);
   })
   .catch((error) => {
     console.error("no");
   });
 }
-*/
-//*
+
+/*
 //테스트용1
 function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/test/loc', {
@@ -172,6 +268,7 @@ function ChildMainAPI(latitude,longitude){
     console.error("no");
   });
 }
+*/
 /*/
 //테스트용2
 function ChildMainAPI(routetest){
