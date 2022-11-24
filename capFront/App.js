@@ -9,6 +9,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import addressScreen from './screens/addressScreen';
 import ParentMainScreen from './screens/ParentMainScreen';
 import ParentSetUpScreen from './screens/ParentSetUpScreen';
+import ParentAlertScreen from './screens/ParentAlertScreen';
 import ChildMainScreen from './screens/ChildMainScreen';
 import ChildSetUpScreen from './screens/ChildSetUpScreen';
 import ModifyScreen from './screens/ModifyScreen';  //위치 수정 필요
@@ -18,6 +19,7 @@ const ParentAppStack = createStackNavigator(
   {
     ParentMainpage:ParentMainScreen,
     ParentSetUppage:ParentSetUpScreen,
+    ParentAlertpage:ParentAlertScreen,
   },
   {
     initialRouteName:'ParentMainpage',
