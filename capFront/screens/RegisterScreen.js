@@ -1,18 +1,17 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image, Alert, Modal } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Postcode from '@actbase/react-daum-postcode';
+import Geocode from "react-geocode";
 
-const loadLatLng = async() => {
-  const value = await AsyncStorage.getItem('gpsData');
-  const parsevalue=JSON.parse(value);
-  console.log(parsevalue.lat);
-  console.log(parsevalue.lng);
-  console.log(parsevalue.address);
-}
-
-function AuthForm({navigation}) {    
-
+function AuthForm({navigation}) {   
+  
+  const [isHomeModalVisible, setIsHomeModalVisible] = useState(false);
+  const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false);
+  const [homeAddress, setHomeAddress] = useState('');
+  const [schoolAddress, setSchoolAddress] = useState('');
+  
   const [form, setForm] = useState({
     userId: {
       value: '',
@@ -88,12 +87,70 @@ function AuthForm({navigation}) {
     }
   });
 
-  updateInput = (name, value) => {
-    let formCopy = form;
-    formCopy[name].value = value;
-    setForm(form => {
-      return {...formCopy};
-    });
+updateInput = (name, value) => {
+  let formCopy = form;
+  formCopy[name].value = value;
+  setForm(form => {
+    return {...formCopy};
+  });
+};
+
+const storeLatLng = (lat, lng, address, flag)=>{
+  if(flag === 1) {
+    updateInput('houselat', lat);
+    updateInput('houselng', lng);
+    console.log(form.houselat.value, form.houselng.value);
+    setHomeAddress(address);
+  }
+  else if (flag === 2) {
+    updateInput('schoollat', lat);
+    updateInput('schoollng', lng);
+    console.log(form.schoollat.value, form.schoollng.value);
+    setSchoolAddress(address);
+  }
+};
+
+function toLatLng(addressEng, addressKor, flag){
+  Geocode.setApiKey("AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY");
+  Geocode.setLanguage("en");
+  Geocode.setRegion("es");
+  Geocode.setLocationType("ROOFTOP");
+  Geocode.fromAddress(addressEng).then(
+    (response) => {
+      console.log(addressKor);
+      const { lat, lng } = response.results[0].geometry.location;
+      console.log(lat, lng);
+
+      storeLatLng(lat,lng, addressKor, flag);
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
+}
+
+function idDoubleCheck(userId){
+  fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
+    method: 'GET',
+  }).then((response) => response.json())
+  .then((responseJson) => {
+    if(responseJson === true) {
+      Alert.alert("중복 확인", "사용 불가한 아이디입니다.", [
+        {
+          text: "확인",
+          onPress: () => setValidId(false)
+        }
+      ])
+    }
+    else {
+      Alert.alert("중복 확인", "사용 가능한 아이디입니다.", [
+        {
+          text: "확인",
+          onPress: () => setValidId(true)
+        }
+      ])
+    }
+  })
 };
 
 confirmPassword = () => {
@@ -118,7 +175,7 @@ return (
               {
                 //id가 이미 존재할 때 true 반환, alert문 필요
               }
-              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId)}>
+              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId, validId)}>
                 <Text>중복 확인</Text>
               </TouchableOpacity>
           </View>
@@ -183,37 +240,35 @@ return (
             form.idx.value === false ? (
               <View style={styles.childContainer}>
                 <View style={styles.InputContainer}>
-                  <Text
-                    style={styles.body}
-                    value={form.houselat.value} 
-                    type={form.houselat.type}
-                    placeholder="집 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('houselat',value)}
-                  />
-                  <TouchableOpacity style={styles.checkButton} onPress={() => navigation.navigate("addresspage")}>
+                  <Text style={styles.context}> {homeAddress} </Text>
+                  <Modal visible={isHomeModalVisible}>
+                    <Postcode
+                      style={{width: "100%", height: "100%"}}
+                      jsOptions={{ animation: true }}
+                      onSelected={data => {
+                        toLatLng(data.addressEnglish, data.address, 1);
+                        setIsHomeModalVisible(!isHomeModalVisible);
+                      }}
+                    />
+                  </Modal>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => setIsHomeModalVisible(true)}>
                     <Text>주소 찾기</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
-                    <Text>로그 찍기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
-                  <Text
-                    style={styles.body}
-                    value={form.schoollat.value}
-                    type={form.schoollat.type}
-                    placeholder="학교 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('schoollat',value)}
-                  />
-                  <TouchableOpacity style={styles.checkButton} onPress={() => console.log("주소 찾기")}>
+                <Text style={styles.context}> {schoolAddress} </Text>
+                  <Modal visible={isSchoolModalVisible}>
+                    <Postcode
+                      style={{width: "100%", height: "100%"}}
+                      jsOptions={{ animation: true }}
+                      onSelected={data => {
+                        toLatLng(data.addressEnglish, data.address, 2);
+                        setIsSchoolModalVisible(!isSchoolModalVisible);
+                      }}
+                    />
+                  </Modal>
+                  <TouchableOpacity style={styles.checkButton} onPress={() => setIsSchoolModalVisible(true)}>
                     <Text>주소 찾기</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.checkButton} onPress={() => loadLatLng()}>
-                    <Text>로그 찍기</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.InputContainer}>
@@ -250,57 +305,48 @@ return (
     );
 };
 
-function idDoubleCheck(userId){
-  fetch('http://34.64.74.7:8081/user-nicknames/'+userId.value+'/exists', {
-  method: 'GET',
-}).then((response) => response.json())
-.then((responseJson) => {
-  console.log(responseJson);
-})
-}
-
 function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
-  method: 'POST',
-  body: JSON.stringify({
-    userId:form.userId.value,
-    userName:form.userName.value,
-    password:form.password.value,
-    phoneNum:form.phoneNum.value,
-    parentPhoneNum:form.parentPhoneNum.value,
-    idx:form.idx.value,
-    houseat:form.houselat.value,
-    houselng:form.houselng.value,
-    schoollat:form.schoollat.value,
-    schoollng:form.schoollng.value,
-    duration:form.duration.value
-  }  ),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    console.log(responseJson);
-    if(responseJson.msg === "It is Check to communicate"){
-      navigation.navigate('Loginpage')
-    }
+    method: 'POST',
+    body: JSON.stringify({
+      userId:form.userId.value,
+      userName:form.userName.value,
+      password:form.password.value,
+      phoneNum:form.phoneNum.value,
+      parentPhoneNum:form.parentPhoneNum.value,
+      idx:form.idx.value,
+      houseat:form.houselat.value,
+      houselng:form.houselng.value,
+      schoollat:form.schoollat.value,
+      schoollng:form.schoollng.value,
+      duration:form.duration.value
+    }  ),
+    headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-  .catch((error) => {
-    console.error(error);
-    return(
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorLabel}>
-          회원가입 정보를 다시 확인해주세요.
-        </Text>
-      </View>
-    );
-  });
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      if(responseJson.msg === "It is Check to communicate"){
+        navigation.navigate('Loginpage')
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return(
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorLabel}>
+            회원가입 정보를 다시 확인해주세요.
+          </Text>
+        </View>
+      );
+    });
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   childContainer: {
     flex: 1,
@@ -370,6 +416,12 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     color: "#696969",
+  },
+  context: {
+    width: "70%",
+    height: 42,
+    justifyContent: 'flex-start',
+    textAlignVertical: 'center',
   },
   RadioButtonBody: {
     paddingLeft: 20,
