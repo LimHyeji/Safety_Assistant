@@ -37,6 +37,7 @@ function ChildMain({navigation}) {
   const searchYear = [2021030, 2020055, 2019066];
   const [allCrossWalks, setAllCrossWalks] = useState([]); // 미추홀구 모든 횡단보도
   const [fenceCrossWalks, setFenceCrossWalks] = useState([]) // 미추홀구 70m이상 횡단보도
+  const [fillAllData, setFillAllData] = useState([]);
   const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
 
   const componentDidMount = async() => {
@@ -56,6 +57,8 @@ function ChildMain({navigation}) {
       const fenceCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross/cond?idx=false');
       const fenceCrossWalkData = await fenceCrossWalk.json();
       setFenceCrossWalks(fenceCrossWalks => [...fenceCrossWalks, fenceCrossWalkData.crosses]);
+
+      setFillAllData(true);
   }
 
   const trackPosition = () => {
@@ -109,14 +112,20 @@ function ChildMain({navigation}) {
   }
 
   function inFence(id) {
-    if(id === "House") {
+    console.log(id);
+    if(id.toString() === "House") {
       console.log(`Get out of my ${id}!!`);
     }
-    else if(id === "School") {
+    else if(id.toString() === "School") {
       console.log(`Get out of my ${id}!!`);
     }
+    // 횡단 보도일 경우,
+    else if (Number(id) >= 0 && Number(id) < 51) {
+      console.log(`Get out of my crossWalk ${id}!!`);
+    }
+    // 위험 지역
     else {
-
+      console.log(`Get out of my dangerArea ${id}!!`);
     }
   }
 
@@ -147,14 +156,56 @@ function ChildMain({navigation}) {
             .then(() => console.log("House success!"))
             .catch(e => console.error("error :(", e));
 
-          Boundary.on(Events.ENTER, id => {
-            inFence(id);
-          });
+            Boundary.on(Events.ENTER, id => {
+              inFence(id);
+            });
         })
       )
     } catch(error){
       console.error(error);
     }
+  }
+
+  const dangerAreaGeofence = () => {
+    requestBackPermission().then(
+      requestPermission().then(result => {
+        console.log(result);
+
+        for(danger in dangerAreas) {
+          for(d in dangerAreas[danger]) {
+            Boundary.add({
+              lat: parseFloat(dangerAreas[danger][d].la_crd),
+              lng: parseFloat(dangerAreas[danger][d].lo_crd),
+              radius: 50, // in meters
+              id: dangerAreas[danger][d].afos_fid.toString(),
+            })
+              .then(() => console.log("dangerAreas success!"))
+              .catch(e => console.error("error :(", e));
+          }
+        }
+      })
+    )
+  }
+
+  const crossWalkGeofence = () => {
+    requestBackPermission().then(
+      requestPermission().then(result => {
+        console.log(result);
+
+        for(cross in fenceCrossWalks) {
+          for(c in fenceCrossWalks[cross]) {
+            Boundary.add({
+              lat: parseFloat(fenceCrossWalks[cross][c].latitude),
+              lng: parseFloat(fenceCrossWalks[cross][c].longitude),
+              radius: 50, // in meters
+              id: c.toString(),
+            })
+              .then(() => console.log("crossWalk greater than 70m success!"))
+              .catch(e => console.error("error :(", e));
+          }
+        }
+      })
+    )
   }
 
   function testGeofence() {
@@ -190,12 +241,17 @@ function ChildMain({navigation}) {
     componentDidMount();
     trackPosition();
 
-    removeFence();
-    homeSchoolGeofence();
     //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
+
+  useEffect(() => {
+    removeFence();
+    homeSchoolGeofence();
+    dangerAreaGeofence();
+    crossWalkGeofence();
+  }, [fillAllData])
   
   if(!latitude && !longitude) {
     return (
