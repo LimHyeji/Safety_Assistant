@@ -27,7 +27,7 @@ function AuthForm({navigation}) {
     },
     confirmPassword: {
       value: '',
-      type: 'textInput', //비밀번호확인 구현필요
+      type: 'textInput',
       rules: {},
       valid: false,
     },
@@ -87,7 +87,7 @@ function AuthForm({navigation}) {
     }
   });
 
-updateInput = (name, value) => {
+const updateInput = (name, value) => {
   let formCopy = form;
   formCopy[name].value = value;
   setForm(form => {
@@ -151,12 +151,8 @@ function idDoubleCheck(userId){
   })
 };
 
-confirmPassword = () => {
-      //비밀번호 재확인 로직 작성
-  };
-
 return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='always'>
         <View style={styles.container}>
           <Image source={require("../logo.png")}  style={styles.image}/>
           <Text style={styles.title}>회원가입</Text>
@@ -198,6 +194,13 @@ return (
               onChangeText={value=>updateInput('confirmPassword',value)}
             />
           </View>
+          {
+              form.confirmPassword.value===form.password.value ? (
+                <></>
+              ):(
+                <Text style={styles.context}>비밀번호가 일치하지 않습니다.</Text>
+              )
+            }
           <View style={styles.InputContainer}>
             <TextInput
               style={styles.body}
@@ -323,6 +326,13 @@ function AuthFormAPI(form, {navigation}){
       console.log(responseJson);
       if(responseJson.msg === "It is Check to communicate"){
         navigation.navigate('Loginpage')
+      }
+      else{
+        Alert.alert("회원가입 실패","회원가입 정보를 다시 확인해주세요.",[
+          {
+            text:"확인"
+          }
+        ])
       }
     })
     .catch((error) => {
