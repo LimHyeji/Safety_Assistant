@@ -121,6 +121,12 @@ return (
               userId:responseJson.userId,
               userName:responseJson.userName,
               token:responseJson.token,
+
+              houseLat: responseJson.myLocation.houselat,
+              houseLng: responseJson.myLocation.houselng,
+              schoolLat: responseJson.myLocation.schoollat,
+              schoolLng: responseJson.myLocation.schoollng,
+              duration: responseJson.myLocation.duration,
             })
           )
           navigation.navigate('ChildMainpage');

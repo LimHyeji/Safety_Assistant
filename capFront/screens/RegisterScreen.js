@@ -313,7 +313,7 @@ function AuthFormAPI(form, {navigation}){
       phoneNum:form.phoneNum.value,
       parentPhoneNum:form.parentPhoneNum.value,
       idx:form.idx.value,
-      houseat:form.houselat.value,
+      houselat:form.houselat.value,
       houselng:form.houselng.value,
       schoollat:form.schoollat.value,
       schoollng:form.schoollng.value,

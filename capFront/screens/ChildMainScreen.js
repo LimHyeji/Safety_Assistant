@@ -4,6 +4,7 @@ import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -107,6 +108,55 @@ function ChildMain({navigation}) {
     console.log(`Get out of my ${id}!!`);
   }
 
+  function inFence(id) {
+    if(id === "House") {
+      console.log(`Get out of my ${id}!!`);
+    }
+    else if(id === "School") {
+      console.log(`Get out of my ${id}!!`);
+    }
+    else {
+
+    }
+  }
+
+  const homeSchoolGeofence = async() => {
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      requestBackPermission().then(
+        requestPermission().then(result => {
+          console.log(result);
+
+          Boundary.add({
+            lat: parseFloat(parseValue.schoolLat),
+            lng: parseFloat(parseValue.schoolLng),
+            radius: 50, // in meters
+            id: "School",
+          })
+            .then(() => console.log("School success!"))
+            .catch(e => console.error("error :(", e));
+
+          Boundary.add({
+            lat: parseFloat(parseValue.houseLat),
+            lng: parseFloat(parseValue.houseLng),
+            radius: 50, // in meters
+            id: "House",
+          })
+            .then(() => console.log("House success!"))
+            .catch(e => console.error("error :(", e));
+
+          Boundary.on(Events.ENTER, id => {
+            inFence(id);
+          });
+        })
+      )
+    } catch(error){
+      console.error(error);
+    }
+  }
+
   function testGeofence() {
     requestBackPermission().then(
       requestPermission().then(result => {
@@ -141,6 +191,7 @@ function ChildMain({navigation}) {
     trackPosition();
 
     removeFence();
+    homeSchoolGeofence();
     //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
