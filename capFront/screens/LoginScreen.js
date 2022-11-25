@@ -105,7 +105,7 @@ return (
       )
       navigation.navigate('ParentMainpage');
     }
-    else{ //자녀일 경우의 저장 내용
+    if(responseJson.idx===false){ //자녀일 경우의 저장 내용
       await AsyncStorage.setItem(
         'userData',
         JSON.stringify({
