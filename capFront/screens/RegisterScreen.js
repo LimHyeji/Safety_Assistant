@@ -138,7 +138,6 @@ function idDoubleCheck(userId){
       Alert.alert("중복 확인", "사용 불가한 아이디입니다.", [
         {
           text: "확인",
-          onPress: () => setValidId(false)
         }
       ])
     }
@@ -146,7 +145,6 @@ function idDoubleCheck(userId){
       Alert.alert("중복 확인", "사용 가능한 아이디입니다.", [
         {
           text: "확인",
-          onPress: () => setValidId(true)
         }
       ])
     }
@@ -172,10 +170,7 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('userId',value)}
               />
-              {
-                //id가 이미 존재할 때 true 반환, alert문 필요
-              }
-              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId, validId)}>
+              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId)}>
                 <Text>중복 확인</Text>
               </TouchableOpacity>
           </View>
