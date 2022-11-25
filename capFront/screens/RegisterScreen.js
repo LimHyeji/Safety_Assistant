@@ -158,7 +158,7 @@ return (
           <Text style={styles.title}>회원가입</Text>
           <View style={styles.InputContainer}>
             <TextInput
-                style={styles.body}
+                style={styles.idBody}
                 value={form.userId.value} 
                 type={form.userId.type} // 미입력하면 못 넘어가게
                 autoCapitalize={'none'}
@@ -195,10 +195,10 @@ return (
             />
           </View>
           {
-              form.confirmPassword.value===form.password.value ? (
-                <></>
+              form.confirmPassword.value === form.password.value ? (
+                <Text style={styles.notEq}></Text>
               ):(
-                <Text style={styles.context}>비밀번호가 일치하지 않습니다.</Text>
+                <Text style={styles.notEq}>비밀번호가 일치하지 않습니다.</Text>
               )
             }
           <View style={styles.InputContainer}>
@@ -416,6 +416,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
+    width: "100%",
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "#696969",
+  },
+  idBody: {
     width: "70%",
     height: 42,
     paddingLeft: 20,
@@ -425,9 +432,15 @@ const styles = StyleSheet.create({
   context: {
     width: "70%",
     height: 42,
-    justifyContent: 'flex-start',
     textAlignVertical: 'center',
   },
+  notEq: {
+    width: "70%",
+    height: 42,
+    textAlignVertical: 'center',
+    textAlign: "center",
+    color: "red",
+  }, 
   RadioButtonBody: {
     paddingLeft: 20,
     paddingRight: 20,
