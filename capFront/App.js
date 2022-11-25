@@ -6,7 +6,6 @@ import{createStackNavigator} from 'react-navigation-stack'
 import SplashScreen from './screens/SplashScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import addressScreen from './screens/addressScreen';
 import ParentMainScreen from './screens/ParentMainScreen';
 import ParentSetUpScreen from './screens/ParentSetUpScreen';
 import ParentAlertScreen from './screens/ParentAlertScreen';
@@ -42,7 +41,6 @@ const AuthStack = createStackNavigator(
   {
     Loginpage:LoginScreen,
     Registerpage:RegisterScreen,
-    addresspage:addressScreen,
   },
   {
     initialRouteName:'Loginpage',
