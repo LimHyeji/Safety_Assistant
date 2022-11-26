@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Text,} from 'react-native';
-
+import { Text,Linking,Button} from 'react-native';
+/*
 function app({mm,ss},{navigation}){
     const [minutes,setMinutes]=useState(parseInt(mm));
     const [seconds,setSeconds]=useState(parseInt(ss));
@@ -29,5 +29,11 @@ function app({mm,ss},{navigation}){
         </Text>
     );
 };
+*/0
 
+function app(){
+  return(
+  <Button title="전화걸기" onPress={()=>{Linking.openURL(`tel:전화번호`)}} />
+  );
+}
 export default app;
