@@ -5,6 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Postcode from '@actbase/react-daum-postcode';
 import Geocode from "react-geocode";
 
+/*
+자녀일 경우 미입력 시 못넘어가게 예외처리 필요
+*/
+
 function AuthForm({navigation}) {   
   
   const [isHomeModalVisible, setIsHomeModalVisible] = useState(false);

@@ -3,6 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from '
 import {RadioButton} from 'react-native-paper';
 import {AppStyles} from '../AppStyles';
 
+/*
+자녀일 경우 미입력 시 못넘어가게 예외처리 필요
+*/
+
 function ModifyAuthForm({navigation}) {    
 
   const [form, setForm] = useState({

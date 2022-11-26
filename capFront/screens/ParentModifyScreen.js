@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 
+/*
+비밀번호 미입력 시 api 안넘기는 것으로 예외처리
+*/
+
 function ModifyAuthForm({navigation}) {    
 
   const [form, setForm] = useState({
