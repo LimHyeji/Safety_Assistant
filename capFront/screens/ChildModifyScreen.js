@@ -232,18 +232,20 @@ return (
 };
 
 function ModifyAuthFormAPI(form){
-  fetch('http://34.64.74.7:8081/user/...', {
+  fetch('http://34.64.74.7:8081//user/login/update', {
   method: 'POST',
   body: JSON.stringify({
-    //userId:form.userId.value,
-    //userName:form.userName.value,
+    userId:"child", //async
+    userName:"child", //async
     password:form.password.value,
-    phoneNum:form.phoneNum.value,
-    parentPhoneNum:form.parentPhoneNum.value,
-    //idx:form.idx.value,
-    house:form.house.value,
-    school:form.school.value,
-    duration:form.duration.value
+    phoneNum:"0000",//async
+    parentPhoneNum:"1111",//async
+    idx:false,
+    houselat:1,//form.houselat.value,
+    houselng:1,//form.houselng.value,
+    schoollat:1,//form.schoollat.value,
+    schoollng:1,//form.schoollng.value,
+    duration:1//form.duration.value
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })

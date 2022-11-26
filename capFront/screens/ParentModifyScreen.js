@@ -129,18 +129,14 @@ return (
 };
 
 function ModifyAuthFormAPI(form){
-  fetch('http://34.64.74.7:8081/user/...', {
+  fetch('http://34.64.74.7:8081//user/login/update', {
   method: 'POST',
   body: JSON.stringify({
-    //userId:form.userId.value,
-    //userName:form.userName.value,
+    userId:"parent",  //async에서 받은 값
+    userName:"parent",  //async에서 받은 값
     password:form.password.value,
-    phoneNum:form.phoneNum.value,
-    parentPhoneNum:form.parentPhoneNum.value,
-    //idx:form.idx.value,
-    house:form.house.value,
-    school:form.school.value,
-    duration:form.duration.value
+    phoneNum:"1111",  //async에서 받은 값
+    idx:true,
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })
