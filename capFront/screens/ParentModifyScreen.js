@@ -41,7 +41,6 @@ function ModifyAuthForm({navigation}) {
   });
 
   updateInput = (name, value) => {
-    setHasErrors(false);
     let formCopy = form;
     formCopy[name].value = value;
     setForm(form => {
@@ -129,14 +128,20 @@ return (
 };
 
 function ModifyAuthFormAPI(form){
-  fetch('http://34.64.74.7:8081//user/login/update', {
+  fetch('http://34.64.74.7:8081/user/login/update', {
   method: 'POST',
   body: JSON.stringify({
     userId:"parent",  //async에서 받은 값
     userName:"parent",  //async에서 받은 값
     password:form.password.value,
     phoneNum:"1111",  //async에서 받은 값
+    parentPhoneNum:null,
     idx:true,
+    houselat:null,
+    houselng:null,
+    schoollat:null,
+    schoollng:null,
+    duration:null
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })

@@ -125,7 +125,7 @@ function ParentMain({navigation}) {
             alarmLat:responseJson.lat,  //역지오코딩 필요, 이 값이 아니라 주소값이 들어가는 게 좋을듯
             alarmLng:responseJson.lng   //역지오코딩 필요, 이 값이 아니라 주소값이 들어가는 게 좋을듯
           })
-        )
+        ) //null 처리
       })
       .catch((error) => {
         console.error(error);
