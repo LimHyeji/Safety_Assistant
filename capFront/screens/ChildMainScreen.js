@@ -95,6 +95,35 @@ function ChildMain({navigation}) {
     })
   }
 
+  const apiTest = async() => {
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      fetch("http://34.64.74.7:8081/user/login/alarm", {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: parseValue.userId,
+          idx: parseValue.idx,
+          alarm: "arrival",
+          where: "House",
+          lat: latitude,
+          lng: longitude,
+        }),
+        headers : {'Content-Type' : 'application/json; charset=utf-8'}
+      })
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
 
   function removeFence() {
     // Remove the events
@@ -103,32 +132,167 @@ function ChildMain({navigation}) {
 
     // Remove the boundary from native API´s
     Boundary.removeAll()
-      .then(() => console.log('Goodbye all Chipotle :('))
+      .then(() => console.log('Goodbye :('))
       .catch(e => console.log('Failed to delete Chipotle :)', e))
   }
 
-  function ononon(id) {
-    console.log(`Get out of my ${id}!!`);
+  // Enter하면 호출될 함수
+  const inFence = async(id) => {
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      console.log(id);
+
+      if(id.toString() === "House") {
+        console.log(`Enter my ${id}!!`);
+        fetch("http://34.64.74.7:8081/user/login/alarm", {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: parseValue.userId,
+            idx: parseValue.idx,
+            alarm: 2,
+            where: "House",
+            lat: latitude,
+            lng: longitude,
+          }),
+          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        })
+          .then(response => response.json())
+          .then((responseJson) => {
+            console.log(responseJson, "OK");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      else if(id.toString() === "School") {
+        console.log(`Enter my ${id}!!`);
+        fetch("http://34.64.74.7:8081/user/login/alarm", {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: parseValue.userId,
+            idx: parseValue.idx,
+            alarm: 2,
+            where: "School",
+            lat: latitude,
+            lng: longitude,
+          }),
+          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        })
+          .then(response => response.json())
+          .then((responseJson) => {
+            console.log(responseJson, "OK");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      // 횡단 보도일 경우,
+      else if (Number(id) >= 0 && Number(id) < 51) {
+        console.log(`Enter crossWalk ${id}!!`);
+      }
+
+      // 위험 지역
+      else {
+        console.log(`Enter dangerArea ${id}!!`);
+        fetch("http://34.64.74.7:8081/user/login/alarm", {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: parseValue.userId,
+            idx: parseValue.idx,
+            alarm: 4,
+            where: id.toString(),
+            lat: latitude,
+            lng: longitude,
+          }),
+          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        })
+          .then(response => response.json())
+          .then((responseJson) => {
+            console.log(responseJson, "OK");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    } catch(error) {
+      console.log(error);
+    }
   }
 
-  function inFence(id) {
-    console.log(id);
-    if(id.toString() === "House") {
-      console.log(`Get out of my ${id}!!`);
+  // Exit하면 호출될 함수
+  const outFence = async(id) => {
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      console.log(id);
+
+      if(id.toString() === "House") {
+        console.log(`Exit my ${id}!!`);
+        fetch("http://34.64.74.7:8081/user/login/alarm", {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: parseValue.userId,
+            idx: parseValue.idx,
+            alarm: 1,
+            where: "House",
+            lat: latitude,
+            lng: longitude,
+          }),
+          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        })
+          .then(response => response.json())
+          .then((responseJson) => {
+            console.log(responseJson, "OK");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      else if(id.toString() === "School") {
+        console.log(`Exit my ${id}!!`);
+        fetch("http://34.64.74.7:8081/user/login/alarm", {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: parseValue.userId,
+            idx: parseValue.idx,
+            alarm: 1,
+            where: "School",
+            lat: latitude,
+            lng: longitude,
+          }),
+          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        })
+          .then(response => response.json())
+          .then((responseJson) => {
+            console.log(responseJson, "OK");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      // 횡단 보도일 경우,
+      else if (Number(id) >= 0 && Number(id) < 51) {
+        console.log(`Exit crossWalk ${id}!!`);
+      }
+
+      // 위험 지역
+      else {
+        console.log(`Exit dangerArea ${id}!!`);
+      }
+    } catch(error) {
+      console.log(error);
     }
-    else if(id.toString() === "School") {
-      console.log(`Get out of my ${id}!!`);
-    }
-    // 횡단 보도일 경우,
-    else if (Number(id) >= 0 && Number(id) < 51) {
-      console.log(`Get out of my crossWalk ${id}!!`);
-    }
-    // 위험 지역
-    else {
-      console.log(`Get out of my dangerArea ${id}!!`);
-    }
+
   }
 
+// 집/학교 지오펜스 설정
   const homeSchoolGeofence = async() => {
     try {
       const value = await AsyncStorage.getItem('userData');
@@ -156,16 +320,20 @@ function ChildMain({navigation}) {
             .then(() => console.log("House success!"))
             .catch(e => console.error("error :(", e));
 
-            Boundary.on(Events.ENTER, id => {
-              inFence(id);
-            });
+          Boundary.on(Events.ENTER, id => {
+            inFence(id);
+          });
+          
+          Boundary.on(Events.EXIT, id => {
+            outFence(id);
+          });
         })
       )
     } catch(error){
       console.error(error);
     }
   }
-
+// 위험지역 지오펜스 설정
   const dangerAreaGeofence = () => {
     requestBackPermission().then(
       requestPermission().then(result => {
@@ -186,7 +354,7 @@ function ChildMain({navigation}) {
       })
     )
   }
-
+// 횡단보도 지오펜스 설정
   const crossWalkGeofence = () => {
     requestBackPermission().then(
       requestPermission().then(result => {
@@ -208,38 +376,10 @@ function ChildMain({navigation}) {
     )
   }
 
-  function testGeofence() {
-    requestBackPermission().then(
-      requestPermission().then(result => {
-        console.log({result});
-        if(result === "granted") {
-          
-          Boundary.add({
-            lat: 37.600020465178645,
-            lng: 126.66487554774204,
-            radius: 50, // in meters
-            id: "School",
-          })
-            .then(() => console.log("success!"))
-            .catch(e => console.error("error :(", e));
-
-          Boundary.on(Events.ENTER, id => {
-            // Prints 'Get out of my Chipotle!!'
-            ononon(id);
-          });
-            
-          Boundary.on(Events.EXIT, id => {
-            // Prints 'Ya! You better get out of my Chipotle!!'
-            console.log(`Ya! You better get out of my ${id}!!`)
-          });
-        }
-      })
-    )
-  }
-
   useEffect(() => {
     componentDidMount();
     trackPosition();
+    apiTest();
 
     //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
@@ -248,9 +388,9 @@ function ChildMain({navigation}) {
 
   useEffect(() => {
     removeFence();
-    homeSchoolGeofence();
-    dangerAreaGeofence();
-    crossWalkGeofence();
+    //homeSchoolGeofence();
+    //dangerAreaGeofence();
+    //crossWalkGeofence();
   }, [fillAllData])
   
   if(!latitude && !longitude) {
