@@ -26,7 +26,14 @@ function ParentMain({navigation}) {
   const [childLng, setChildLng] = useState(null);
   const [route, setRoute] = useState([]); // 자녀의 이동 경로
   const [show, setShow] = useState(false);
-  
+
+  const [alarm,setAlarm]=useState(null);  //알림 저장을 위한 변수들
+  const [where,setWhere]=useState(null);
+  const [alarmLat,setAlarmLat]=useState(null);  
+  const [alarmLng,setAlarmLng]=useState(null);
+  let date = new Date();
+  let now = date.toLocaleString();
+
   const trackPosition = () => {  //부모의 위치추적
     requestPermission();
     try{
@@ -88,6 +95,46 @@ function ParentMain({navigation}) {
     }
   }
 
+  const parentAlert=async()=>{
+    try{
+      //const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
+      //const parsevalue = JSON.parse(value); //테스트를 위한 주석처리
+      fetch('http://34.64.74.7:8081/user/login/alarmRec',{
+        method:"POST",
+        body: JSON.stringify({
+         //userId: parsevalue.childrenInfo[0].userId, //테스트를 위한 주석처리
+          "userId":"child",
+          "idx":true,
+        }),
+        headers : {'Content-Type' : 'application/json; charset=utf-8'}
+      })
+      .then((response) => response.json())
+      .then(async(responseJson) => {
+        console.log(responseJson);
+
+        setAlarm(responseJson.alarm);
+        setWhere(responseJson.where);
+        setAlarmLat(parseFloat(responseJson.lat));
+        setAlarmLng(parseFloat(responseJson.lng));
+        
+        await AsyncStorage.setItem( //같은 id에 여러 개가 저장될 수 있나?
+          'alarm',
+          JSON.stringify({
+            alarm:responseJson.alarm,
+            where:responseJson.where, //핸들링에 따라 필요할수도 불필요할수도 있는 값
+            alarmLat:responseJson.lat,  //역지오코딩 필요, 이 값이 아니라 주소값이 들어가는 게 좋을듯
+            alarmLng:responseJson.lng   //역지오코딩 필요, 이 값이 아니라 주소값이 들어가는 게 좋을듯
+          })
+        )
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   /*
   const showInfo = () => {
     Alert.alert(
@@ -104,6 +151,7 @@ function ParentMain({navigation}) {
   useEffect(() => {
     trackPosition();
     setInterval(()=>showChildLocation(),5000); //과연 넘어올것인가
+    setInterval(()=>parentAlert(),5000); //과연 넘어올것인가
   }, []);
   
   if(!latitude && !longitude) { //부모 위치정보 없을 때 로딩
