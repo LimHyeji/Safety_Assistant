@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
-import {RadioButton} from 'react-native-paper';
-import {AppStyles} from '../AppStyles';
 
 function ModifyAuthForm({navigation}) {    
 
   const [form, setForm] = useState({
-    userId: { //표시해야하고 수정불가
+    userId: { //표시해야하고 접근불가
       value: '',
       type: 'textInput',
       rules: {},
@@ -24,51 +22,17 @@ function ModifyAuthForm({navigation}) {
       rules: {},
       valid: false,
     },
-    userName: { //표시해야하고 수정불가
+    userName: { //표시해야하고 접근불가
         value: '',
         type: 'textInput',
         rules: {},
         valid: false,
       },
-      phoneNum: { //표시해야하고 수정가능?????????????
+      phoneNum: { //표시해야하고 접근불가
         value: '',
         type: 'textInput',
         rules: {},
         valid: true,
-      //중복된 번호에 대한 예외처리
-      //(api 추가버튼 구현할것인가 vs 회원가입 버튼에서 처리할 것인가)
-      },
-      idx: {//표시해야하고 수정불가
-        value: '',
-        type: 'boolean',
-        rules: {},
-        valid: false,
-      },
-      house: {//표시해야하고 수정가능
-        value: '',
-        type: 'textInput',  //우편번호 가공 구현 필요
-        rules: {},
-        valid: false,
-      },
-      school: {//표시해야하고 수정가능
-        value: '',
-        type: 'textInput',  //우편번호 가공 구현 필요
-        rules: {},
-        valid: false,
-      },
-      duration: {//표시해야하고 수정가능
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-      },
-      parentPhoneNum: {//표시해야하고 수정가능?????????????
-        value: '',
-        type: 'textInput',
-        rules: {},
-        valid: false,
-        //존재하는 번호인지 확인필요
-        //api 추가하는 버튼 구현할 것인가 vs 회원가입 버튼에서 처리할 것인가
       }
   });
 
@@ -111,6 +75,25 @@ return (
           <View style={styles.InputContainer}>
             <TextInput
               style={styles.body}
+              value={form.confirmPassword.value}
+              type={form.confirmPassword.type}
+              secureTextEntry={true}
+              autoCapitalize={'none'}
+              placeholder="비밀번호 확인"
+              placeholderTextColor={'#ddd'}
+              onChangeText={value=>updateInput('confirmPassword',value)}
+            />
+          </View>
+          {
+              form.confirmPassword.value === form.password.value ? (
+                <Text style={styles.notEq}></Text>
+              ):(
+                <Text style={styles.notEq}>비밀번호가 일치하지 않습니다.</Text>
+              )
+            }
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.body}
               value={form.userName.value}
               type={form.userName.type}
               autoCapitalize={'none'}
@@ -130,65 +113,6 @@ return (
               onChangeText={value=>updateInput('phoneNum',value)}
             />
           </View>
-          <View style={styles.RadioButtonContainer}>
-            <RadioButton.Group onValueChange={newValue=>updateInput('idx', newValue)} value={form.idx.value}>
-              <View style={styles.RadioButtonBody} >
-                <RadioButton value={true}/>
-                <Text>부모</Text>
-                <RadioButton value={false}/>
-                <Text>자녀</Text>
-              </View>
-            </RadioButton.Group>
-          </View>
-
-          {
-            form.idx.value === false ? (
-              <View style={styles.container}>
-                <View style={styles.InputContainer}>
-                  <TextInput
-                    style={styles.body}
-                    value={form.house.value}    //우편 번호 선택으로 수정 필요
-                    type={form.house.type}
-                    placeholder="집 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('house',value)}
-                  />
-                </View>
-                <View style={styles.InputContainer}>
-                  <TextInput
-                    style={styles.body}
-                    value={form.school.value}   //우편 번호 선택으로 수정 필요
-                    type={form.school.type}
-                    placeholder="학교 위치"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('school',value)}
-                  />
-                </View>
-                <View style={styles.InputContainer}>
-                  <TextInput
-                    style={styles.body}
-                    value={form.duration.value}
-                    type={form.duration.type}
-                    placeholder="등교 시간"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('duration',value)}
-                  />
-                </View>
-                <View style={styles.InputContainer}>
-                  <TextInput
-                    style={styles.body}
-                    value={form.parentPhoneNum.value}
-                    type={form.parentPhoneNum.type}
-                    placeholder="부모님 전화번호"
-                    placeholderTextColor={'#ddd'}
-                    onChangeText={value=>updateInput('parentPhoneNum',value)}
-                  />
-                </View>
-              </View>
-            ) : (
-              <></>
-            )
-          }
 
           <View>  
             <TouchableOpacity style={styles.button} onPress={() =>  ModifyAuthFormAPI(form)}>

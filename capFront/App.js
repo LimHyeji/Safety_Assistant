@@ -11,7 +11,8 @@ import ParentSetUpScreen from './screens/ParentSetUpScreen';
 import ParentAlertScreen from './screens/ParentAlertScreen';
 import ChildMainScreen from './screens/ChildMainScreen';
 import ChildSetUpScreen from './screens/ChildSetUpScreen';
-import ModifyScreen from './screens/ModifyScreen';  //위치 수정 필요
+import ChildModifyScreen from './screens/ChildModifyScreen';  //위치 수정 필요
+import ParentModifyScreen from './screens/ParentModifyScreen'; //위치 수정 필요
 import Test2 from './screens/Test2'; //임시
 
 const ParentAppStack = createStackNavigator(
@@ -19,6 +20,7 @@ const ParentAppStack = createStackNavigator(
     ParentMainpage:ParentMainScreen,
     ParentSetUppage:ParentSetUpScreen,
     ParentAlertpage:ParentAlertScreen,
+    ParentModifypage:ParentModifyScreen,
   },
   {
     initialRouteName:'ParentMainpage',
@@ -30,6 +32,7 @@ const ParentAppStack = createStackNavigator(
     {
       ChildMainpage:ChildMainScreen,
       ChildSetUppage:ChildSetUpScreen,
+      ChildModifypage:ChildModifyScreen,
     },
     {
       initialRouteName:'ChildMainpage',
@@ -51,7 +54,6 @@ const AuthStack = createStackNavigator(
   const switchScreen=createSwitchNavigator(
   {
     Splashpage:SplashScreen,
-    Modifypage:ModifyScreen,
     Test2page:Test2, //임시
     ParentApp:ParentAppStack,
     ChildApp:ChildAppStack,
