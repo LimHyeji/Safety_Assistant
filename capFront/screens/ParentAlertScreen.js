@@ -39,28 +39,64 @@ return(
     <View style={styles.body}>
 
         <Text style={styles.title}>알림</Text>
-        <TouchableOpacity style={styles.alarmButton} onPress={() =>  navigation.navigate('ParentMainpage')}>
-            <Icon name="bell" size={25} color={"#000"}/>
-          </TouchableOpacity>    
+        <TouchableOpacity style={styles.alarmButton}>
+          <Icon name="bell" size={25} color={"#000"}/>
+        </TouchableOpacity>
 
+        <View style={styles.container}>    
+        <View>
+            <Image style={styles.image}  source={require("../profile.jpg")}/>
+
+            <Text style={styles.textTitle}>하늘이가 집을 떠났습니다.</Text>
+            <Text style={styles.text1}>인천 미추홀구 인주대로153번길 5</Text>
+            <Text style={styles.text2}>2022.11.27 오전 8:10:32</Text>
+        </View>
+        </View>
+        <View style={styles.container}>    
+        <View>
+            <Image style={styles.image}  source={require("../profile.jpg")}/>
+
+            <Text style={styles.textTitle}>하늘이가 예상 도착 시간을 초과하였습니다.</Text>
+            <Text style={styles.text1}>인천 미추홀구 독정이로 11</Text>
+            <Text style={styles.text2}>2022.11.27 오전 8:30:32</Text>
+        </View>
+        </View>
+        <View style={styles.container}>    
+        <View>
+            <Image style={styles.image}  source={require("../profile.jpg")}/>
+
+            <Text style={styles.textTitle}>하늘이가 등교하였습니다.</Text>
+            <Text style={styles.text1}>인천 미추홀구 독정안길 21</Text>
+            <Text style={styles.text2}>2022.11.27 오전 8:32:08</Text>
+        </View>
+        </View>
         <View style={styles.container}>    
         <View>
         {//스크롤 가능하게 구현(async 배열)
         }
             <Image style={styles.image}  source={require("../profile.jpg")}/>
 
-            <Text style={styles.textTitle}>하늘이가 무단횡단을 하였습니다.</Text>
-            <Text style={styles.text1}>위치 정보</Text>
-            <Text style={styles.text2}>{now}</Text>
+            <Text style={styles.textTitle}>하늘이가 하교하였습니다.</Text>
+            <Text style={styles.text1}>인천 미추홀구 독정안길 21</Text>
+            <Text style={styles.text2}>2022.11.27 오후 4:10:24</Text>
         </View>
         </View>
         <View style={styles.container}>    
         <View>
             <Image style={styles.image}  source={require("../profile.jpg")}/>
 
-            <Text style={styles.textTitle}>하늘이가 무단횡단을 하였습니다.</Text>
-            <Text style={styles.text1}>위치 정보</Text>
-            <Text style={styles.text2}>{now}</Text>
+            <Text style={styles.textTitle}>하늘이가 사고 다발 지역에 접근하였습니다.</Text>
+            <Text style={styles.text1}>인천 미추홀구 독정이로16번길 7</Text>
+            <Text style={styles.text2}>2022.11.27 오후 4:25:15</Text>
+        </View>
+        </View>
+        <View style={styles.container}>    
+        <View>
+            <Image style={styles.image}  source={require("../profile.jpg")}/>
+
+            <Text style={styles.textTitle}>하늘이가 집에 도착하였습니다.</Text>
+            <Text style={styles.text1}>인천 미추홀구 인주대로153번길 5</Text>
+            <Text style={styles.text2}>2022.11.27 오후 4:37:46</Text>
         </View>
         </View>
         <View>
@@ -91,7 +127,7 @@ const styles = StyleSheet.create({
         marginLeft: 2,
         marginBottom: 5,
         borderBottomWidth: 1,
-        borderBottomColor: 'lightgrey',
+        borderColor: 'lightgrey',
         borderRadius: 10,
         borderWidth: 1,
       },
@@ -101,9 +137,10 @@ const styles = StyleSheet.create({
         color: "black",
         marginTop: 20,
         marginBottom: 20,
+        marginLeft: 10,
       },
       textTitle:{
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
         flex: 1,
@@ -154,8 +191,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderRadius: 35,
         position: "absolute",
-        top: 10,
+        top: 20,
         right: 10,
-        zIndex: 1,
       },
   })
