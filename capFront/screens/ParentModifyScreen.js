@@ -1,11 +1,28 @@
-import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /*
 비밀번호 미입력 시 api 안넘기는 것으로 예외처리
 */
 
-function ModifyAuthForm({navigation}) {    
+function ModifyAuthForm({navigation}) {
+  const [parseValue, setParseValue] = useState({});
+  const getForm = async() => {
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      setParseValue(JSON.parse(value));
+    } catch(error) {
+      console.error(error);
+      return(
+        <View>
+          <Text>
+            로딩 중에 문제가 발생했어요!
+          </Text>
+        </View>
+      );
+    }
+  }
 
   const [form, setForm] = useState({
     userId: { //표시해야하고 접근불가
@@ -40,7 +57,7 @@ function ModifyAuthForm({navigation}) {
       }
   });
 
-  updateInput = (name, value) => {
+const updateInput = (name, value) => {
     let formCopy = form;
     formCopy[name].value = value;
     setForm(form => {
@@ -48,44 +65,48 @@ function ModifyAuthForm({navigation}) {
     });
 };
 
+useEffect(() => {
+  getForm();
+}, [])
+
 return (
     <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.title}>회원정보수정</Text>
+      <View style={styles.container}>
+        <Image source={require("../logo.png")}  style={styles.image}/>
+        <Text style={styles.title}>회원정보수정</Text>
           <View style={styles.InputContainer}>
-            <TextInput
-                style={styles.body}
-                value={form.userId.value}
-                type={form.userId.type} // 미입력하면 못 넘어가게
+            <View style={styles.bodyContainer}><Text style={styles.body}>아이디</Text></View>
+            <View style={styles.infoContainer}><Text style={styles.info}>{parseValue.userId}</Text></View>
+          </View>
+          <View style={styles.InputContainer}>
+            <View style={styles.bodyContainer}><Text style={styles.body}>비밀번호</Text></View>
+            <View style={styles.infoContainer}>
+              <TextInput
+                style={styles.info}
+                value={form.password.value}
+                type={form.password.type}
+                secureTextEntry={true}
                 autoCapitalize={'none'}
-                placeholder="아이디"
+                placeholder="비밀번호"
                 placeholderTextColor={'#ddd'}
-                onChangeText={value=>updateInput('userId',value)}
+                onChangeText={value=>updateInput('password',value)}
               />
+            </View>
           </View>
           <View style={styles.InputContainer}>
-            <TextInput
-              style={styles.body}
-              value={form.password.value}
-              type={form.password.type}
-              secureTextEntry={true}
-              autoCapitalize={'none'}
-              placeholder="비밀번호"
-              placeholderTextColor={'#ddd'}
-              onChangeText={value=>updateInput('password',value)}
-            />
-          </View>
-          <View style={styles.InputContainer}>
-            <TextInput
-              style={styles.body}
-              value={form.confirmPassword.value}
-              type={form.confirmPassword.type}
-              secureTextEntry={true}
-              autoCapitalize={'none'}
-              placeholder="비밀번호 확인"
-              placeholderTextColor={'#ddd'}
-              onChangeText={value=>updateInput('confirmPassword',value)}
-            />
+            <View style={styles.bodyContainer}><Text style={styles.body}>비밀번호 확인</Text></View>
+            <View style={styles.infoContainer}>
+              <TextInput
+                style={styles.info}
+                value={form.confirmPassword.value}
+                type={form.confirmPassword.type}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                placeholder="비밀번호 확인"
+                placeholderTextColor={'#ddd'}
+                onChangeText={value=>updateInput('confirmPassword',value)}
+              />
+            </View>
           </View>
           {
               form.confirmPassword.value === form.password.value ? (
@@ -95,46 +116,30 @@ return (
               )
             }
           <View style={styles.InputContainer}>
-            <TextInput
-              style={styles.body}
-              value={form.userName.value}
-              type={form.userName.type}
-              autoCapitalize={'none'}
-              placeholder="이름"
-              placeholderTextColor={'#ddd'}
-              onChangeText={value=>updateInput('userName',value)}
-            />  
+            <View style={styles.bodyContainer}><Text style={styles.body}>이름</Text></View>
+            <View style={styles.infoContainer}><Text style={styles.info}>{parseValue.userName}</Text></View>
           </View>  
           <View style={styles.InputContainer}>
-            <TextInput
-              style={styles.body}
-              value={form.phoneNum.value}
-              type={form.phoneNum.type}
-              keyboardType={'phone-pad'}
-              placeholder="전화번호"
-              placeholderTextColor={'#ddd'}
-              onChangeText={value=>updateInput('phoneNum',value)}
-            />
+            <View style={styles.bodyContainer}><Text style={styles.body}>전화번호</Text></View>
+            <View style={styles.infoContainer}><Text style={styles.info}>{parseValue.phoneNum}</Text></View>
           </View>
 
-          <View>  
-            <TouchableOpacity style={styles.button} onPress={() =>  ModifyAuthFormAPI(form)}>
-              <Text>회원정보수정</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.button} onPress={() =>  ModifyAuthFormAPI(form, parseValue, {navigation})}>
+            <Text>회원정보수정</Text>
+          </TouchableOpacity>
         </View>
     </ScrollView>
     );
 };
 
-function ModifyAuthFormAPI(form){
+function ModifyAuthFormAPI(form, parseValue, {navigation}){
   fetch('http://34.64.74.7:8081/user/login/update', {
   method: 'POST',
   body: JSON.stringify({
-    userId:"parent",  //async에서 받은 값
-    userName:"parent",  //async에서 받은 값
-    password:form.password.value,
-    phoneNum:"1111",  //async에서 받은 값
+    userId: parseValue.userId,  
+    userName: parseValue.userName,  
+    password: form.password.value,
+    phoneNum: "1111",//parseValue.phoneNum,  
     parentPhoneNum:null,
     idx:true,
     houselat:null,
@@ -145,9 +150,10 @@ function ModifyAuthFormAPI(form){
   }  ),
   headers : {'Content-Type' : 'application/json; charset=utf-8'}
 })
-  .then((response) => response.json())
   .then((responseJson) => {
     console.log(responseJson);
+    navigation.goBack(null); // 일단 비밀번호를 수정하면 메인으로 돌아가게 해둠
+    //비밀번호 수정하면 로그인 풀리게 하는 것도 괜찮을듯?
   })
   .catch((error) => {
     console.error(error);
@@ -167,11 +173,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  leftTitle: {
-    alignSelf: 'stretch',
-    textAlign: 'left',
-    marginLeft: 20,
-  },
   content: {
     paddingLeft: 50,
     paddingRight: 50,
@@ -180,49 +181,62 @@ const styles = StyleSheet.create({
     color: "#696969",
   },
   button: {
-    width: 60,
-    height: 60,
+    width: "40%",
+    marginTop: 30,
+    marginBottom: 30,
+    height: 50,
     backgroundColor: "#CAEF53",
     justifyContent: "center",
-    alignItems: "center"
-  },
-  loginContainer: {
-    width: "70%",
-    backgroundColor: "#ff5a66",
-    borderRadius: 25,
-    padding: 10,
-    marginTop: 30,
-  },
-  loginText: {
-    color: "white",
-  },
-  placeholder: {
-    color: 'red',
+    alignItems: "center",
+    borderRadius: 10,
   },
   InputContainer: {
     width: "80%",
     marginTop: 30,
-    backgroundColor: "#EFEFEF",
+    borderColor: "#CAEF53",
+    borderWidth: 1,
     borderRadius: 10,
-  },
-  RadioButtonContainer: {
-    width: "80%",
-    marginTop: 30,
-    alignItems: "center",
-  },
-  body: {
-    height: 42,
-    paddingLeft: 20,
-    paddingRight: 20,
-    color: "#696969",
-  },
-  RadioButtonBody: {
-    height: 42,
-    paddingLeft: 20,
-    paddingRight: 20,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-around"
   },
+  bodyContainer: {
+    width: "40%",
+  },  
+  infoContainer: {
+    width: "60%",
+  }, 
+  body: {
+    fontSize: 16,
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "black",
+    textAlignVertical: 'center',
+    textAlign: 'right',
+    borderRightWidth: 1,
+    borderRightColor: "#CAEF53"
+  },
+  info: {
+    fontSize: 16,
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "black",
+    textAlignVertical: 'center',
+    textAlign: 'center',
+  },
+  image: {
+    width: 175,
+    height: 200,
+    marginTop: 80,
+  },
+  notEq: {
+    width: "70%",
+    height: 42,
+    textAlignVertical: 'center',
+    textAlign: "center",
+    color: "red",
+  }, 
 });
 
 

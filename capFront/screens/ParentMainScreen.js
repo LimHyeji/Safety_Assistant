@@ -169,6 +169,11 @@ function ParentMain({navigation}) {
             <Icon name="bell" size={25} color={"#000"}/>
           </TouchableOpacity>
         </View>
+        <View>
+          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('ParentModifypage')}>
+            <Icon name="bars" size={25} color={"#000"}/>
+          </TouchableOpacity>
+        </View>
         {show === false ? (  //부모 위치 띄우기
         <MapView
           style={{ flex: 1, width:'100%', height:'100%' }}
@@ -261,4 +266,15 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 1,
   },
+  modifyButton: {
+    alignItems: "center",
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 35,
+    position: "absolute",
+    top: 10,
+    left: 10,
+    zIndex: 1,
+  }
 })
