@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, } from "react-native";
+import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
@@ -62,7 +62,7 @@ function ChildMain({navigation}) {
   }
 
   const trackPosition = () => {
-    requestBackPermission().then(result => {
+    requestBackPermission().then(
       requestPermission().then(result => {
         console.log({result});
         if(result === "granted") {
@@ -91,8 +91,8 @@ function ChildMain({navigation}) {
             }
           }
         }
-      });
-    })
+      })
+    );
   }
 
   const apiTest = async() => {
@@ -403,6 +403,11 @@ function ChildMain({navigation}) {
 
   return (
       <View style={{ flex: 1 }}>
+        <View>
+          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('ChildModifypage')}>
+            <Icon name="bars" size={25} color={"#000"}/>
+          </TouchableOpacity>
+        </View>
         <MapView
           style={{ flex: 1, width:'100%', height:'100%' }}
           initialRegion={{
@@ -537,3 +542,17 @@ function ChildMainAPI(routetest){
 }
 */
 export default ChildMain;
+
+const styles = StyleSheet.create({
+  modifyButton: {
+    alignItems: "center",
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 35,
+    position: "absolute",
+    top: 10,
+    left: 10,
+    zIndex: 1,
+  }
+})
