@@ -11,6 +11,10 @@
     <!--백그라운드 위치 정보 수집-->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
+    <queries>
+      <package android:name="com.google.android.apps.fitness" />
+    </queries>
+
 
     <application
       android:name=".MainApplication"
