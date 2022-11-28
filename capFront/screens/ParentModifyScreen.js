@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /*
@@ -133,31 +133,40 @@ return (
 };
 
 function ModifyAuthFormAPI(form, parseValue, {navigation}){
-  fetch('http://34.64.74.7:8081/user/login/update', {
-  method: 'POST',
-  body: JSON.stringify({
-    userId: parseValue.userId,  
-    userName: parseValue.userName,  
-    password: form.password.value,
-    phoneNum: "1111",//parseValue.phoneNum,  
-    parentPhoneNum:null,
-    idx:true,
-    houselat:null,
-    houselng:null,
-    schoollat:null,
-    schoollng:null,
-    duration:null
-  }  ),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
-})
-  .then((responseJson) => {
-    console.log(responseJson);
-    navigation.goBack(null); // 일단 비밀번호를 수정하면 메인으로 돌아가게 해둠
-    //비밀번호 수정하면 로그인 풀리게 하는 것도 괜찮을듯?
+  if(form.password.value === '') {
+    Alert.alert("수정 실패", "수정할 비밀번호를 입력하세요." , [
+      {
+        text: "확인",
+      }
+    ])
+  }
+  else {
+    fetch('http://34.64.74.7:8081/user/login/update', {
+    method: 'POST',
+    body: JSON.stringify({
+      userId: parseValue.userId,  
+      userName: parseValue.userName,  
+      password: form.password.value,
+      phoneNum: "1111",//parseValue.phoneNum,  
+      parentPhoneNum:null,
+      idx:true,
+      houselat:null,
+      houselng:null,
+      schoollat:null,
+      schoollng:null,
+      duration:null
+    }  ),
+    headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
-  .catch((error) => {
-    console.error(error);
-  });
+    .then((responseJson) => {
+      console.log(responseJson);
+      navigation.goBack(null); // 일단 비밀번호를 수정하면 메인으로 돌아가게 해둠
+      //비밀번호 수정하면 로그인 풀리게 하는 것도 괜찮을듯?
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 }
 
 const styles = StyleSheet.create({
