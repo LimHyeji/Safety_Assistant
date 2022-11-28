@@ -102,6 +102,7 @@ return (
             idx:responseJson.idx,
             userId:responseJson.userId,
             userName:responseJson.userName,
+            phoneNum: responseJson.phoneNum,
             token:responseJson.token,
 
             childId:responseJson.childrenInfo.userId,
@@ -120,6 +121,7 @@ return (
               idx:responseJson.idx,
               userId:responseJson.userId,
               userName:responseJson.userName,
+              phoneNum: responseJson.phoneNum,
               token:responseJson.token,
 
               houseLat: responseJson.myLocation.houselat,

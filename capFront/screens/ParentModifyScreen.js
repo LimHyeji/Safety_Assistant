@@ -147,7 +147,7 @@ function ModifyAuthFormAPI(form, parseValue, {navigation}){
       userId: parseValue.userId,  
       userName: parseValue.userName,  
       password: form.password.value,
-      phoneNum: "1111",//parseValue.phoneNum,  
+      phoneNum: parseValue.phoneNum,  
       parentPhoneNum:null,
       idx:true,
       houselat:null,
