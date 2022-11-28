@@ -209,13 +209,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-around"
   },
   bodyContainer: {
-    width: "40%",
+    width: "30%",
   },  
   infoContainer: {
-    width: "60%",
+    width: "70%",
   }, 
   body: {
-    fontSize: 16,
+    fontSize: 14,
     height: 42,
     paddingLeft: 20,
     paddingRight: 20,
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     borderRightColor: "#CAEF53"
   },
   info: {
-    fontSize: 16,
+    fontSize: 14,
     height: 42,
     paddingLeft: 20,
     paddingRight: 20,
