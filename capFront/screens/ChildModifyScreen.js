@@ -334,7 +334,7 @@ return (
           userName: parseValue.userName, //async
           password: form.password.value, 
           phoneNum: parseValue.phoneNum, //async
-          parentPhoneNum: "1111",//async
+          parentPhoneNum: parseValue.parentPhoneNum,//async
           idx:false,
           houselat: form.houselat.value,
           houselng: form.houselng.value,

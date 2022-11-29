@@ -122,6 +122,7 @@ return (
               userId:responseJson.userId,
               userName:responseJson.userName,
               phoneNum: responseJson.phoneNum,
+              parentPhoneNum: responseJson.parentPhoneNum,
               token:responseJson.token,
 
               houseLat: responseJson.myLocation.houselat,
