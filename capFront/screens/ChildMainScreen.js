@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -95,35 +98,6 @@ function ChildMain({navigation}) {
     );
   }
 
-  const apiTest = async() => {
-    try{
-      const value = await AsyncStorage.getItem('userData');
-      const parseValue = JSON.parse(value);
-
-      fetch("http://34.64.74.7:8081/user/login/alarm", {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: parseValue.userId,
-          idx: parseValue.idx,
-          alarm: "arrival",
-          where: "House",
-          lat: latitude,
-          lng: longitude,
-        }),
-        headers : {'Content-Type' : 'application/json; charset=utf-8'}
-      })
-        .then(response => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } catch(error) {
-      console.log(error);
-    }
-  }
-
 
   function removeFence() {
     // Remove the events
@@ -151,7 +125,7 @@ function ChildMain({navigation}) {
           body: JSON.stringify({
             userId: parseValue.userId,
             idx: parseValue.idx,
-            alarm: 2,
+            alarm: "arrival",
             where: "House",
             lat: latitude,
             lng: longitude,
@@ -174,7 +148,7 @@ function ChildMain({navigation}) {
           body: JSON.stringify({
             userId: parseValue.userId,
             idx: parseValue.idx,
-            alarm: 2,
+            alarm: "arrival",
             where: "School",
             lat: latitude,
             lng: longitude,
@@ -203,7 +177,7 @@ function ChildMain({navigation}) {
           body: JSON.stringify({
             userId: parseValue.userId,
             idx: parseValue.idx,
-            alarm: 4,
+            alarm: "dangerArea",
             where: id.toString(),
             lat: latitude,
             lng: longitude,
@@ -238,7 +212,7 @@ function ChildMain({navigation}) {
           body: JSON.stringify({
             userId: parseValue.userId,
             idx: parseValue.idx,
-            alarm: 1,
+            alarm: "departure",
             where: "House",
             lat: latitude,
             lng: longitude,
@@ -261,7 +235,7 @@ function ChildMain({navigation}) {
           body: JSON.stringify({
             userId: parseValue.userId,
             idx: parseValue.idx,
-            alarm: 1,
+            alarm: "departure",
             where: "School",
             lat: latitude,
             lng: longitude,
@@ -278,7 +252,7 @@ function ChildMain({navigation}) {
       }
 
       // 횡단 보도일 경우,
-      else if (Number(id) >= 0 && Number(id) < 51) {
+      else if (Number(id) >= 0 && Number(id) < 55) {
         console.log(`Exit crossWalk ${id}!!`);
       }
 
@@ -375,12 +349,55 @@ function ChildMain({navigation}) {
       })
     )
   }
+  // 테스트용 횡단보도 지오펜스 설정(인후 횡단보도 4개)
+  const testCrossWalkGeofence = () => {
+    requestBackPermission().then(
+      requestPermission().then(result => {
+        console.log(result);
+
+        Boundary.add({
+          lat: 37.45087401903797,
+          lng: 126.6579022452648,
+          radius: 50, // in meters
+          id: "51",
+        })
+          .then(() => console.log("crossWalk for test success!"))
+          .catch(e => console.error("error :(", e));
+
+        Boundary.add({
+          lat: 37.4512460468357,
+          lng: 126.65647372842074,
+          radius: 50, // in meters
+          id: "52",
+        })
+          .then(() => console.log("crossWalk for test success!"))
+          .catch(e => console.error("error :(", e));
+
+        Boundary.add({
+          lat: 37.45173864401376,
+          lng: 126.65468581676325,
+          radius: 50, // in meters
+          id: "53",
+        })
+          .then(() => console.log("crossWalk for test success!"))
+          .catch(e => console.error("error :(", e));
+
+        Boundary.add({
+          lat: 37.45216910632688,
+          lng: 126.65322591821425,
+          radius: 50, // in meters
+          id: "54",
+        })
+          .then(() => console.log("crossWalk for test success!"))
+          .catch(e => console.error("error :(", e));
+      })
+    )
+  }
 
   useEffect(() => {
     componentDidMount();
     trackPosition();
-    apiTest();
-
+    
     //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
     //setInterval(()=>ChildMainAPI(routetest),5000);
@@ -388,8 +405,10 @@ function ChildMain({navigation}) {
 
   useEffect(() => {
     removeFence();
-    //homeSchoolGeofence();
-    //dangerAreaGeofence();
+
+    homeSchoolGeofence();
+    dangerAreaGeofence();
+    testCrossWalkGeofence();
     //crossWalkGeofence();
   }, [fillAllData])
   
