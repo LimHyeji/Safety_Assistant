@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <!--백그라운드 위치 정보 수집-->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!--다른 앱 위에 그리기-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <queries>
       <package android:name="com.google.android.apps.fitness" />
