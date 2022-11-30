@@ -76,7 +76,7 @@ return (
 
   function LoginAPI(form, {navigation}){
     
-    fetch('http://34.64.74.7:8081/user/login', { 
+    fetch('http://34.64.74.7:8081/user/lgin', { 
     method: 'POST',
     body: JSON.stringify({
       userId: form.userId.value,
