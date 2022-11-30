@@ -38,20 +38,24 @@ return (
               onChangeText={value=>updateInput('password',value)}
             />
           </View>
-
+{
+/*
             <TouchableOpacity style={styles.button} onPress={() =>  CheckPasswordAPI(form, {navigation})}>
               <Text>확인</Text>
             </TouchableOpacity>
-
+            */
+}
+        <TouchableOpacity style={styles.button}>
+              <Text>확인</Text>
+            </TouchableOpacity>
         </View>
     );
 };
-
+/*
 function CheckPasswordAPI(form, {navigation}){
-  fetch('http://34.64.74.7:8081/user/login/chk', {
+  fetch('http://34.64.74.7:8081...', {
     method: 'POST',
     body: JSON.stringify({
-      userId:"parent",
       password:form.password.value
     }  ),
     headers : {'Content-Type' : 'application/json; charset=utf-8'}
@@ -59,7 +63,6 @@ function CheckPasswordAPI(form, {navigation}){
     .then((response) => response.json())
     .then((responseJson) => {
       console.log(responseJson);
-      /*
       if(responseJson.msg === "Ok"){    //임시 반환 메시지
         //idx에 따라 따른 페이지 이동
       }
@@ -70,7 +73,6 @@ function CheckPasswordAPI(form, {navigation}){
           }
         ])
       }
-      */
     })
     .catch((error) => {
       console.error(error);
@@ -83,7 +85,7 @@ function CheckPasswordAPI(form, {navigation}){
       );
     });
 }
-
+*/
 const styles = StyleSheet.create({
   container: {
     flex: 1,
