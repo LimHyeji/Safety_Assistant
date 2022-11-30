@@ -74,7 +74,10 @@ function ParentMain({navigation}) {
           "userId": "child",  //테스트를 위한 임시값
           "idx": true,
         }),
-        headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        headers : {
+          'Content-Type' : 'application/json; charset=utf-8',
+          Authorization: `Bearer${parseValue.token}`,
+        }
       })
       .then((response) => response.json())
       .then((responseJson) => {
@@ -106,7 +109,10 @@ function ParentMain({navigation}) {
           "userId":"child",
           "idx":true,
         }),
-        headers : {'Content-Type' : 'application/json; charset=utf-8'}
+        headers : {
+          'Content-Type' : 'application/json; charset=utf-8',
+          Authorization: `Bearer${parseValue.token}`,
+        }
       })
       .then((response) => response.json())
       .then(async(responseJson) => {

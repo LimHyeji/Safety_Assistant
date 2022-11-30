@@ -140,7 +140,10 @@ function ChildMain({navigation}) {
             lat: latitude,
             lng: longitude,
           }),
-          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
         })
           .then(response => response.json())
           .then((responseJson) => {
@@ -163,7 +166,10 @@ function ChildMain({navigation}) {
             lat: latitude,
             lng: longitude,
           }),
-          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
         })
           .then(response => response.json())
           .then((responseJson) => {
@@ -192,7 +198,10 @@ function ChildMain({navigation}) {
             lat: latitude,
             lng: longitude,
           }),
-          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
         })
           .then(response => response.json())
           .then((responseJson) => {
@@ -227,7 +236,10 @@ function ChildMain({navigation}) {
             lat: latitude,
             lng: longitude,
           }),
-          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
         })
           .then(response => response.json())
           .then((responseJson) => {
@@ -250,7 +262,10 @@ function ChildMain({navigation}) {
             lat: latitude,
             lng: longitude,
           }),
-          headers : {'Content-Type' : 'application/json; charset=utf-8'}
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
         })
           .then(response => response.json())
           .then((responseJson) => {
@@ -508,7 +523,9 @@ function ChildMain({navigation}) {
   );
 }
 
-function ChildMainAPI(latitude,longitude){
+async function ChildMainAPI(latitude,longitude){
+  const value = await AsyncStorage.getItem('userData');
+  const parseValue = JSON.parse(value);
   fetch('http://34.64.74.7:8081/user/login/child', {
   method: 'POST',
   body: JSON.stringify({
@@ -517,7 +534,10 @@ function ChildMainAPI(latitude,longitude){
     "latitude":latitude,
     "longitude":longitude
   }  ),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
+  headers : {
+    'Content-Type' : 'application/json; charset=utf-8',
+    Authorization: `Bearer${parseValue.token}`,
+  }
 })
   .then((response) => response.json())
   .then((responseJson) => {
