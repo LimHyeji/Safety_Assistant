@@ -404,7 +404,7 @@ function ChildMain({navigation}) {
   return (
       <View style={{ flex: 1 }}>
         <View>
-          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('ChildModifypage')}>
+          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('CheckPasswordpage')}>
             <Icon name="bars" size={25} color={"#000"}/>
           </TouchableOpacity>
         </View>

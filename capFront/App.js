@@ -11,15 +11,18 @@ import ParentSetUpScreen from './screens/ParentSetUpScreen';
 import ParentAlertScreen from './screens/ParentAlertScreen';
 import ChildMainScreen from './screens/ChildMainScreen';
 import ChildSetUpScreen from './screens/ChildSetUpScreen';
-import ChildModifyScreen from './screens/ChildModifyScreen';  //위치 수정 필요
-import ParentModifyScreen from './screens/ParentModifyScreen'; //위치 수정 필요
+import CheckPasswordScreen from './screens/CheckPasswordScreen';
+import ChildModifyScreen from './screens/ChildModifyScreen'; 
+import ParentModifyScreen from './screens/ParentModifyScreen'; 
 import Test2 from './screens/Test2'; //임시
+
 
 const ParentAppStack = createStackNavigator(
   {
     ParentMainpage:ParentMainScreen,
     ParentSetUppage:ParentSetUpScreen,
     ParentAlertpage:ParentAlertScreen,
+    CheckPasswordpage:CheckPasswordScreen,
     ParentModifypage:ParentModifyScreen,
   },
   {
@@ -32,6 +35,7 @@ const ParentAppStack = createStackNavigator(
     {
       ChildMainpage:ChildMainScreen,
       ChildSetUppage:ChildSetUpScreen,
+      CheckPasswordpage:CheckPasswordScreen,
       ChildModifypage:ChildModifyScreen,
     },
     {

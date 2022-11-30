@@ -170,7 +170,7 @@ function ParentMain({navigation}) {
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('ParentModifypage')}>
+          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('CheckPasswordpage')}>
             <Icon name="bars" size={25} color={"#000"}/>
           </TouchableOpacity>
         </View>
