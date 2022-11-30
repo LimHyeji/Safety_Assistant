@@ -156,7 +156,10 @@ function ModifyAuthFormAPI(form, parseValue, {navigation}){
       schoollng:null,
       duration:null
     }  ),
-    headers : {'Content-Type' : 'application/json; charset=utf-8'}
+    headers : {
+      'Content-Type' : 'application/json; charset=utf-8',
+      Authorization: `Bearer${parseValue.token}`,
+    }
   })
     .then((responseJson) => {
       console.log(responseJson);

@@ -303,72 +303,83 @@ return (
     );
 
     async function ModifyAuthFormAPI(form, parseValue, {navigation}){
-      if(form.houselat.value === '') {
-        updateInput('houselat', parseValue.houseLat);
-      }
-      if(form.houselng.value === '') {
-        updateInput('houselng', parseValue.houseLng);
-      }
-      if(form.schoollat.value === '') {
-        updateInput('schoollat', parseValue.schoolLat);
-      }
-      if(form.schoollng.value === '') {
-        updateInput('schoollng', parseValue.schoolLng);
-      }
-      if(form.duration.value === '') {
-        updateInput('duration', parseValue.duration);
-      }
+      try {
+        const pw = await AsyncStorage.getItem('pw');
+        const parsePw = JSON.parse(pw);
 
-      if(form.password.value === '') {
-        Alert.alert("수정 실패", "수정할 비밀번호를 입력해주세요.", [
-          {
-            text: "확인"
-          }
-        ])
-      }
-      else {
+        if(form.houselat.value === '') {
+          updateInput('houselat', parseValue.houseLat);
+        }
+        if(form.houselng.value === '') {
+          updateInput('houselng', parseValue.houseLng);
+        }
+        if(form.schoollat.value === '') {
+          updateInput('schoollat', parseValue.schoolLat);
+        }
+        if(form.schoollng.value === '') {
+          updateInput('schoollng', parseValue.schoolLng);
+        }
+        if(form.duration.value === '') {
+          updateInput('duration', parseValue.duration);
+        }
+        if(form.password.value === '') {
+          updateInput('password', parsePw.password);
+          updateInput('confirmPassword', parsePw.password);
+        }
         fetch('http://34.64.74.7:8081/user/login/update', {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: parseValue.userId, //async
-          userName: parseValue.userName, //async
-          password: form.password.value, 
-          phoneNum: parseValue.phoneNum, //async
-          parentPhoneNum: parseValue.parentPhoneNum,//async
-          idx:false,
-          houselat: form.houselat.value,
-          houselng: form.houselng.value,
-          schoollat: form.schoollat.value,
-          schoollng: form.schoollng.value,
-          duration: form.duration.value
-        }  ),
-        headers : {'Content-Type' : 'application/json; charset=utf-8'}
-      })
-        .then((responseJson) => {
-          console.log(responseJson);
-          navigation.goBack(null);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-
-        await AsyncStorage.setItem(
-          'userData',
-          JSON.stringify({
+          method: 'POST',
+          body: JSON.stringify({
+            userId: parseValue.userId, //async
+            userName: parseValue.userName, //async
+            password: form.password.value, 
+            phoneNum: parseValue.phoneNum, //async
+            parentPhoneNum: parseValue.parentPhoneNum,//async
             idx:false,
-            userId:parseValue.userId,
-            userName:parseValue.userName,
-            phoneNum: parseValue.phoneNum,
-            parentPhoneNum: parseValue.parentPhoneNum,
-            token:parseValue.token,
-
-            houseLat: form.houselat.value,
-            houseLng: form.houselng.value,
-            schoolLat: form.schoollat.value,
-            schoolLng: form.schoollng.value,
-            duration: form.duration.value,
+            houselat: form.houselat.value,
+            houselng: form.houselng.value,
+            schoollat: form.schoollat.value,
+            schoollng: form.schoollng.value,
+            duration: form.duration.value
+          }  ),
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
+        })
+          .then((responseJson) => {
+            console.log(responseJson);
+            navigation.goBack(null);
           })
-        )
+          .catch((error) => {
+            console.error(error);
+          });
+  
+          await AsyncStorage.setItem(
+            'userData',
+            JSON.stringify({
+              idx:false,
+              userId:parseValue.userId,
+              userName:parseValue.userName,
+              phoneNum: parseValue.phoneNum,
+              parentPhoneNum: parseValue.parentPhoneNum,
+              token:parseValue.token,
+  
+              houseLat: form.houselat.value,
+              houseLng: form.houselng.value,
+              schoolLat: form.schoollat.value,
+              schoolLng: form.schoollng.value,
+              duration: form.duration.value,
+            })
+          )
+      } catch(error) {
+        console.error(error);
+        return(
+          <View>
+            <Text>
+              로딩 중에 문제가 발생했어요!
+            </Text>
+          </View>
+        );
       }
     }
 };

@@ -45,26 +45,42 @@ return (
             </TouchableOpacity>
             */
 }
-        <TouchableOpacity style={styles.button}>
-              <Text>확인</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() =>  CheckPasswordAPI(form, {navigation})}>
+            <Text>확인</Text>
+          </TouchableOpacity>
         </View>
     );
 };
-/*
-function CheckPasswordAPI(form, {navigation}){
-  fetch('http://34.64.74.7:8081...', {
+
+async function CheckPasswordAPI(form, {navigation}){
+  const value = await AsyncStorage.getItem('userData');
+  const parseValue = JSON.parse(value);
+  fetch('http://34.64.74.7:8081/user/login/chk', {
     method: 'POST',
     body: JSON.stringify({
+      userId: parseValue.userId,
       password:form.password.value
     }  ),
-    headers : {'Content-Type' : 'application/json; charset=utf-8'}
+    headers : {
+      'Content-Type' : 'application/json; charset=utf-8',
+      Authorization: `Bearer${parseValue.token}`,
+    }
   })
     .then((response) => response.json())
-    .then((responseJson) => {
+    .then(async(responseJson) => {
       console.log(responseJson);
-      if(responseJson.msg === "Ok"){    //임시 반환 메시지
-        //idx에 따라 따른 페이지 이동
+      if(responseJson === true){
+        await AsyncStorage.setItem('pw',
+          JSON.stringify({
+            password: form.password.value,
+          })
+        )
+        if(parseValue.idx === true) {
+          navigation.navigate('ParentModifypage');
+        }
+        else if(parseValue.idx === false) {
+          navigation.navigate('ChildModifypage');
+        }
       }
       else{
         Alert.alert("비밀번호 확인","비밀번호가 틀렸습니다. 다시 입력해주세요.",[
@@ -85,7 +101,7 @@ function CheckPasswordAPI(form, {navigation}){
       );
     });
 }
-*/
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
