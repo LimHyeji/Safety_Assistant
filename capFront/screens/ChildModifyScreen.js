@@ -302,7 +302,7 @@ return (
     </ScrollView>
     );
 
-    function ModifyAuthFormAPI(form, parseValue, {navigation}){
+    async function ModifyAuthFormAPI(form, parseValue, {navigation}){
       if(form.houselat.value === '') {
         updateInput('houselat', parseValue.houseLat);
       }
@@ -351,6 +351,24 @@ return (
         .catch((error) => {
           console.error(error);
         });
+
+        await AsyncStorage.setItem(
+          'userData',
+          JSON.stringify({
+            idx:false,
+            userId:parseValue.userId,
+            userName:parseValue.userName,
+            phoneNum: parseValue.phoneNum,
+            parentPhoneNum: parseValue.parentPhoneNum,
+            token:parseValue.token,
+
+            houseLat: form.houselat.value,
+            houseLng: form.houselng.value,
+            schoolLat: form.schoollat.value,
+            schoolLng: form.schoollng.value,
+            duration: form.duration.value,
+          })
+        )
       }
     }
 };
