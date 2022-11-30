@@ -30,6 +30,16 @@ async function requestBackPermission() {
   }
 }
 
+async function requestSAWPermission() {
+  try{
+    return await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.SYSTEM_ALERT_WINDOW,
+    );
+  } catch(e) {
+    console.log(e);
+  }
+}
+
 
 function ChildMain({navigation}) {
 
@@ -75,7 +85,7 @@ function ChildMain({navigation}) {
               setLatitude(latitude);
               setLongitude(longitude);
               setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
-              //ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
+              ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
             },
             error => {
               console.log(error);
@@ -134,7 +144,7 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then((responseJson) => {
-            console.log(responseJson, "OK");
+            console.log(responseJson);
           })
           .catch((error) => {
             console.error(error);
@@ -157,7 +167,7 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then((responseJson) => {
-            console.log(responseJson, "OK");
+            console.log(responseJson);
           })
           .catch((error) => {
             console.error(error);
@@ -186,7 +196,7 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then((responseJson) => {
-            console.log(responseJson, "OK");
+            console.log(responseJson);
           })
           .catch((error) => {
             console.error(error);
@@ -221,7 +231,7 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then((responseJson) => {
-            console.log(responseJson, "OK");
+            console.log(responseJson);
           })
           .catch((error) => {
             console.error(error);
@@ -244,7 +254,7 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then((responseJson) => {
-            console.log(responseJson, "OK");
+            console.log(responseJson);
           })
           .catch((error) => {
             console.error(error);
