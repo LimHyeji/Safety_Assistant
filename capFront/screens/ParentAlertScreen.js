@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Image, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 /*
 알림정보는 받아서 async에 저장해놓고 사용
@@ -36,12 +37,16 @@ function ParentAlert({navigation}){
     let date = new Date();
     let now = date.toLocaleString();
 
-    const [alarm, setAlarm] = useState({});
+    const [alarmList, setAlarmList] = useState({});
 
-    const loadAlarm = async () => {
-      const value = await AsyncStorage.getItem('alarm');
-      setAlarm(JSON.parse(value));
-      console.log(value);
+    const loadAlarmList = async () => {
+      try {
+        const value = await AsyncStorage.getItem('alarm');
+        setAlarmList(JSON.parse(value));
+        console.log(value);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
 return(

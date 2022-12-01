@@ -4,6 +4,8 @@ import MapView, {Marker, Polyline} from "react-native-maps";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from "react-native-geolocation-service";
+import Postcode from '@actbase/react-daum-postcode';
+import Geocode from "react-geocode";
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -15,7 +17,6 @@ async function requestPermission() {
     console.log(error);
   }
 }
-
 
 function ParentMain({navigation}) {
 
@@ -31,8 +32,27 @@ function ParentMain({navigation}) {
   const [where,setWhere]=useState(null);
   const [alarmLat,setAlarmLat]=useState(null);  
   const [alarmLng,setAlarmLng]=useState(null);
+  const [alarmAddress, setAlarmAddress] = useState('');
+  const [alarmList, setAlarmList] = useState({});
   let date = new Date();
   let now = date.toLocaleString();
+
+  const findAddr = (lat, lng) => {
+    // 역지오코딩
+    Geocode.setApiKey("AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY");
+    Geocode.setLanguage("ko");
+    Geocode.setRegion("es");
+    Geocode.setLocationType("ROOFTOP");
+    Geocode.fromLatLng(lat, lng).then(
+      (response) => {
+        const address = response.results[0].formatted_address;
+        setAlarmAddress(address.substr(5, address.length));
+      },
+      (error) => {
+        console.error(error);
+      }
+    )
+  }
 
   const trackPosition = () => {  //부모의 위치추적
     requestPermission();
@@ -65,12 +85,12 @@ function ParentMain({navigation}) {
 
   const showChildLocation = async() => {  //자녀의 위치추적
     try{
-      //const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
-      //const parsevalue = JSON.parse(value); //테스트를 위한 주석처리
+      const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
+      const parseValue = JSON.parse(value); //테스트를 위한 주석처리
       fetch('http://34.64.74.7:8081/user/login/parent', {
         method: "POST",
         body: JSON.stringify({
-          //userId: parsevalue.childrenInfo[0].userId, //테스트를 위한 주석처리
+          //userId: parseValue.childrenInfo[0].userId, //테스트를 위한 주석처리
           "userId": "child",  //테스트를 위한 임시값
           "idx": true,
         }),
@@ -108,12 +128,12 @@ function ParentMain({navigation}) {
 
   const parentAlert=async()=>{
     try{
-      //const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
-      //const parsevalue = JSON.parse(value); //테스트를 위한 주석처리
+      const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
+      const parseValue = JSON.parse(value); //테스트를 위한 주석처리
       fetch('http://34.64.74.7:8081/user/login/alarmRec',{
         method:"POST",
         body: JSON.stringify({
-         //userId: parsevalue.childrenInfo[0].userId, //테스트를 위한 주석처리
+         //userId: parseValue.childrenInfo[0].userId, //테스트를 위한 주석처리
           "userId":"child",
           "idx":true,
         }),
@@ -125,29 +145,29 @@ function ParentMain({navigation}) {
       .then((response) => response.json())
       .then(async(responseJson) => {
         console.log(responseJson);
-        if(responseJson==="expired"){
+        if(responseJson.message === "expired"){
           try{
-          await AsyncStorage.removeItem('userData');
-          navigation.navigate('Loginpage');
-        }catch(error){
-          console.log(error);
+            await AsyncStorage.removeItem('userData');
+            navigation.navigate('Loginpage');
+          }catch(error){
+            console.log(error);
+          }
         }
+        if(responseJson.lat !== null && responseJson.lng !== null) {
+          setAlarm(responseJson.alarm);
+          setWhere(responseJson.where);
+          setAlarmLat(responseJson.lat);
+          setAlarmLng(responseJson.lng);
+          
+          
+          findAddr(alarmLat, alarmLng);
+          const newAlarm = {...alarmList, [Date.now()] : {alarm: alarm, where: where, alarmAddress: alarmAddress, now}}
+          setAlarmList(newAlarm);
+          console.log(newAlarm);
+          await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
+          
+          console.log(alarmList);
         }
-
-        setAlarm(responseJson.alarm);
-        setWhere(responseJson.where);
-        setAlarmLat(parseFloat(responseJson.lat));
-        setAlarmLng(parseFloat(responseJson.lng));
-        
-        await AsyncStorage.setItem( //같은 id에 여러 개가 저장될 수 있나?
-          'alarm',
-          JSON.stringify({
-            alarm:responseJson.alarm,
-            where:responseJson.where, //핸들링에 따라 필요할수도 불필요할수도 있는 값
-            alarmLat:responseJson.lat,  //역지오코딩 필요, 이 값이 아니라 주소값이 들어가는 게 좋을듯
-            alarmLng:responseJson.lng   //역지오코딩 필요, 이 값이 아니라 주소값이 들어가는 게 좋을듯
-          })
-        ) //null 처리
       })
       .catch((error) => {
         console.error(error);
