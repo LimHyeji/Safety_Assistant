@@ -85,11 +85,11 @@ function ChildMain({navigation}) {
             console.log(responseJson);
             if(responseJson==="expired"){
               try{
-              await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
-            }catch(error){
-              console.log(error);
-            }
+                await AsyncStorage.removeItem('userData');
+                navigation.navigate('Loginpage');
+              } catch(error){
+                console.log(error);
+              }
             }
             setAllCrossWalks(allCrossWalks => [...allCrossWalks, responseJson.crosses]);
           })
@@ -379,6 +379,7 @@ function ChildMain({navigation}) {
               console.log(error);
             }
             }
+          })
           .catch((error) => {
             console.error(error);
           });
