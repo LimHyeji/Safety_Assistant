@@ -69,7 +69,15 @@ async function CheckPasswordAPI(form, {navigation}){
     .then((response) => response.json())
     .then(async(responseJson) => {
       console.log(responseJson);
-      if(responseJson === true){
+      if(responseJson==="expired"){
+        try{
+        await AsyncStorage.removeItem('userData');
+        navigation.navigate('Loginpage');
+      }catch(error){
+        console.log(error);
+      }
+      }
+      else if(responseJson === true){
         await AsyncStorage.setItem('pw',
           JSON.stringify({
             password: form.password.value,

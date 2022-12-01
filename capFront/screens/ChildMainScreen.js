@@ -81,8 +81,16 @@ function ChildMain({navigation}) {
           }
         })
           .then(response => response.json())
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
             setAllCrossWalks(allCrossWalks => [...allCrossWalks, responseJson.crosses]);
           })
           .catch((error) => {
@@ -106,8 +114,16 @@ function ChildMain({navigation}) {
             }
           })
             .then(response => response.json())
-            .then((responseJson) => {
+            .then(async(responseJson) => {
               console.log(responseJson);
+              if(responseJson==="expired"){
+                try{
+                await AsyncStorage.removeItem('userData');
+                navigation.navigate('Loginpage');
+              }catch(error){
+                console.log(error);
+              }
+              }
               setFenceCrossWalks(fenceCrossWalks => [...fenceCrossWalks, responseJson.crosses]);
             })
             .catch((error) => {
@@ -199,8 +215,16 @@ function ChildMain({navigation}) {
           }
         })
           .then(response => response.json())
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
           })
           .catch((error) => {
             console.error(error);
@@ -225,8 +249,16 @@ function ChildMain({navigation}) {
           }
         })
           .then(response => response.json())
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
           })
           .catch((error) => {
             console.error(error);
@@ -257,8 +289,16 @@ function ChildMain({navigation}) {
           }
         })
           .then(response => response.json())
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
           })
           .catch((error) => {
             console.error(error);
@@ -295,8 +335,16 @@ function ChildMain({navigation}) {
           }
         })
           .then(response => response.json())
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
           })
           .catch((error) => {
             console.error(error);
@@ -321,9 +369,16 @@ function ChildMain({navigation}) {
           }
         })
           .then(response => response.json())
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
-          })
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
           .catch((error) => {
             console.error(error);
           });
@@ -593,8 +648,16 @@ async function ChildMainAPI(latitude,longitude){
   }
 })
   .then((response) => response.json())
-  .then((responseJson) => {
+  .then(async(responseJson) => {
     console.log(responseJson);
+    if(responseJson==="expired"){
+      try{
+      await AsyncStorage.removeItem('userData');
+      navigation.navigate('Loginpage');
+    }catch(error){
+      console.log(error);
+    }
+    }
   })
   .catch((error) => {
     console.error("no");

@@ -80,8 +80,16 @@ function ParentMain({navigation}) {
         }
       })
       .then((response) => response.json())
-      .then((responseJson) => {
+      .then(async(responseJson) => {
         console.log(responseJson);
+        if(responseJson==="expired"){
+          try{
+          await AsyncStorage.removeItem('userData');
+          navigation.navigate('Loginpage');
+        }catch(error){
+          console.log(error);
+        }
+        }
 
         if(responseJson.latitude!==null){
         setChildLat(parseFloat(responseJson.latitude));
@@ -117,6 +125,14 @@ function ParentMain({navigation}) {
       .then((response) => response.json())
       .then(async(responseJson) => {
         console.log(responseJson);
+        if(responseJson==="expired"){
+          try{
+          await AsyncStorage.removeItem('userData');
+          navigation.navigate('Loginpage');
+        }catch(error){
+          console.log(error);
+        }
+        }
 
         setAlarm(responseJson.alarm);
         setWhere(responseJson.where);

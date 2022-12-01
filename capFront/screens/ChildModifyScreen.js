@@ -346,8 +346,16 @@ return (
             Authorization: `Bearer${parseValue.token}`,
           }
         })
-          .then((responseJson) => {
+          .then(async(responseJson) => {
             console.log(responseJson);
+            if(responseJson==="expired"){
+              try{
+              await AsyncStorage.removeItem('userData');
+              navigation.navigate('Loginpage');
+            }catch(error){
+              console.log(error);
+            }
+            }
             navigation.goBack(null);
           })
           .catch((error) => {

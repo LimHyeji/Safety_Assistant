@@ -161,8 +161,16 @@ function ModifyAuthFormAPI(form, parseValue, {navigation}){
       Authorization: `Bearer${parseValue.token}`,
     }
   })
-    .then((responseJson) => {
+    .then(async(responseJson) => {
       console.log(responseJson);
+      if(responseJson==="expired"){
+        try{
+        await AsyncStorage.removeItem('userData');
+        navigation.navigate('Loginpage');
+      }catch(error){
+        console.log(error);
+      }
+      }
       navigation.goBack(null); // 일단 비밀번호를 수정하면 메인으로 돌아가게 해둠
       //비밀번호 수정하면 로그인 풀리게 하는 것도 괜찮을듯?
     })
