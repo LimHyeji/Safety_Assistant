@@ -557,6 +557,9 @@ function ChildMain({navigation}) {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
+          showsCompass={false}
+          toolbarEnabled={false}
+          //zoomEnabled={false} // 횡단보도 마커크기 고정 안되면 그냥 지도 확대 안되게 하는걸로...
         >
         <Marker
             coordinate={{latitude: latitude, longitude: longitude}}
@@ -575,7 +578,7 @@ function ChildMain({navigation}) {
               key={index}
               icon={require('../traffic_light_icon.png')}
               coordinate={{latitude: parseFloat(cross.latitude), longitude: parseFloat(cross.longitude)}}
-            />
+              />
             ))
           ))
         }

@@ -225,6 +225,8 @@ function ParentMain({navigation}) {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
+          showsCompass={false}
+          toolbarEnabled={false}
         >
 
           <Marker
