@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from "react-native-geolocation-service";
 import Postcode from '@actbase/react-daum-postcode';
 import Geocode from "react-geocode";
+import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -194,6 +195,32 @@ function ParentMain({navigation}) {
   }
   */
 
+  async function logoutAPI() {
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      fetch('http://34.64.74.7:8081/user/login/logout', {
+        method: 'POST',
+        headers : {
+          Authorization: `Bearer${parseValue.token}`,
+        } 
+      })
+      .then(response => response.json())
+      .then(async(responseJson) => {
+        if(responseJson.msg === "expired") {
+          await AsyncStorage.removeItem('userData');
+          navigation.navigate("Loginpage");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     trackPosition();
     setInterval(()=>showChildLocation(),5000); //과연 넘어올것인가
@@ -208,72 +235,103 @@ function ParentMain({navigation}) {
     );
   }
 
+  handleDrawerSlide = (status) => {
+    // outputs a value between 0 and 1
+    console.log(status);
+  };
+
+  renderDrawer = () => {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
+          <Text style={styles.modifyTitle}>회원 정보 수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
+          <Text style={styles.logoutText}>로그아웃</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  let drawer = null;
   return (
       <View style={{ flex: 1 }}>
-        <View>
-          <TouchableOpacity style={styles.alarmButton} onPress={() =>  navigation.navigate('ParentAlertpage')}>
-            <Icon name="bell" size={25} color={"#000"}/>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('CheckPasswordpage')}>
-            <Icon name="bars" size={25} color={"#000"}/>
-          </TouchableOpacity>
-        </View>
-        {show === false ? (  //부모 위치 띄우기
-        <MapView
+        <DrawerLayout
+          ref={(refDrawer) => {
+            drawer = refDrawer 
+          }}
+          drawerWidth={300}
+          drawerPosition={DrawerLayout.positions.Left}
+          drawerType="front"
+          drawerBackgroundColor="#ddd"
+          renderNavigationView={this.renderDrawer}
+          onDrawerClose={() => (drawer.closeDrawer())}
+        >
+          <View>
+            <TouchableOpacity style={styles.alarmButton} onPress={() =>  navigation.navigate('ParentAlertpage')}>
+              <Icon name="bell" size={25} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.modifyButton} onPress={() => {drawer.openDrawer()}}>
+              <Icon name="bars" size={25} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+          {show === false ? (  //부모 위치 띄우기
+          <MapView
+            style={{ flex: 1, width:'100%', height:'100%' }}
+            initialRegion={{
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}
+            showsCompass={false}
+            toolbarEnabled={false}
+          >
+
+            <Marker
+            coordinate={{latitude: latitude, longitude: longitude}}
+            >
+              <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+            </Marker>
+            
+          </MapView>
+          ) : (<></>)}
+
+          {show === true ? (  //자녀 위치 띄우기
+          <MapView
           style={{ flex: 1, width:'100%', height:'100%' }}
           initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
+            latitude: childLat, 
+            longitude: childLng,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
-          showsCompass={false}
-          toolbarEnabled={false}
-        >
-
-          <Marker
-          coordinate={{latitude: latitude, longitude: longitude}}
           >
-            <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
-          </Marker>
-          
-        </MapView>
-        ) : (<></>)}
+            <Marker
+            coordinate={{latitude: childLat, longitude: childLng}}
+            >
+              <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+            </Marker>
 
-        {show === true ? (  //자녀 위치 띄우기
-        <MapView
-        style={{ flex: 1, width:'100%', height:'100%' }}
-        initialRegion={{
-          latitude: childLat, 
-          longitude: childLng,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }}
-        >
-          <Marker
-          coordinate={{latitude: childLat, longitude: childLng}}
-          >
-            <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
-          </Marker>
-
-          <Polyline
-            coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
-           />
-          
-        </MapView>
-        ) : (<></>)}
+            <Polyline
+              coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
+            />
+            
+          </MapView>
+          ) : (<></>)}
 
 
-        <View>
-          <TouchableOpacity style={styles.reloadButton} onPress={() => showChildLocation()}>
-            <Icon name="redo-alt" size={30} color={"#000"}/>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Button title="설정" onPress={() =>  navigation.navigate('ParentSetUppage')}></Button> 
-        </View>
+          <View>
+            <TouchableOpacity style={styles.reloadButton} onPress={() => showChildLocation()}>
+              <Icon name="redo-alt" size={30} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <Button title="설정" onPress={() =>  navigation.navigate('ParentSetUppage')}></Button> 
+          </View>
+        </DrawerLayout>
       </View>
   );
 }
@@ -281,6 +339,11 @@ function ParentMain({navigation}) {
 export default ParentMain;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "white",
+  },
   reloadButton: {
     backgroundColor: "#CAEF53",
     alignItems: "center",
@@ -324,5 +387,31 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10,
     zIndex: 1,
-  }
+  },
+  
+  modifyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: "black",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  InnerContainer: {
+    width: "100%",
+    marginTop: 30,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: "black",
+  },
+  logoutContainer: {
+    justifyContent: 'center',
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+  },
+  logoutText: {
+    fontSize: 12,
+    textDecorationLine: 'underline',
+  }, 
 })
