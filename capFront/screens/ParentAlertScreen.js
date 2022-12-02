@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Image, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { ScrollView } from "react-native-gesture-handler";
 
 /*
 알림정보는 받아서 async에 저장해놓고 사용
@@ -37,17 +38,23 @@ function ParentAlert({navigation}){
     let date = new Date();
     let now = date.toLocaleString();
 
-    const [alarmList, setAlarmList] = useState({});
+    const [alarmList, setAlarmList] = useState([]);
 
     const loadAlarmList = async () => {
       try {
         const value = await AsyncStorage.getItem('alarm');
         setAlarmList(JSON.parse(value));
-        console.log(value);
+        console.log(alarmList);
+        console.log(JSON.parse(value));
+        
       } catch (error) {
         console.log(error);
       }
     }
+    
+    useEffect(() => {
+      loadAlarmList();
+    }, []);
 
 return(
     <View style={styles.body}>
@@ -57,15 +64,16 @@ return(
           <Icon name="bell" size={25} color={"#000"}/>
         </TouchableOpacity>
         <View style={styles.container}>    
-        <View>
         {//스크롤 가능하게 구현(async 배열)
-        }
+        <ScrollView>
+          <View>
             <Image style={styles.image}  source={require("../profile.jpg")}/>
-
-            <Text style={styles.textTitle}>하늘이가 하교하였습니다.</Text>
-            <Text style={styles.text1}>인천 미추홀구 독정안길 21</Text>
-            <Text style={styles.text2}>2022.11.27 오후 4:10:24</Text>
-        </View>
+            <Text style={styles.textTitle}>{alarmList.alarm}</Text>
+            <Text style={styles.text1}>{alarmList.alarmAddress}</Text>
+            <Text style={styles.text2}>{alarmList.date}</Text>
+          </View>
+        </ScrollView>
+        }
         </View>
         <View>
         <TouchableOpacity style={styles.del} onPress={() =>  delAlert()}>
