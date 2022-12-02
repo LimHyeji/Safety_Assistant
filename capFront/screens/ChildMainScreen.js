@@ -5,6 +5,8 @@ import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
+import { CommonActions } from '@react-navigation/native';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -515,10 +517,69 @@ function ChildMain({navigation}) {
       })
     )
   }
+  const apiTest = async() => {
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      fetch("http://34.64.74.7:8081/user/login/alarm", {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: parseValue.userId,
+          idx: parseValue.idx,
+          alarm: "arrival",
+          where: "House",
+          lat: parseValue.schoolLat,
+          lng: parseValue.schoolLng,
+        }),
+        headers : {
+          'Content-Type' : 'application/json; charset=utf-8',
+          Authorization: `Bearer${parseValue.token}`,
+        }
+      })
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  async function logoutAPI() {
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      fetch('http://34.64.74.7:8081/user/login/logout', {
+        method: 'POST',
+        headers : {
+          Authorization: `Bearer${parseValue.token}`,
+        } 
+      })
+      .then(response => response.json())
+      .then(async(responseJson) => {
+        if(responseJson.msg === "expired") {
+          await AsyncStorage.removeItem('userData');
+          navigation.navigate("Loginpage");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     componentDidMount();
     trackPosition();
+
+    //apiTest();
     
     //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
@@ -542,74 +603,105 @@ function ChildMain({navigation}) {
     );
   }
 
+  handleDrawerSlide = (status) => {
+    // outputs a value between 0 and 1
+    console.log(status);
+  };
+
+  renderDrawer = () => {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
+          <Text style={styles.modifyTitle}>회원 정보 수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
+          <Text style={styles.logoutText}>로그아웃</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  let drawer = null;
   return (
       <View style={{ flex: 1 }}>
-        <View>
-          <TouchableOpacity style={styles.modifyButton} onPress={() =>  navigation.navigate('CheckPasswordpage')}>
-            <Icon name="bars" size={25} color={"#000"}/>
-          </TouchableOpacity>
-        </View>
-        <MapView
-          style={{ flex: 1, width:'100%', height:'100%' }}
-          initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
+        <DrawerLayout
+          ref={(refDrawer) => {
+            drawer = refDrawer 
           }}
-          showsCompass={false}
-          toolbarEnabled={false}
-          //zoomEnabled={false} // 횡단보도 마커크기 고정 안되면 그냥 지도 확대 안되게 하는걸로...
+          drawerWidth={300}
+          drawerPosition={DrawerLayout.positions.Left}
+          drawerType="front"
+          drawerBackgroundColor="#ddd"
+          renderNavigationView={this.renderDrawer}
+          onDrawerClose={() => (drawer.closeDrawer())}
         >
-        <Marker
-            coordinate={{latitude: latitude, longitude: longitude}}
-        >
-          <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
-        </Marker>
+          <View>
+            <TouchableOpacity style={styles.modifyButton} onPress={() => {drawer.openDrawer()}}>
+              <Icon name="bars" size={25} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+          <MapView
+            style={{ flex: 1, width:'100%', height:'100%' }}
+            initialRegion={{
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}
+            showsCompass={false}
+            toolbarEnabled={false}
+            //zoomEnabled={false} // 횡단보도 마커크기 고정 안되면 그냥 지도 확대 안되게 하는걸로...
+          >
+          <Marker
+              coordinate={{latitude: latitude, longitude: longitude}}
+          >
+            <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
+          </Marker>
 
-        <Polyline
-            coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
-        />
+          <Polyline
+              coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
+          />
 
-        {// 모든 횡단보도 표시
-          allCrossWalks.map(crossWalk => (
-            crossWalk.map((cross, index) => (
-              <Marker
-              key={index}
-              icon={require('../traffic_light_icon.png')}
-              coordinate={{latitude: parseFloat(cross.latitude), longitude: parseFloat(cross.longitude)}}
-              />
-            ))
-          ))
-        }
-
-        {dangerAreas.length === 0 ? (
-              <ActivityIndicator
-                color="white"
-                style={{margin: 10}}
-                size="large"
-              />
-          ) : (
-            dangerAreas.map(dangerArea => (
-              dangerArea.map((dan, i) => (
-                <Circle
-                  key={i}
-                  center={{latitude: parseFloat(dan.la_crd), longitude: parseFloat(dan.lo_crd)}}
-                  radius={50}
-                  strokeColor="rgba(0,0,0,0)"
-                  strokeWidth={3}
-                  fillColor={dan.occrrnc_cnt >= 1 && dan.occrrnc_cnt <= 4 ? "rgba(255,255,0,0.1)" : (
-                    dan.occrrnc_cnt > 4 && dan.occrrnc_cnt <= 7 ? "rgba(255,127,0,0.1)" : "rgba(255,0,0,0.1)"
-                  )}
+          {// 모든 횡단보도 표시
+            allCrossWalks.map(crossWalk => (
+              crossWalk.map((cross, index) => (
+                <Marker
+                key={index}
+                icon={require('../traffic_light_icon.png')}
+                coordinate={{latitude: parseFloat(cross.latitude), longitude: parseFloat(cross.longitude)}}
                 />
               ))
             ))
-          )}
+          }
 
-        </MapView>
-        <View>
-          <Button title="설정" onPress={() =>  navigation.navigate('ChildSetUppage')}></Button> 
-        </View>
+          {dangerAreas.length === 0 ? (
+                <ActivityIndicator
+                  color="white"
+                  style={{margin: 10}}
+                  size="large"
+                />
+            ) : (
+              dangerAreas.map(dangerArea => (
+                dangerArea.map((dan, i) => (
+                  <Circle
+                    key={i}
+                    center={{latitude: parseFloat(dan.la_crd), longitude: parseFloat(dan.lo_crd)}}
+                    radius={50}
+                    strokeColor="rgba(0,0,0,0)"
+                    strokeWidth={3}
+                    fillColor={dan.occrrnc_cnt >= 1 && dan.occrrnc_cnt <= 4 ? "rgba(255,255,0,0.1)" : (
+                      dan.occrrnc_cnt > 4 && dan.occrrnc_cnt <= 7 ? "rgba(255,127,0,0.1)" : "rgba(255,0,0,0.1)"
+                    )}
+                  />
+                ))
+              ))
+            )}
+
+          </MapView>
+          <View>
+            <Button title="설정" onPress={() =>  navigation.navigate('ChildSetUppage')}></Button> 
+          </View>
+        </DrawerLayout>
         {/*<View>
           <Button title="ON" onPress={() =>  {Boundary.on(Events.ENTER, ononon());}}></Button> 
         </View>
@@ -701,15 +793,56 @@ function ChildMainAPI(routetest){
 export default ChildMain;
 
 const styles = StyleSheet.create({
-  modifyButton: {
+  container: {
+    flex: 1,
     alignItems: "center",
+    backgroundColor: "white",
+  },
+  modifyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: "black",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  InnerContainer: {
+    width: "100%",
+    marginTop: 30,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: "black",
+  },
+  logoutContainer: {
+    justifyContent: 'center',
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+  },
+  logoutText: {
+    fontSize: 12,
+    textDecorationLine: 'underline',
+  }, 
+  body: {
+    width: "100%",
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "#696969",
+  },
+  image: {
+    width: 175,
+    height: 200,
+    marginTop: 80,
+  },
+  modifyButton: {
     justifyContent: 'center',
     width: 40,
     height: 40,
     borderRadius: 35,
     position: "absolute",
     top: 10,
-    left: 10,
+    left: 20,
     zIndex: 1,
   }
-})
+});
