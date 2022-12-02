@@ -65,11 +65,6 @@ function ChildMain({navigation}) {
         const parseValue = JSON.parse(value);
 
         // 모든 횡단보도 가져오기 
-        /*
-        const allCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross?idx=false');
-        const crossWalkData = await allCrossWalk.json();
-        setAllCrossWalks(allCrossWalks => [...allCrossWalks, crossWalkData.crosses]);  // 변수에 값 안들어감
-        */
         fetch('http://34.64.74.7:8081/user/login/cross', {
           method: 'POST',
           body: JSON.stringify({
@@ -82,7 +77,6 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then(async(responseJson) => {
-            console.log(responseJson);
             if(responseJson==="expired"){
               try{
                 await AsyncStorage.removeItem('userData');
@@ -98,11 +92,6 @@ function ChildMain({navigation}) {
           });
           
           // 70m 이상의 횡단보도 가져오기
-          /*
-          const fenceCrossWalk = await fetch('http://34.64.74.7:8081/user/login/cross/cond?idx=false');
-          const fenceCrossWalkData = await fenceCrossWalk.json();
-          setFenceCrossWalks(fenceCrossWalks => [...fenceCrossWalks, fenceCrossWalkData.crosses]);
-          */
           fetch('http://34.64.74.7:8081/user/login/cross/cond', {
             method: 'POST',
             body: JSON.stringify({
@@ -115,7 +104,6 @@ function ChildMain({navigation}) {
           })
             .then(response => response.json())
             .then(async(responseJson) => {
-              console.log(responseJson);
               if(responseJson==="expired"){
                 try{
                 await AsyncStorage.removeItem('userData');
