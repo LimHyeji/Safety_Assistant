@@ -28,31 +28,9 @@ function ParentMain({navigation}) {
   const [route, setRoute] = useState([]); // 자녀의 이동 경로
   const [show, setShow] = useState(false);
 
-  const [alarm,setAlarm]=useState(null);  //알림 저장을 위한 변수들
-  const [where,setWhere]=useState(null);
-  const [alarmLat,setAlarmLat]=useState(null);  
-  const [alarmLng,setAlarmLng]=useState(null);
-  const [alarmAddress, setAlarmAddress] = useState('');
-  const [alarmList, setAlarmList] = useState({});
+  const [alarmList, setAlarmList] = useState([]);
   let date = new Date();
   let now = date.toLocaleString();
-
-  const findAddr = (lat, lng) => {
-    // 역지오코딩
-    Geocode.setApiKey("AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY");
-    Geocode.setLanguage("ko");
-    Geocode.setRegion("es");
-    Geocode.setLocationType("ROOFTOP");
-    Geocode.fromLatLng(lat, lng).then(
-      (response) => {
-        const address = response.results[0].formatted_address;
-        setAlarmAddress(address.substr(5, address.length));
-      },
-      (error) => {
-        console.error(error);
-      }
-    )
-  }
 
   const trackPosition = () => {  //부모의 위치추적
     requestPermission();
@@ -101,7 +79,7 @@ function ParentMain({navigation}) {
       })
       .then((response) => response.json())
       .then(async(responseJson) => {
-        console.log(responseJson);
+        //console.log(responseJson);
         if(responseJson==="expired"){
           try{
           await AsyncStorage.removeItem('userData');
@@ -127,9 +105,25 @@ function ParentMain({navigation}) {
   }
 
   const parentAlert=async()=>{
-    try{
-      const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
+    const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
       const parseValue = JSON.parse(value); //테스트를 위한 주석처리
+
+    fetch("http://34.64.74.7:8081/user/login/alarm", {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: "child",
+            idx: false,
+            alarm: "arrival",
+            where: "House",
+            lat: childLat,
+            lng: childLng,
+          }),
+          headers : {
+            'Content-Type' : 'application/json; charset=utf-8',
+            Authorization: `Bearer${parseValue.token}`,
+          }
+        })
+    try{
       fetch('http://34.64.74.7:8081/user/login/alarmRec',{
         method:"POST",
         body: JSON.stringify({
@@ -144,7 +138,7 @@ function ParentMain({navigation}) {
       })
       .then((response) => response.json())
       .then(async(responseJson) => {
-        console.log(responseJson);
+        //console.log(responseJson);
         if(responseJson.message === "expired"){
           try{
             await AsyncStorage.removeItem('userData');
@@ -154,19 +148,29 @@ function ParentMain({navigation}) {
           }
         }
         if(responseJson.lat !== null && responseJson.lng !== null) {
-          setAlarm(responseJson.alarm);
-          setWhere(responseJson.where);
-          setAlarmLat(responseJson.lat);
-          setAlarmLng(responseJson.lng);
+          console.log(responseJson);
           
-          
-          findAddr(alarmLat, alarmLng);
-          const newAlarm = {...alarmList, [Date.now()] : {alarm: alarm, where: where, alarmAddress: alarmAddress, now}}
-          setAlarmList(newAlarm);
-          console.log(newAlarm);
-          await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
-          
-          console.log(alarmList);
+              // 역지오코딩
+    Geocode.setApiKey("AIzaSyD3wawfdvi_QBp0XYbXPC47nXWUUEVX4wY");
+    Geocode.setLanguage("ko");
+    Geocode.setRegion("es");
+    Geocode.setLocationType("ROOFTOP");
+    Geocode.fromLatLng(responseJson.lat, responseJson.lng).then(
+      async(response) => {
+        const address=response.results[0].formatted_address;
+        const addresstemp=address.substr(5, address.length);
+        Date.now();
+        const value = await AsyncStorage.getItem('alarm');
+        setAlarmList(JSON.parse(value));
+        setAlarmList(alarmList =>[...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
+        console.log(alarmList);
+        console.log("alarmlist"+JSON.stringify(alarmList));
+        await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
+      },
+      (error) => {
+        console.error(error);
+      }
+    )
         }
       })
       .catch((error) => {
