@@ -9,9 +9,13 @@ import java.util.Optional;
 public interface userRepository extends JpaRepository<user,Long> {
     user findByPhoneNum(String phoneNum);  //일단 테스트 후 Optional로 바꿀 예정.
 
-    @Query("select u from user u join fetch u.parent")
+    @Query("select u from user u join fetch u.parent where u.phoneNum =:phoneNum")
     Optional<user> findByPhoneNumWithParent(String phoneNum);
 
     Optional<user> findByUserId(String userName);
     Optional<user> findByUserIdAndPassword(String userId,String password);
+
+    boolean existsByUserId(String userId);
+
+    boolean existsByPhoneNum(String phoneNum);
 }

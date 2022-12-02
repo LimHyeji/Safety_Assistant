@@ -30,7 +30,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         }
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("not valid token!!!!!");
+            throw new IllegalArgumentException("expired");
         }
         //여기서 관리자 아이디와 관리자 비번을 확인하는걸 가지고,
         // 그게 맞다면 -> request에 그 정보를 포함시켜서 보내는걸로 하는 느낌으로 가야하나 싶다.

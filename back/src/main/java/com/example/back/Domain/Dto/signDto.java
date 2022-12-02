@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-
 @Data @AllArgsConstructor
 public class signDto {
 
@@ -16,17 +14,19 @@ public class signDto {
     private String phoneNum;
     @Nullable private String parentPhoneNum;
     private boolean idx;
-    @Nullable private String house;
-    @Nullable private String school;
+    @Nullable private String houselat;
+    @Nullable private String houselng;
+    @Nullable private String schoollat;
+    @Nullable private String schoollng;
     @Nullable private int duration;
 
     public user toEntity(){
         user user = new user();
         user.setUserId(userId);
+        user.setUserName(userName);
         user.setPassword(password);
         user.setPhoneNum(phoneNum);
         user.setIdx(idx);
-        user.setHouse(house);
         return user;
     }
 
