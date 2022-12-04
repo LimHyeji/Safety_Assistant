@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Image, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
+import { View, Text, StyleSheet, Image, PermissionsAndroid, TouchableOpacity, Dimensions, Animated} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { ScrollView } from "react-native-gesture-handler";
@@ -32,7 +32,6 @@ function ParentAlert({navigation}){
     let now = date.toLocaleString();
 
     const [alarmList, setAlarmList] = useState([]);
-    const [flag, setFlag] = useState(false);
 
     const loadAlarmList = async () => {
       try {
@@ -42,7 +41,6 @@ function ParentAlert({navigation}){
       } catch (error) {
         console.log(error);
       }
-      setFlag(true);
     }
     
     useEffect(() => {
@@ -57,6 +55,19 @@ function ParentAlert({navigation}){
      await AsyncStorage.removeItem('alarm');
      setAlarmList(null);
   };
+
+const rightAction = (progress, dragX) => {
+  const trans = dragX.interpolate({
+    inputRange: [0, 1],   //화면의 왼쪽 끝, 화면의 맨 오른쪽
+    outputRange: [40, 0],   //transitin 0, transition 100% 
+  });
+
+  return (
+    <Animated.View style={styles.SwipeContainer}>
+    </Animated.View>
+  );
+}
+
 
 return(
     <View style={styles.body}>
@@ -75,6 +86,14 @@ return(
                   <Text style={styles.textTitle}>{a.alarm}</Text>
                   <Text style={styles.text1}>{a.alarmAddress}</Text>
                   <Text style={styles.text2}>{a.now}</Text>
+
+                  <Swipeable 
+                    containerStyle={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    renderRightActions={rightAction}
+                  />
                 </View>
               ))
             )
@@ -113,6 +132,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
       },
+      SwipeContainer: {
+        width: '100%',
+        height: 100,
+        //flexDirection: 'row',
+        backgroundColor: '#CAEF53',
+        alignItems: 'center',
+        borderRadius: 10,
+      },
       title: {
         fontSize: 30,
         fontWeight: 'bold',
@@ -135,6 +162,7 @@ const styles = StyleSheet.create({
         color: 'darkgrey',
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 5
       },
       text1: {
         color: 'black',
