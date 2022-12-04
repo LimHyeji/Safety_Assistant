@@ -107,23 +107,7 @@ function ParentMain({navigation}) {
 
   const parentAlert=async()=>{
     const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
-      const parseValue = JSON.parse(value); //테스트를 위한 주석처리
-
-    fetch("http://34.64.74.7:8081/user/login/alarm", {
-          method: 'POST',
-          body: JSON.stringify({
-            userId: "child",
-            idx: false,
-            alarm: "arrival",
-            where: "House",
-            lat: childLat,
-            lng: childLng,
-          }),
-          headers : {
-            'Content-Type' : 'application/json; charset=utf-8',
-            Authorization: `Bearer${parseValue.token}`,
-          }
-        })
+    const parseValue = JSON.parse(value); //테스트를 위한 주석처리
     try{
       fetch('http://34.64.74.7:8081/user/login/alarmRec',{
         method:"POST",
@@ -163,10 +147,8 @@ function ParentMain({navigation}) {
         Date.now();
         const value = await AsyncStorage.getItem('alarm');
         setAlarmList(JSON.parse(value));
-        setAlarmList(alarmList =>[...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
-        console.log(alarmList);
-        console.log("alarmlist"+JSON.stringify(alarmList));
-        await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
+        setAlarmList(alarmList => [...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
+        //await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
       },
       (error) => {
         console.error(error);
@@ -180,6 +162,11 @@ function ParentMain({navigation}) {
     }catch(error){
       console.log(error);
     }
+  }
+
+  async function saveAlarm(alarmList) {
+    await AsyncStorage.setItem('alarm', JSON.stringify(alarmList));
+    console.log(alarmList);
   }
 
   /*
@@ -226,11 +213,22 @@ function ParentMain({navigation}) {
     setInterval(()=>showChildLocation(),5000); //과연 넘어올것인가
     setInterval(()=>parentAlert(),5000); //과연 넘어올것인가
   }, []);
+
+  useEffect(() => {
+    saveAlarm(alarmList);
+  }, [alarmList])
   
   if(!latitude && !longitude) { //부모 위치정보 없을 때 로딩
     return (
       <View style={{ flex: 1 }}>
-        <Text style={{ flex: 1 }}>Loading...</Text>
+        <ActivityIndicator
+          color="black"
+          style={{
+            flex: 1,
+            justifyContent: "center",
+          }}
+          size="large"
+        />
       </View>
     );
   }

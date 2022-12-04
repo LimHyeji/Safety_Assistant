@@ -579,7 +579,7 @@ function ChildMain({navigation}) {
     componentDidMount();
     trackPosition();
 
-    //apiTest();
+    apiTest();
     
     //testGeofence();
     //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
@@ -598,7 +598,14 @@ function ChildMain({navigation}) {
   if(!latitude && !longitude) {
     return (
       <View style={{ flex: 1 }}>
-        <Text style={{ flex: 1 }}>Loading...</Text>
+        <ActivityIndicator
+          color="black"
+          style={{
+            flex: 1,
+            justifyContent: "center",
+          }}
+          size="large"
+        />
       </View>
     );
   }

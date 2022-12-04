@@ -27,34 +27,36 @@ import { ScrollView } from "react-native-gesture-handler";
 
 */
 
-const delAlert=()=>{
-    //현재 알림 전체 삭제
-    /*
-    가능하다면 옆으로 밀었을 때 그 알림만 삭제되도록 구현해보고 싶어
-    */
-};
-
 function ParentAlert({navigation}){
     let date = new Date();
     let now = date.toLocaleString();
 
     const [alarmList, setAlarmList] = useState([]);
+    const [flag, setFlag] = useState(false);
 
     const loadAlarmList = async () => {
       try {
         const value = await AsyncStorage.getItem('alarm');
         setAlarmList(JSON.parse(value));
-        console.log(alarmList);
-        console.log(JSON.parse(value));
         
       } catch (error) {
         console.log(error);
       }
+      setFlag(true);
     }
     
     useEffect(() => {
       loadAlarmList();
     }, []);
+
+    const delAlert = async () => {
+      //현재 알림 전체 삭제
+      /*
+      가능하다면 옆으로 밀었을 때 그 알림만 삭제되도록 구현해보고 싶어
+      */
+     await AsyncStorage.removeItem('alarm');
+     setAlarmList(null);
+  };
 
 return(
     <View style={styles.body}>
@@ -62,19 +64,23 @@ return(
         <Text style={styles.title}>알림</Text>
         <TouchableOpacity style={styles.alarmButton}>
           <Icon name="bell" size={25} color={"#000"}/>
-        </TouchableOpacity>
-        <View style={styles.container}>    
-        {//스크롤 가능하게 구현(async 배열)
+        </TouchableOpacity>  
+        {/*스크롤 가능하게 구현(async 배열)*/}
         <ScrollView>
-          <View>
-            <Image style={styles.image}  source={require("../profile.jpg")}/>
-            <Text style={styles.textTitle}>{alarmList.alarm}</Text>
-            <Text style={styles.text1}>{alarmList.alarmAddress}</Text>
-            <Text style={styles.text2}>{alarmList.date}</Text>
-          </View>
+          {
+            alarmList === null ? (<></>) : (
+              alarmList.map((a, index) => (
+                <View key={index} style={styles.container}>
+                  <Image style={styles.image}  source={require("../profile.jpg")}/>
+                  <Text style={styles.textTitle}>{a.alarm}</Text>
+                  <Text style={styles.text1}>{a.alarmAddress}</Text>
+                  <Text style={styles.text2}>{a.now}</Text>
+                </View>
+              ))
+            )
+          }
         </ScrollView>
-        }
-        </View>
+        
         <View>
         <TouchableOpacity style={styles.del} onPress={() =>  delAlert()}>
             <Text style={styles.del}>알림 전체 삭제</Text>
