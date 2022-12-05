@@ -104,12 +104,12 @@ return (
             userName:responseJson.userName,
             phoneNum: responseJson.phoneNum,
             token:responseJson.token,
-
-            childId:responseJson.childrenInfo.userId,
-            childHouseLat:responseJson.childrenInfo.houselat, //집 학교 표시 시 사용
-            childHouseLng:responseJson.childrenInfo.houselng,
-            childSchoolLat:responseJson.childrenInfo.schoollat,
-            childSchoolLng:responseJson.childrenInfo.schoollng
+            childId:responseJson.childrenInfo[0].userId,
+            childName:responseJson.childrenInfo[0].userName, //알림 시 사용
+            childHouseLat:responseJson.childrenInfo[0].houselat, //집 학교 표시 시 사용
+            childHouseLng:responseJson.childrenInfo[0].houselng,
+            childSchoolLat:responseJson.childrenInfo[0].schoollat,
+            childSchoolLng:responseJson.childrenInfo[0].schoollng
           })
         )
         navigation.navigate('ParentMainpage');
