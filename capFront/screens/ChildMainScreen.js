@@ -705,9 +705,6 @@ function ChildMain({navigation}) {
             )}
 
           </MapView>
-          <View>
-            <Button title="설정" onPress={() =>  navigation.navigate('ChildSetUppage')}></Button> 
-          </View>
         </DrawerLayout>
         {/*<View>
           <Button title="ON" onPress={() =>  {Boundary.on(Events.ENTER, ononon());}}></Button> 

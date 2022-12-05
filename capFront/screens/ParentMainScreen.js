@@ -326,9 +326,6 @@ function ParentMain({navigation}) {
               <Icon name="redo-alt" size={30} color={"#000"}/>
             </TouchableOpacity>
           </View>
-          <View>
-            <Button title="설정" onPress={() =>  navigation.navigate('ParentSetUppage')}></Button> 
-          </View>
         </DrawerLayout>
       </View>
   );
