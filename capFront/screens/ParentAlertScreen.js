@@ -28,15 +28,31 @@ import { ScrollView } from "react-native-gesture-handler";
 */
 
 function ParentAlert({navigation}){
-    let date = new Date();
-    let now = date.toLocaleString();
 
+    const [alarmContent,setAlarmContent]=useState(null);
     const [alarmList, setAlarmList] = useState([]);
 
     const loadAlarmList = async () => {
       try {
         const value = await AsyncStorage.getItem('alarm');
-        setAlarmList(JSON.parse(value));
+        const parseValue=JSON.parse(value);
+        console.log(parseValue);
+        console.log(parseValue[0].alarm);
+
+       const userValue=await AsyncStorage.getItem('userData');
+       const parseUserValue=JSON.parse(userValue);
+       const child=parseUserValue.childName;
+       
+       if(parseValue[0].alarm==="arrival"){ //이 인덱스를 어떻게 처리하지..?
+        if(parseValue[0].where==="House"){
+          setAlarmContent(child+"이(가) 집에 도착했습니다.");
+        }
+        else if(parseValue[0].where==="School"){
+          setAlarmContent(child+"이(가) 학교에 도착했습니다.");
+        }
+        console.log(alarmContent);
+       }
+        setAlarmList(alarmList => [...alarmList, {alarm: alarmContent, alarmAddress: parseValue[0].alarmAddress, now:parseValue[0].now}]);
         
       } catch (error) {
         console.log(error);
@@ -73,7 +89,7 @@ return(
     <View style={styles.body}>
 
         <Text style={styles.title}>알림</Text>
-        <TouchableOpacity style={styles.alarmButton}>
+        <TouchableOpacity style={styles.alarmButton} onPress={() => {navigation.navigate('ParentMainpage')}}>
           <Icon name="bell" size={25} color={"#000"}/>
         </TouchableOpacity>  
         {/*스크롤 가능하게 구현(async 배열)*/}
