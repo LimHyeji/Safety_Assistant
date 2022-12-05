@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox} from "react-native";
+import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Alert} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
@@ -167,6 +167,16 @@ function ChildMain({navigation}) {
     );
   }
 
+  const timeOut=async()=>{
+    const value = await AsyncStorage.getItem('userData');
+    const parseValue = JSON.parse(value);
+    const time=1000*60*parseValue.duration;
+    let timer = setTimeout(()=>{  Alert('timeout') },time);
+    /*
+    집/학교 exit 함수에서 호출하면 됨
+    집/학교 enter가 리턴될 경우(이를 어떻게 판단하지?), 중도에 리셋시켜야함 (clearTimeout(timer))
+    */
+  }
 
   function removeFence() {
     // Remove the events
