@@ -283,6 +283,10 @@ return (
                     onChangeText={value=>updateInput('duration',value)}
                   />
                 </View>
+                <Text style={styles.context}>"분"으로 적어주세요!</Text>
+                {
+                  //임시로 넣었는데 ui에 맞게 어떻게 알릴지 고민중
+                }
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
