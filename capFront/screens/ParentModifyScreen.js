@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNRestart from 'react-native-restart';
 
 /*
 비밀번호 미입력 시 api 안넘기는 것으로 예외처리
@@ -166,7 +167,7 @@ function ModifyAuthFormAPI(form, parseValue, {navigation}){
       if(responseJson==="expired"){
         try{
         await AsyncStorage.removeItem('userData');
-        navigation.navigate('Loginpage');
+        RNRestart.Restart();
       }catch(error){
         console.log(error);
       }

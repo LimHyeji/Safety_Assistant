@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Postcode from '@actbase/react-daum-postcode';
 import Geocode from "react-geocode";
+import RNRestart from 'react-native-restart';
 
 
 /*
@@ -351,7 +352,7 @@ return (
             if(responseJson==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
+              RNRestart.Restart();
             }catch(error){
               console.log(error);
             }

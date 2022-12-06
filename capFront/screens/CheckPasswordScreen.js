@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image, Alert, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNRestart from 'react-native-restart';
 
 function CheckPassword({navigation}) {   
   
@@ -72,7 +73,7 @@ async function CheckPasswordAPI(form, {navigation}){
       if(responseJson==="expired"){
         try{
         await AsyncStorage.removeItem('userData');
-        navigation.navigate('Loginpage');
+        RNRestart.Restart();
       }catch(error){
         console.log(error);
       }
