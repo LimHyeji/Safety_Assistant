@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import { CommonActions } from '@react-navigation/native';
+import RNRestart from 'react-native-restart';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -537,8 +538,8 @@ function ChildMain({navigation}) {
         body: JSON.stringify({
           userId: parseValue.userId,
           idx: parseValue.idx,
-          alarm: "arrival",
-          where: "House",
+          alarm: "departure",
+          where: "School",
           lat: parseValue.schoolLat,
           lng: parseValue.schoolLng,
         }),
@@ -574,7 +575,7 @@ function ChildMain({navigation}) {
       .then(async(responseJson) => {
         if(responseJson.msg === "expired") {
           await AsyncStorage.removeItem('userData');
-          navigation.navigate("Loginpage");
+          RNRestart.Restart();
         }
       })
       .catch((error) => {

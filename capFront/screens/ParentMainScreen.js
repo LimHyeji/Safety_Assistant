@@ -7,6 +7,7 @@ import Geolocation from "react-native-geolocation-service";
 import Postcode from '@actbase/react-daum-postcode';
 import Geocode from "react-geocode";
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
+import RNRestart from 'react-native-restart';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -30,6 +31,7 @@ function ParentMain({navigation}) {
   const [show, setShow] = useState(false);
 
   const [alarmList, setAlarmList] = useState([]);
+  const [flag, setFlag] = useState(false);
 
   const trackPosition = () => {  //부모의 위치추적
     requestPermission();
@@ -125,7 +127,7 @@ function ParentMain({navigation}) {
         if(responseJson.message === "expired"){
           try{
             await AsyncStorage.removeItem('userData');
-            navigation.navigate('Loginpage');
+            RNRestart.Restart();
           }catch(error){
             console.log(error);
           }
@@ -148,6 +150,8 @@ function ParentMain({navigation}) {
         let now = date.toLocaleString();
         setAlarmList(alarmList => [...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
         //await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
+
+        setFlag(true);
       },
       (error) => {
         console.error(error);
@@ -196,7 +200,7 @@ function ParentMain({navigation}) {
       .then(async(responseJson) => {
         if(responseJson.msg === "expired") {
           await AsyncStorage.removeItem('userData');
-          navigation.navigate("Loginpage");
+          RNRestart.Restart();
         }
       })
       .catch((error) => {
@@ -214,8 +218,10 @@ function ParentMain({navigation}) {
   }, []);
 
   useEffect(() => {
-    saveAlarm(alarmList);
-  }, [alarmList])
+    if(flag === true) {
+      saveAlarm(alarmList);
+    }
+  }, [flag])
   
   if(!latitude && !longitude) { //부모 위치정보 없을 때 로딩
     return (
