@@ -5,14 +5,11 @@ import com.example.back.Domain.Dto.locDto.school;
 import lombok.Data;
 
 @Data
-public class locationDto {
-    String userId;
+public class childrenLoginDto {
+    String parentPhoneNum;
     String houselat;
     String houselng;
     String schoollat;
     String schoollng;
-    String userName;
-    String phoneNum;
-    boolean idx;
     int duration;
 }

@@ -18,7 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {  //인터셉터 "등록"
         System.out.println(">>> register Interceptor");
 
         // 일단 PUSH시 이 부분은 주석처리.
-        //registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/board");
+        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/user/login/*");
 
         /*
           '/info'라는 패턴으로 들어오는 요청에 대해서 bearerAuthInterceptor를 등록해주었습니다.
