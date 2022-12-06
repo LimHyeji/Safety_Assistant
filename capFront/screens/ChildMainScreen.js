@@ -83,7 +83,7 @@ function ChildMain({navigation}) {
             if(responseJson==="expired"){
               try{
                 await AsyncStorage.removeItem('userData');
-                navigation.navigate('Loginpage');
+                RNRestart.Restart();
               } catch(error){
                 console.log(error);
               }
@@ -110,7 +110,7 @@ function ChildMain({navigation}) {
               if(responseJson==="expired"){
                 try{
                 await AsyncStorage.removeItem('userData');
-                navigation.navigate('Loginpage');
+                RNRestart.Restart();
               }catch(error){
                 console.log(error);
               }
@@ -221,7 +221,7 @@ function ChildMain({navigation}) {
             if(responseJson==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
+              RNRestart.Restart();
             }catch(error){
               console.log(error);
             }
@@ -255,7 +255,7 @@ function ChildMain({navigation}) {
             if(responseJson==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
+              RNRestart.Restart();
             }catch(error){
               console.log(error);
             }
@@ -295,7 +295,7 @@ function ChildMain({navigation}) {
             if(responseJson==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
+              RNRestart.Restart();
             }catch(error){
               console.log(error);
             }
@@ -341,7 +341,7 @@ function ChildMain({navigation}) {
             if(responseJson==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
+              RNRestart.Restart();
             }catch(error){
               console.log(error);
             }
@@ -375,7 +375,7 @@ function ChildMain({navigation}) {
             if(responseJson==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
-              navigation.navigate('Loginpage');
+              RNRestart.Restart();
             }catch(error){
               console.log(error);
             }
@@ -752,7 +752,7 @@ async function ChildMainAPI(latitude,longitude){
     if(responseJson==="expired"){
       try{
       await AsyncStorage.removeItem('userData');
-      navigation.navigate('Loginpage');
+      RNRestart.Restart();
     }catch(error){
       console.log(error);
     }
