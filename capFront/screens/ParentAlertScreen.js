@@ -29,30 +29,17 @@ import { ScrollView } from "react-native-gesture-handler";
 
 function ParentAlert({navigation}){
 
-    const [alarmContent,setAlarmContent]=useState(null);
     const [alarmList, setAlarmList] = useState([]);
+    const [childName, setChildName] = useState('');
 
     const loadAlarmList = async () => {
       try {
         const value = await AsyncStorage.getItem('alarm');
-        const parseValue=JSON.parse(value);
-        console.log(parseValue);
-        console.log(parseValue[0].alarm);
+        setAlarmList(JSON.parse(value));
 
-       const userValue=await AsyncStorage.getItem('userData');
-       const parseUserValue=JSON.parse(userValue);
-       const child=parseUserValue.childName;
-       
-       if(parseValue[0].alarm==="arrival"){ //이 인덱스를 어떻게 처리하지..?
-        if(parseValue[0].where==="House"){
-          setAlarmContent(child+"이(가) 집에 도착했습니다.");
-        }
-        else if(parseValue[0].where==="School"){
-          setAlarmContent(child+"이(가) 학교에 도착했습니다.");
-        }
-        console.log(alarmContent);
-       }
-        setAlarmList(alarmList => [...alarmList, {alarm: alarmContent, alarmAddress: parseValue[0].alarmAddress, now:parseValue[0].now}]);
+        const userValue = await AsyncStorage.getItem('userData');
+        const parseUserValue = JSON.parse(userValue);
+        setChildName(parseUserValue.childName);
         
       } catch (error) {
         console.log(error);
@@ -99,7 +86,16 @@ return(
               alarmList.map((a, index) => (
                 <View key={index} style={styles.container}>
                   <Image style={styles.image}  source={require("../profile.jpg")}/>
-                  <Text style={styles.textTitle}>{a.alarm}</Text>
+                  {a.alarm === "arrival" ? (a.where === "House" ? (<Text style={styles.textTitle}>{childName}이(가) 안전하게 집에 도착했습니다.</Text>) : 
+                    <Text style={styles.textTitle}>{childName}이(가) 안전하게 등교했습니다.</Text>
+                  ) : (
+                    a.alarm === "departure" ? (a.where === "House" ? (<Text style={styles.textTitle}>{childName}이(가) 외출하였습니다.</Text>) :
+                    (<Text style={styles.textTitle}>{childName}이(가) 하교하였습니다.</Text>)
+                    ) :  (
+                      a.alarm === "dangerArea" ? (<Text style={styles.textTitle}>{childName}이(가) 사고 다발 지역에 접근하였습니다.</Text>) :
+                      (<Text style={styles.textTitle}>{childName}이(가) 예상 등교 시간을 초과하였습니다.</Text>)
+                    )
+                  )}
                   <Text style={styles.text1}>{a.alarmAddress}</Text>
                   <Text style={styles.text2}>{a.now}</Text>
 
