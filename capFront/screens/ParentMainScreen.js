@@ -30,8 +30,6 @@ function ParentMain({navigation}) {
   const [show, setShow] = useState(false);
 
   const [alarmList, setAlarmList] = useState([]);
-  let date = new Date();
-  let now = date.toLocaleString();
 
   const trackPosition = () => {  //부모의 위치추적
     requestPermission();
@@ -144,9 +142,10 @@ function ParentMain({navigation}) {
       async(response) => {
         const address=response.results[0].formatted_address;
         const addresstemp=address.substr(5, address.length);
-        Date.now();
         const value = await AsyncStorage.getItem('alarm');
         setAlarmList(JSON.parse(value));
+        let date = new Date();
+        let now = date.toLocaleString();
         setAlarmList(alarmList => [...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
         //await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
       },
