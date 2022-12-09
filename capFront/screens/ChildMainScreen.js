@@ -57,6 +57,8 @@ function ChildMain({navigation}) {
   const [fillAllData, setFillAllData] = useState([]);
   const [fitFlag, setFitFlag] = useState(false);
 
+  let timer=null;
+
   const componentDidMount = async() => {
       // 위험지역
       for(let g in searchYear) {
@@ -173,11 +175,38 @@ function ChildMain({navigation}) {
     const value = await AsyncStorage.getItem('userData');
     const parseValue = JSON.parse(value);
     const time=1000*60*parseValue.duration;
-    let timer = setTimeout(()=>{  Alert('timeout') },time);
-    /*
-    집/학교 exit 함수에서 호출하면 됨
-    집/학교 enter가 리턴될 경우(이를 어떻게 판단하지?), 중도에 리셋시켜야함 (clearTimeout(timer))
-    */
+    timer = setTimeout(()=>{
+      fetch("http://34.64.74.7:8081/user/login/alarm", {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: parseValue.userId,
+          idx: parseValue.idx,
+          alarm: "timeOut",
+          where: "House",
+          lat: latitude,
+          lng: longitude,
+        }),
+        headers : {
+          'Content-Type' : 'application/json; charset=utf-8',
+          Authorization: `Bearer${parseValue.token}`,
+        }
+      })
+        .then(response => response.json())
+        .then(async(responseJson) => {
+          console.log(responseJson);
+          if(responseJson==="expired"){
+            try{
+            await AsyncStorage.removeItem('userData');
+            RNRestart.Restart();
+          }catch(error){
+            console.log(error);
+          }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+     },time);
   }
 
   //혈압과 심박수 받아오기
@@ -309,6 +338,7 @@ function ChildMain({navigation}) {
 
       else if(id.toString() === "School") {
         console.log(`Enter my ${id}!!`);
+        clearTimeout(timer);  //학교 도착 시 타이머 초기화
         fetch("http://34.64.74.7:8081/user/login/alarm", {
           method: 'POST',
           body: JSON.stringify({
@@ -395,6 +425,10 @@ function ChildMain({navigation}) {
 
       if(id.toString() === "House") {
         console.log(`Exit my ${id}!!`);
+        let current=new Date();
+        if(current.getHours()>=7&&current.getHours()<=9&&current.getDay()>=1&&current.getDay()<=5){
+            timeOut(); //집을 벗어나면서, 현재 시간이 7시와 9시 사이(평일 등교시간대일 경우) 타이머 호출
+        }
         fetch("http://34.64.74.7:8081/user/login/alarm", {
           method: 'POST',
           body: JSON.stringify({
