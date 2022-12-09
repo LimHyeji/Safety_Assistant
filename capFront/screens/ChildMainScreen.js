@@ -81,7 +81,7 @@ function ChildMain({navigation}) {
         })
           .then(response => response.json())
           .then(async(responseJson) => {
-            if(responseJson==="expired"){
+            if(responseJson.message==="expired"){
               try{
                 await AsyncStorage.removeItem('userData');
                 RNRestart.Restart();
@@ -108,7 +108,7 @@ function ChildMain({navigation}) {
           })
             .then(response => response.json())
             .then(async(responseJson) => {
-              if(responseJson==="expired"){
+              if(responseJson.message==="expired"){
                 try{
                 await AsyncStorage.removeItem('userData');
                 RNRestart.Restart();
@@ -327,7 +327,7 @@ function ChildMain({navigation}) {
           .then(response => response.json())
           .then(async(responseJson) => {
             console.log(responseJson);
-            if(responseJson==="expired"){
+            if(responseJson.message==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
               RNRestart.Restart();
@@ -367,7 +367,7 @@ function ChildMain({navigation}) {
           .then(response => response.json())
           .then(async(responseJson) => {
             console.log(responseJson);
-            if(responseJson==="expired"){
+            if(responseJson.message==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
               RNRestart.Restart();
@@ -413,7 +413,7 @@ function ChildMain({navigation}) {
           .then(response => response.json())
           .then(async(responseJson) => {
             console.log(responseJson);
-            if(responseJson==="expired"){
+            if(responseJson.message==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
               RNRestart.Restart();
@@ -447,7 +447,7 @@ function ChildMain({navigation}) {
           .then(response => response.json())
           .then(async(responseJson) => {
             console.log(responseJson);
-            if(responseJson==="expired"){
+            if(responseJson.message==="expired"){
               try{
               await AsyncStorage.removeItem('userData');
               RNRestart.Restart();
@@ -603,37 +603,6 @@ function ChildMain({navigation}) {
       })
     )
   }
-  const apiTest = async() => {
-    try{
-      const value = await AsyncStorage.getItem('userData');
-      const parseValue = JSON.parse(value);
-
-      fetch("http://34.64.74.7:8081/user/login/alarm", {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: parseValue.userId,
-          idx: parseValue.idx,
-          alarm: "departure",
-          where: "School",
-          lat: parseValue.schoolLat,
-          lng: parseValue.schoolLng,
-        }),
-        headers : {
-          'Content-Type' : 'application/json; charset=utf-8',
-          Authorization: `Bearer${parseValue.token}`,
-        }
-      })
-        .then(response => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } catch(error) {
-      console.log(error);
-    }
-  }
 
   async function logoutAPI() {
     try {
@@ -648,7 +617,7 @@ function ChildMain({navigation}) {
       })
       .then(response => response.json())
       .then(async(responseJson) => {
-        if(responseJson.msg === "expired") {
+        if(responseJson.message === "expired") {
           await AsyncStorage.removeItem('userData');
           RNRestart.Restart();
         }
@@ -664,12 +633,6 @@ function ChildMain({navigation}) {
   useEffect(() => {
     componentDidMount();
     trackPosition();
-
-    apiTest();
-    
-    //testGeofence();
-    //setInterval(()=>ChildMainAPI(latitude,longitude),5000); //여기서 호출하니 위경도 값 안넘어감
-    //setInterval(()=>ChildMainAPI(routetest),5000);
   }, []);
 
   useEffect(() => {
@@ -792,15 +755,6 @@ function ChildMain({navigation}) {
 
           </MapView>
         </DrawerLayout>
-        {/*<View>
-          <Button title="ON" onPress={() =>  {Boundary.on(Events.ENTER, ononon());}}></Button> 
-        </View>
-        <View>
-          <Button title="OFF" onPress={() =>  {Boundary.on(Events.EXIT, ofof());}}></Button> 
-        </View>
-        <View>
-          <Button title="자녀위치보내기" onPress={() =>  ChildMainAPI(latitude,longitude)}></Button>
-          </View>*/}
       </View>
   );
 }
@@ -824,7 +778,7 @@ async function ChildMainAPI(latitude,longitude){
   .then((response) => response.json())
   .then(async(responseJson) => {
     console.log(responseJson);
-    if(responseJson==="expired"){
+    if(responseJson.message==="expired"){
       try{
       await AsyncStorage.removeItem('userData');
       RNRestart.Restart();
@@ -838,48 +792,6 @@ async function ChildMainAPI(latitude,longitude){
   });
 }
 
-/*
-//테스트용1
-function ChildMainAPI(latitude,longitude){
-  fetch('http://34.64.74.7:8081/test/loc', {
-  method: 'POST',
-  body: JSON.stringify({
-    "latitude":latitude,
-    "longitude":longitude
-  }  ),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    console.log(latitude);
-    console.log(longitude);
-    console.log(responseJson);
-  })
-  .catch((error) => {
-    console.error("no");
-  });
-}
-*/
-/*/
-//테스트용2
-function ChildMainAPI(routetest){
-  fetch('http://34.64.74.7:8081/test/loc2', {
-  method: 'POST',
-  body: JSON.stringify({
-      list : routetest
-  }),
-  headers : {'Content-Type' : 'application/json; charset=utf-8'}
-})
-  .then((response) => response.json())
-  .then((responseJson) => {
-    console.log(routetest);
-    console.log(responseJson);
-  })
-  .catch((error) => {
-    console.error("no");
-  });
-}
-*/
 export default ChildMain;
 
 const styles = StyleSheet.create({

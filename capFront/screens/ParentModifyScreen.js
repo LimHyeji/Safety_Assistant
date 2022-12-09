@@ -164,7 +164,7 @@ function ModifyAuthFormAPI(form, parseValue, {navigation}){
   })
     .then(async(responseJson) => {
       console.log(responseJson);
-      if(responseJson==="expired"){
+      if(responseJson.message==="expired"){
         try{
         await AsyncStorage.removeItem('userData');
         RNRestart.Restart();
