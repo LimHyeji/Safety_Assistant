@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Image} from "react-native";
+import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Image, Modal, FlatList, ScrollView} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
@@ -9,6 +9,7 @@ import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import GoogleFit, { Scopes, BucketUnit } from 'react-native-google-fit'
 import RNRestart from 'react-native-restart';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+import {RadioButton} from 'react-native-paper';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -58,6 +59,48 @@ function ChildMain({navigation}) {
   const [fitFlag, setFitFlag] = useState(false);
   const [name, setName] = useState('');
   let timer=null;
+
+  //프로필
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [profileNum, setProfileNum] = useState(0);
+  const profileList = [
+    {
+      idx: 0,
+      src: require('../profile/default.jpg')
+    },
+    {
+      idx: 1,
+      src: require('../profile/profile1.jpg')
+    },
+    {
+      idx: 2,
+      src: require('../profile/profile2.jpg')
+    },
+    {
+      idx: 3,
+      src: require('../profile/profile3.jpg')
+    },
+    {
+      idx: 4,
+      src: require('../profile/profile4.jpg')
+    },
+    {
+      idx: 5,
+      src: require('../profile/profile5.jpg')
+    },
+    {
+      idx: 6,
+      src: require('../profile/profile6.jpg')
+    },
+    {
+      idx: 7,
+      src: require('../profile/profile7.jpg')
+    }
+    ,{
+      idx: 8,
+      src: require('../profile/profile8.jpg')
+    }
+  ];
 
   const componentDidMount = async() => {
       // 위험지역
@@ -668,7 +711,11 @@ function ChildMain({navigation}) {
     try {
       const value = await AsyncStorage.getItem('userData');
       const parseValue = JSON.parse(value);
+
+      const value2 = await AsyncStorage.getItem('profile');
+      const parseValue2 = JSON.parse(value2);
       setName(parseValue.userName);
+      setProfileNum(parseValue2.profileNum);
     } catch(error) {
       console.log(error);
     }
@@ -709,11 +756,43 @@ function ChildMain({navigation}) {
     console.log(status);
   };
 
+  const changeProfile = async(index) => {
+    setProfileNum(index);
+    await AsyncStorage.setItem(
+      'profile',
+      JSON.stringify({
+        profileNum: index,
+      })
+    );
+    setIsProfileModalVisible(!isProfileModalVisible);
+  }
+
   renderDrawer = () => {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={isProfileModalVisible}
+          transparent={true}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <FlatList
+                keyExtractor={item => item.idx}
+                data={profileList}
+                renderItem={({item}) => (
+                  <TouchableOpacity onPress={() => changeProfile(item.idx)}>
+                    <Image style={styles.changeImage} source={item.src}/>
+                  </TouchableOpacity>
+                )}
+                numColumns={3}
+              />
+            </View>
+          </View>
+        </Modal>
         <View style={styles.profile}>
-          <Image style={styles.image}  source={require("../profile/default.jpg")}/>
+        <TouchableOpacity activeOpacity={1} onPress={() => setIsProfileModalVisible(true)}>
+            <Image style={styles.image}  source={profileList[profileNum].src}/>
+          </TouchableOpacity>
           <View style={{alignItems: 'flex-end'}}>
             <Text style={styles.userName}>{name}</Text>
             <Text style={styles.idx}>자녀</Text>
@@ -926,5 +1005,37 @@ const styles = StyleSheet.create({
     top: 10,
     left: 20,
     zIndex: 1,
+  },
+  modalView: {
+    margin: 20,
+    width: "80%",
+    height: "45%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    flexDirection: 'row',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  changeImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
+    borderWidth: 0.2,
+    borderColor: "lightgray",
   }
 });
