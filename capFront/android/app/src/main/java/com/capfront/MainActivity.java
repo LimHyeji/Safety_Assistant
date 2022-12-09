@@ -3,8 +3,6 @@ package com.capfront;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
-import android.os.Build;
-import android.location;  //위치 반환받는 라이브러리
 
 public class MainActivity extends ReactActivity {
 
@@ -47,26 +45,4 @@ public class MainActivity extends ReactActivity {
       return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     }
   }
-
-  
-/*
-    @Override
-    public void receivePer(){
-      if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)  {
-        //마시멜로우 권한 처리
-
-        if(Settings.canDrawOverlays(context)){
-            Intent intent=new Intent(context,MainActivity.class);
-            sIntent.putExtra("action","tts");
-
-            //같은 창 여러번 띄우지 않고 기존창 띄움
-            sIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            
-            //Activity 아닌 곳에서 startActivity 사용하려고 할 때
-            sIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(sIntent);
-        }
-      }
-    }
-*/
 }
