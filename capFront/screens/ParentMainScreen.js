@@ -64,13 +64,12 @@ function ParentMain({navigation}) {
 
   const showChildLocation = async() => {  //자녀의 위치추적
     try{
-      const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
-      const parseValue = JSON.parse(value); //테스트를 위한 주석처리
+      const value = await AsyncStorage.getItem('userData'); 
+      const parseValue = JSON.parse(value);
       fetch('http://34.64.74.7:8081/user/login/parent', {
         method: "POST",
         body: JSON.stringify({
-          //userId: parseValue.childrenInfo[0].userId, //테스트를 위한 주석처리
-          "userId": "child",  //테스트를 위한 임시값
+          "userId": parseValue.childName, 
           "idx": true,
         }),
         headers : {
@@ -106,14 +105,13 @@ function ParentMain({navigation}) {
   }
 
   const parentAlert=async()=>{
-    const value = await AsyncStorage.getItem('userData'); //테스트를 위한 주석처리
-    const parseValue = JSON.parse(value); //테스트를 위한 주석처리
+    const value = await AsyncStorage.getItem('userData'); 
+    const parseValue = JSON.parse(value); 
     try{
       fetch('http://34.64.74.7:8081/user/login/alarmRec',{
         method:"POST",
         body: JSON.stringify({
-         //userId: parseValue.childrenInfo[0].userId, //테스트를 위한 주석처리
-          "userId":"child",
+          "userId": parseValue.childName,
           "idx":true,
         }),
         headers : {
