@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity} from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity, Image} from "react-native";
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,6 +24,7 @@ function ParentMain({navigation}) {
 
   const [latitude, setLatitude] = useState(null); //부모의 위치데이터
   const [longitude, setLongitude] = useState(null);
+  const [name, setName] = useState('');
 
   const [childLat, setChildLat] = useState(null); //자녀의 위치데이터
   const [childLng, setChildLng] = useState(null);
@@ -209,8 +210,19 @@ function ParentMain({navigation}) {
     }
   }
 
+  async function loadData() {
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+      setName(parseValue.userName);
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     trackPosition();
+    loadData();
     setInterval(()=>showChildLocation(),5000); //과연 넘어올것인가
     setInterval(()=>parentAlert(),5000); //과연 넘어올것인가
   }, []);
@@ -244,8 +256,19 @@ function ParentMain({navigation}) {
   renderDrawer = () => {
     return (
       <View style={styles.container}>
+        <View style={styles.profile}>
+          <Image style={styles.image}  source={require("../profile.jpg")}/>
+          <View style={{alignItems: 'flex-end'}}>
+            <Text style={styles.userName}>{name}</Text>
+            <Text style={styles.idx}>부모</Text>
+          </View>
+        </View>
+        <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
           <Text style={styles.modifyTitle}>회원 정보 수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ParentSetUppage')}}>
+          <Text style={styles.modifyTitle}>알림 설정</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
           <Text style={styles.logoutText}>로그아웃</Text>
@@ -339,7 +362,6 @@ export default ParentMain;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: "white",
   },
   reloadButton: {
@@ -386,10 +408,16 @@ const styles = StyleSheet.create({
     left: 10,
     zIndex: 1,
   },
-  
-  modifyTitle: {
+  title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: "black",
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  modifyTitle: {
+    fontSize: 20,
     color: "black",
     marginTop: 10,
     marginBottom: 10,
@@ -397,8 +425,7 @@ const styles = StyleSheet.create({
   },
   InnerContainer: {
     width: "100%",
-    marginTop: 30,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderStyle: 'solid',
     borderColor: "black",
   },
@@ -411,5 +438,29 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 12,
     textDecorationLine: 'underline',
-  }, 
+  },
+  profile: {
+    width: "100%",
+    height: "13%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#CAEF53",
+    flexDirection: "row",
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    marginLeft: 20,
+  },
+  userName: {
+    fontSize: 24,
+    color: "black",
+    marginRight: 20,
+  },
+  idx: {
+    fontSize: 14,
+    color: "#66666",
+    marginRight: 20,
+  }
 })

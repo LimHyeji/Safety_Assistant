@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Alert} from "react-native";
+import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Image} from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
@@ -56,7 +56,7 @@ function ChildMain({navigation}) {
   const [fenceCrossWalks, setFenceCrossWalks] = useState([]) // 미추홀구 70m이상 횡단보도
   const [fillAllData, setFillAllData] = useState([]);
   const [fitFlag, setFitFlag] = useState(false);
-
+  const [name, setName] = useState('');
   let timer=null;
 
   const componentDidMount = async() => {
@@ -664,9 +664,20 @@ function ChildMain({navigation}) {
     }
   }
 
+  async function loadData() {
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+      setName(parseValue.userName);
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     componentDidMount();
     trackPosition();
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -701,8 +712,19 @@ function ChildMain({navigation}) {
   renderDrawer = () => {
     return (
       <View style={styles.container}>
+        <View style={styles.profile}>
+          <Image style={styles.image}  source={require("../profile.jpg")}/>
+          <View style={{alignItems: 'flex-end'}}>
+            <Text style={styles.userName}>{name}</Text>
+            <Text style={styles.idx}>자녀</Text>
+          </View>
+        </View>
+        <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
-          <Text style={styles.modifyTitle}>회원 정보 수정</Text>
+          <Text style={styles.touchTitle}>회원 정보 수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ChildSetUppage')}}>
+          <Text style={styles.touchTitle}>알림 설정</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
           <Text style={styles.logoutText}>로그아웃</Text>
@@ -831,12 +853,18 @@ export default ChildMain;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: "white",
   },
-  modifyTitle: {
+  title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: "black",
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  touchTitle: {
+    fontSize: 20,
     color: "black",
     marginTop: 10,
     marginBottom: 10,
@@ -844,8 +872,7 @@ const styles = StyleSheet.create({
   },
   InnerContainer: {
     width: "100%",
-    marginTop: 30,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderStyle: 'solid',
     borderColor: "black",
   },
@@ -866,10 +893,29 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     color: "#696969",
   },
+  profile: {
+    width: "100%",
+    height: "13%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#CAEF53",
+    flexDirection: "row",
+  },
   image: {
-    width: 175,
-    height: 200,
-    marginTop: 80,
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    marginLeft: 20,
+  },
+  userName: {
+    fontSize: 24,
+    color: "black",
+    marginRight: 20,
+  },
+  idx: {
+    fontSize: 14,
+    color: "#66666",
+    marginRight: 20,
   },
   modifyButton: {
     justifyContent: 'center',
