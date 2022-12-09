@@ -6,8 +6,9 @@ import Boundary, {Events} from 'react-native-boundary';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
-import { CommonActions } from '@react-navigation/native';
+import GoogleFit, { Scopes, BucketUnit } from 'react-native-google-fit'
 import RNRestart from 'react-native-restart';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -54,7 +55,7 @@ function ChildMain({navigation}) {
   const [allCrossWalks, setAllCrossWalks] = useState([]); // 미추홀구 모든 횡단보도
   const [fenceCrossWalks, setFenceCrossWalks] = useState([]) // 미추홀구 70m이상 횡단보도
   const [fillAllData, setFillAllData] = useState([]);
-  const [routetest,setRouteTest]=useState([{latitude:"37",longitude:"128"},{latitude:"38",longitude:"129"}]);
+  const [fitFlag, setFitFlag] = useState(false);
 
   const componentDidMount = async() => {
       // 위험지역
@@ -178,6 +179,80 @@ function ChildMain({navigation}) {
     집/학교 enter가 리턴될 경우(이를 어떻게 판단하지?), 중도에 리셋시켜야함 (clearTimeout(timer))
     */
   }
+
+  //혈압과 심박수 받아오기
+  async function checkHeartRate() {
+    const value = await AsyncStorage.getItem('userData');
+    const parseValue = JSON.parse(value);
+    var today = new Date();
+    var yesterday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+    );
+    const optionsHB = {
+      startDate: yesterday.toISOString(), // required
+      endDate: today.toISOString(), // required
+      bucketUnit: "DAY", // optional - default "DAY". Valid values: "NANOSECOND" | "MICROSECOND" | "MILLISECOND" | "SECOND" | "MINUTE" | "HOUR" | "DAY"
+      bucketInterval: 1, // optional - default 1.
+    };
+    const heartrate = await GoogleFit.getHeartRateSamples(optionsHB);
+    let HR = heartrate.reverse();
+    if(HR.length === 0) {
+      console.log("no records");
+    }
+    else {
+      if(HR[0].value <= 50 || HR[0].value > 130) {
+        RNImmediatePhoneCall.immediatePhoneCall(parseValue.parentPhoneNum);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const options = {
+      scopes: 
+        [   //심박수
+            Scopes.FITNESS_ACTIVITY_READ,
+            Scopes.FITNESS_ACTIVITY_WRITE,
+            Scopes.FITNESS_HEART_RATE_READ,
+            Scopes.FITNESS_HEART_RATE_WRITE,
+            //혈압
+            Scopes.FITNESS_BLOOD_PRESSURE_READ,
+            Scopes.FITNESS_BLOOD_PRESSURE_WRITE,
+            Scopes.FITNESS_BLOOD_GLUCOSE_READ,
+            Scopes.FITNESS_BLOOD_GLUCOSE_WRITE,
+        ],
+    };
+
+    GoogleFit.checkIsAuthorized().then(() => {
+      console.log(GoogleFit.isAuthorized) // Then you can simply refer to `GoogleFit.isAuthorized` boolean.
+      if(!GoogleFit.isAuthorized) {
+        GoogleFit.authorize(options)
+              .then(authResult => {
+                if (authResult.success) {
+                  console.log('Success')
+                  setFitFlag(true);
+                } else {
+                  console.log('Denied')
+                  //dispatch("AUTH_DENIED", authResult.message);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+                //dispatch("AUTH_ERROR");
+              })
+      }
+      else {
+        console.log("already!");
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    if(fitFlag === true) {
+      setInterval(() => checkHeartRate(), 5000);
+    }
+  }, [fitFlag])
 
   function removeFence() {
     // Remove the events
@@ -736,7 +811,7 @@ async function ChildMainAPI(latitude,longitude){
   fetch('http://34.64.74.7:8081/user/login/child', {
   method: 'POST',
   body: JSON.stringify({
-    "userId": "child",
+    "userId": parseValue.userId,
     "idx": false,
     "latitude":latitude,
     "longitude":longitude

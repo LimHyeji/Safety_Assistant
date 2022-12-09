@@ -255,6 +255,7 @@ dependencies {
     implementation project(':react-native-boundary')
     implementation project(':react-native-google-fit')
     implementation project(':react-native-restart')
+    implementation project(':react-native-immediate-phone-call')
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules

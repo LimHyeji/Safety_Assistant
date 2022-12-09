@@ -122,7 +122,7 @@ return (
               userId:responseJson.userId,
               userName:responseJson.userName,
               phoneNum: responseJson.phoneNum,
-              parentPhoneNum: responseJson.parentPhoneNum,
+              parentPhoneNum: responseJson.myLocation.parentPhoneNum,
               token:responseJson.token,
 
               houseLat: responseJson.myLocation.houselat,
