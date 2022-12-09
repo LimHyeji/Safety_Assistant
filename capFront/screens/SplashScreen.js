@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
 import {  View, Text, ScrollView ,StyleSheet, Image, Dimensions, Button, } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-/*
-스타일시트 필요!
-*/
 
 const loading =async({navigation})=>{
   try{
@@ -32,7 +29,7 @@ const loading =async({navigation})=>{
 
 
 };
-/*
+
 function SplashScreen({navigation}){
   useEffect(() => {
     loading({navigation});
@@ -46,32 +43,6 @@ function SplashScreen({navigation}){
       </ScrollView>
     );
 };
-*/ 
-const SplashScreen = ({navigation}) => {
-  
-    return (
-      <View>
-          <View>
-          <Button title="로그인" onPress={() => navigation.navigate('Loginpage')}></Button>
-          </View>
-          <View>
-          <Button title="부모메인" onPress={() => navigation.navigate('ParentMainpage')}></Button>
-          </View>
-          <View>
-          <Button title="자녀메인" onPress={() => navigation.navigate('ChildMainpage')}></Button>
-          </View>
-          <View>
-          <Button title="(임시)부모회원정보수정" onPress={() => navigation.navigate('ParentModifypage')}></Button>
-          </View>
-          <View>
-          <Button title="(임시)자녀회원정보수정" onPress={() => navigation.navigate('ChildModifypage')}></Button>
-          </View>
-          <View>
-          <Button title="(임시)Test2" onPress={() => navigation.navigate('Test2page')}></Button>
-          </View>
-      </View>
-    );
-  };
 
   export default SplashScreen;
 
