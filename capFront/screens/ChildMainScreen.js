@@ -651,7 +651,7 @@ function ChildMain({navigation}) {
       })
       .then(response => response.json())
       .then(async(responseJson) => {
-        if(responseJson.message === "expired") {
+        if(responseJson.msg === "expired") {
           await AsyncStorage.removeItem('userData');
           RNRestart.Restart();
         }
