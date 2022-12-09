@@ -372,7 +372,7 @@ function ChildMain({navigation}) {
       }
 
       // 횡단 보도일 경우,
-      else if (Number(id) >= 0 && Number(id) < 51) {
+      else if (Number(id) >= 0 && Number(id) < 55) {
         console.log(`Enter crossWalk ${id}!!`);
       }
 
