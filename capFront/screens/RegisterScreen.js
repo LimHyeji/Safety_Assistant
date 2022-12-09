@@ -278,12 +278,11 @@ return (
                     style={styles.body}
                     value={form.duration.value}
                     type={form.duration.type}
-                    placeholder="등교 시간"
+                    placeholder="등교 시간(분)"
                     placeholderTextColor={'#ddd'}
                     onChangeText={value=>updateInput('duration',value)}
                   />
                 </View>
-                <Text style={styles.context}>"분"으로 적어주세요!</Text>
                 {
                   //임시로 넣었는데 ui에 맞게 어떻게 알릴지 고민중
                 }
@@ -292,7 +291,8 @@ return (
                     style={styles.body}
                     value={form.parentPhoneNum.value}
                     type={form.parentPhoneNum.type}
-                    placeholder="부모님 전화번호"
+                    keyboardType={'phone-pad'}
+                    placeholder="부모님 전화번호('-'없이)"
                     placeholderTextColor={'#ddd'}
                     onChangeText={value=>updateInput('parentPhoneNum',value)}
                   />

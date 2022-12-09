@@ -713,7 +713,7 @@ function ChildMain({navigation}) {
     return (
       <View style={styles.container}>
         <View style={styles.profile}>
-          <Image style={styles.image}  source={require("../profile.jpg")}/>
+          <Image style={styles.image}  source={require("../profile/default.jpg")}/>
           <View style={{alignItems: 'flex-end'}}>
             <Text style={styles.userName}>{name}</Text>
             <Text style={styles.idx}>자녀</Text>

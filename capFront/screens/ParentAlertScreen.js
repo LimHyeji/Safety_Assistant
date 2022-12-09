@@ -85,7 +85,7 @@ return(
             alarmList === null ? (<></>) : (
               alarmList.map((a, index) => (
                 <View key={index} style={styles.container}>
-                  <Image style={styles.image}  source={require("../profile.jpg")}/>
+                  <Image style={styles.image}  source={require("../profile/profile6.jpg")}/>
                   {a.alarm === "arrival" ? (a.where === "House" ? (<Text style={styles.textTitle}>{childName}이(가) 안전하게 집에 도착했습니다.</Text>) : 
                     <Text style={styles.textTitle}>{childName}이(가) 안전하게 등교했습니다.</Text>
                   ) : (
@@ -204,7 +204,9 @@ const styles = StyleSheet.create({
       flex:1,
       position: "absolute",
       top: 10,
-      left: 2,
+      left: 10,
+      borderWidth: 0.2,
+      borderColor: "lightgray",
     },
     alarmButton: {
         alignItems: "center",

@@ -112,6 +112,12 @@ return (
             childSchoolLng:responseJson.childrenInfo[0].schoollng
           })
         )
+        await AsyncStorage.setItem(
+          'profile',
+          JSON.stringify({
+            profileNum: 0,
+          })
+        );
         navigation.navigate('ParentMainpage');
         }
         else if(responseJson.idx === false) { //자녀일 경우의 저장 내용
@@ -132,6 +138,12 @@ return (
               duration: responseJson.myLocation.duration,
             })
           )
+          await AsyncStorage.setItem(
+            'profile',
+            JSON.stringify({
+              profileNum: 0,
+            })
+          );
           navigation.navigate('ChildMainpage');
         }
       }
