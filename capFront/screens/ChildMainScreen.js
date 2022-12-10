@@ -271,7 +271,7 @@ function ChildMain({navigation}) {
     const heartrate = await GoogleFit.getHeartRateSamples(optionsHB);
     let HR = heartrate.reverse();
     if(HR.length === 0) {
-      console.log("no records");
+      //console.log("no records");
     }
     else {
       if(HR[0].value <= 50 || HR[0].value > 130) {
@@ -798,10 +798,10 @@ function ChildMain({navigation}) {
             <Text style={styles.idx}>자녀</Text>
           </View>
         </View>
-        <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
           <Text style={styles.touchTitle}>회원 정보 수정</Text>
         </TouchableOpacity>
+        <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ChildSetUppage')}}>
           <Text style={styles.touchTitle}>알림 설정</Text>
         </TouchableOpacity>
@@ -912,7 +912,7 @@ async function ChildMainAPI(latitude,longitude){
 })
   .then((response) => response.json())
   .then(async(responseJson) => {
-    console.log(responseJson);
+    //console.log(responseJson);
     if(responseJson.message==="expired"){
       try{
       await AsyncStorage.removeItem('userData');
@@ -951,9 +951,8 @@ const styles = StyleSheet.create({
   },
   InnerContainer: {
     width: "100%",
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderColor: "black",
+    borderBottomWidth: 0.5,
+    borderColor: "grey",
   },
   logoutContainer: {
     justifyContent: 'center',

@@ -356,6 +356,9 @@ function ParentMain({navigation}) {
                 numColumns={3}
               />
             </View>
+            <TouchableOpacity style={styles.button} onPress={() => setIsProfileModalVisible(!isProfileModalVisible)}>
+              <Text style={{color: "black", fontSize: 18}}>취소</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
 
@@ -365,6 +368,19 @@ function ParentMain({navigation}) {
         >
           <View style={styles.centeredView}>
             <View style={styles.collectView}>
+              <View
+                style={{
+                width: "100%",
+                height: 40,
+                borderTopEndRadius: 20,
+                borderTopStartRadius: 20,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 10
+                }}
+              >
+                <Text style={{color: "darkgreen", fontSize: 18}}>간격 선택</Text>
+              </View>
               <RadioButton.Group
                 onValueChange={(newValue) => changeCollectInterval(newValue)}
                 value={collectInterval / 1000}
@@ -376,7 +392,11 @@ function ParentMain({navigation}) {
                 <RadioButton.Item label="2분" value={120} style={styles.RadioButtonBody}/>               
                 <RadioButton.Item label="10분" value={600} style={styles.RadioButtonBody}/>                
               </RadioButton.Group>
+              <Text>* 10분으로 설정하시면 자녀의 이동경로가 정확하게 표시되지 않을 수 있습니다.</Text>
             </View>
+            <TouchableOpacity style={styles.button} onPress={() => setIsCollectModalVisible(!isCollectModalVisible)}>
+                <Text style={{color: "black", fontSize: 18}}>취소</Text>
+              </TouchableOpacity>
           </View>
         </Modal>
         <View style={styles.profile}>
@@ -551,9 +571,8 @@ const styles = StyleSheet.create({
   },
   InnerContainer: {
     width: "100%",
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderColor: "black",
+    borderBottomWidth: 0.5,
+    borderColor: "grey",
   },
   logoutContainer: {
     justifyContent: 'center',
@@ -609,8 +628,8 @@ const styles = StyleSheet.create({
   },
   collectView: {
     margin: 20,
-    width: "50%",
-    height: "45%",
+    width: "80%",
+    height: "55%",
     backgroundColor: "white",
     borderRadius: 20,
     alignItems: "center",
@@ -640,7 +659,15 @@ const styles = StyleSheet.create({
   },
   RadioButtonBody: {
     justifyContent: "space-between",
-    width: "80%",
-    marginLeft: 25
+    width: "70%",
+    marginLeft: 70
   },
+  button: {
+    width: "80%",
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#CAEF53",
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 })
