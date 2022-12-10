@@ -118,6 +118,12 @@ return (
             profileNum: 0,
           })
         );
+        await AsyncStorage.setItem(
+          'collect',
+          JSON.stringify({
+            collectInterval: 5000,
+          })
+        );
         navigation.navigate('ParentMainpage');
         }
         else if(responseJson.idx === false) { //자녀일 경우의 저장 내용
@@ -142,6 +148,12 @@ return (
             'profile',
             JSON.stringify({
               profileNum: 0,
+            })
+          );
+          await AsyncStorage.setItem(
+            'collect',
+            JSON.stringify({
+              collectInterval: 5000,
             })
           );
           navigation.navigate('ChildMainpage');

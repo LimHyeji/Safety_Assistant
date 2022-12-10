@@ -44,37 +44,41 @@ function ParentMain({navigation}) {
     },
     {
       idx: 1,
-      src: require('../profile/profile1.jpg')
+      src: require('../profile/profile1.png')
     },
     {
       idx: 2,
-      src: require('../profile/profile2.jpg')
+      src: require('../profile/profile2.png')
     },
     {
       idx: 3,
-      src: require('../profile/profile3.jpg')
+      src: require('../profile/profile3.png')
     },
     {
       idx: 4,
-      src: require('../profile/profile4.jpg')
+      src: require('../profile/profile4.png')
     },
     {
       idx: 5,
-      src: require('../profile/profile5.jpg')
+      src: require('../profile/profile5.png')
     },
     {
       idx: 6,
-      src: require('../profile/profile6.jpg')
+      src: require('../profile/profile6.png')
     },
     {
       idx: 7,
-      src: require('../profile/profile7.jpg')
+      src: require('../profile/profile7.png')
     }
     ,{
       idx: 8,
-      src: require('../profile/profile8.jpg')
+      src: require('../profile/profile8.png')
     }
   ];
+  //위치 수집 간격 설정
+  const [isCollectModalVisible, setIsCollectModalVisible] = useState(false);
+  const [collectInterval, setCollectInterval] = useState(5000);
+  const [colFlag, setColFlag] = useState(false);
 
   const trackPosition = () => {  //부모의 위치추적
     requestPermission();
@@ -259,8 +263,13 @@ function ParentMain({navigation}) {
 
       const value2 = await AsyncStorage.getItem('profile');
       const parseValue2 = JSON.parse(value2);
+
+      const value3 = await AsyncStorage.getItem('collect');
+      const parseValue3 = JSON.parse(value3);
       setName(parseValue.userName);
       setProfileNum(parseValue2.profileNum);
+      setCollectInterval(parseValue3.collectInterval);
+      setColFlag(true);
     } catch(error) {
       console.log(error);
     }
@@ -269,9 +278,14 @@ function ParentMain({navigation}) {
   useEffect(() => {
     trackPosition();
     loadData();
-    setInterval(()=>showChildLocation(),5000); //과연 넘어올것인가
     setInterval(()=>parentAlert(),5000); //과연 넘어올것인가
   }, []);
+
+  useEffect(() => {
+    if(colFlag === true) {
+      setInterval(()=>showChildLocation(), collectInterval);
+    }
+  }, [colFlag]);
 
   useEffect(() => {
     if(flag === true) {
@@ -310,10 +324,22 @@ function ParentMain({navigation}) {
     setIsProfileModalVisible(!isProfileModalVisible);
   }
 
+  const changeCollectInterval = async(interval) => {
+    setCollectInterval(interval*1000);
+    await AsyncStorage.setItem(
+      'collect',
+      JSON.stringify({
+        collectInterval: interval*1000,
+      })
+    );
+    setIsCollectModalVisible(!isCollectModalVisible);
+    RNRestart.Restart();
+  }
+
   renderDrawer = () => {
     return (
       <View style={styles.container}>
-        <Modal
+        <Modal //프로필 수정
           visible={isProfileModalVisible}
           transparent={true}
         >
@@ -332,6 +358,27 @@ function ParentMain({navigation}) {
             </View>
           </View>
         </Modal>
+
+        <Modal //위치 수집 간격 설정
+          visible={isCollectModalVisible}
+          transparent={true}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.collectView}>
+              <RadioButton.Group
+                onValueChange={(newValue) => changeCollectInterval(newValue)}
+                value={collectInterval / 1000}
+              >
+                <RadioButton.Item label="5초" value={5} style={styles.RadioButtonBody}/>
+                <RadioButton.Item label="10초" value={10} style={styles.RadioButtonBody}/>                
+                <RadioButton.Item label="20초" value={20} style={styles.RadioButtonBody}/>                
+                <RadioButton.Item label="30초" value={30} style={styles.RadioButtonBody}/>                
+                <RadioButton.Item label="2분" value={120} style={styles.RadioButtonBody}/>               
+                <RadioButton.Item label="10분" value={600} style={styles.RadioButtonBody}/>                
+              </RadioButton.Group>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.profile}>
           <TouchableOpacity activeOpacity={1} onPress={() => setIsProfileModalVisible(true)}>
             <Image style={styles.image}  source={profileList[profileNum].src}/>
@@ -341,12 +388,13 @@ function ParentMain({navigation}) {
             <Text style={styles.idx}>부모</Text>
           </View>
         </View>
-        <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
+        <View style={styles.InnerContainer}><Text style={styles.title}>회원 정보 수정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
           <Text style={styles.modifyTitle}>회원 정보 수정</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ParentSetUppage')}}>
-          <Text style={styles.modifyTitle}>알림 설정</Text>
+        <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => setIsCollectModalVisible(true)}>
+          <Text style={styles.modifyTitle}>위치 수집 간격 설정</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
           <Text style={styles.logoutText}>로그아웃</Text>
@@ -487,7 +535,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: 'bold',
     color: "black",
     marginLeft: 10,
@@ -559,6 +607,23 @@ const styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'row',
   },
+  collectView: {
+    margin: 20,
+    width: "50%",
+    height: "45%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -572,5 +637,10 @@ const styles = StyleSheet.create({
     margin: 10,
     borderWidth: 0.2,
     borderColor: "lightgray",
-  }
+  },
+  RadioButtonBody: {
+    justifyContent: "space-between",
+    width: "80%",
+    marginLeft: 25
+  },
 })

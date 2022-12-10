@@ -70,35 +70,35 @@ function ChildMain({navigation}) {
     },
     {
       idx: 1,
-      src: require('../profile/profile1.jpg')
+      src: require('../profile/profile1.png')
     },
     {
       idx: 2,
-      src: require('../profile/profile2.jpg')
+      src: require('../profile/profile2.png')
     },
     {
       idx: 3,
-      src: require('../profile/profile3.jpg')
+      src: require('../profile/profile3.png')
     },
     {
       idx: 4,
-      src: require('../profile/profile4.jpg')
+      src: require('../profile/profile4.png')
     },
     {
       idx: 5,
-      src: require('../profile/profile5.jpg')
+      src: require('../profile/profile5.png')
     },
     {
       idx: 6,
-      src: require('../profile/profile6.jpg')
+      src: require('../profile/profile6.png')
     },
     {
       idx: 7,
-      src: require('../profile/profile7.jpg')
+      src: require('../profile/profile7.png')
     }
     ,{
       idx: 8,
-      src: require('../profile/profile8.jpg')
+      src: require('../profile/profile8.png')
     }
   ];
 
