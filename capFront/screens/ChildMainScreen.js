@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Image, Modal, FlatList, ScrollView} from "react-native";
+import { View, Text, PermissionsAndroid, ActivityIndicator, StyleSheet, TouchableOpacity, LogBox, Image, Modal, FlatList, } from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
@@ -9,7 +9,6 @@ import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import GoogleFit, { Scopes, BucketUnit } from 'react-native-google-fit'
 import RNRestart from 'react-native-restart';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
-import {RadioButton} from 'react-native-paper';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -50,7 +49,6 @@ function ChildMain({navigation}) {
 
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null);
-  const [route, setRoute] = useState([]); // 이동 경로
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const searchYear = [2021030, 2020055, 2019066];
   const [allCrossWalks, setAllCrossWalks] = useState([]); // 미추홀구 모든 횡단보도
@@ -190,7 +188,6 @@ function ChildMain({navigation}) {
               const {latitude, longitude} = position.coords;
               setLatitude(latitude);
               setLongitude(longitude);
-              setRoute(route => [...route, {latitude: latitude, longitude: longitude}]);
               ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
             },
             error => {
@@ -848,10 +845,6 @@ function ChildMain({navigation}) {
           >
             <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
           </Marker>
-
-          <Polyline
-              coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
-          />
 
           {// 모든 횡단보도 표시
             allCrossWalks.map(crossWalk => (

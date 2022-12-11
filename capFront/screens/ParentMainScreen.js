@@ -143,6 +143,11 @@ function ParentMain({navigation}) {
         setChildLat(parseFloat(responseJson.latitude));
         setChildLng(parseFloat(responseJson.longitude));
         setRoute(route => [...route, {latitude:parseFloat(responseJson.latitude), longitude: parseFloat(responseJson.longitude)}]);
+        await AsyncStorage.setItem('route',
+          JSON.stringify({
+            route: route,
+          })
+        )
         setShow(true);
       }
       })
@@ -264,6 +269,11 @@ function ParentMain({navigation}) {
     }
   }
 
+  const removeRoute = async() => {
+    await AsyncStorage.removeItem('route');
+    setRoute([]);
+  }
+
   async function loadData() {
     try {
       const value = await AsyncStorage.getItem('userData');
@@ -274,11 +284,16 @@ function ParentMain({navigation}) {
 
       const value3 = await AsyncStorage.getItem('collect');
       const parseValue3 = JSON.parse(value3);
+
+      const value4 = await AsyncStorage.getItem('route');
+      const parseValue4 = JSON.parse(value4);
+
       setName(parseValue.userName);
       setChildName(parseValue.childName);
       setProfileNum(parseValue2.profileNum);
       setChildProfileNum(parseValue2.childProfileNum);
       setCollectInterval(parseValue3.collectInterval);
+      setRoute(parseValue4.route);
       setColFlag(true);
     } catch(error) {
       console.log(error);
@@ -466,11 +481,14 @@ function ParentMain({navigation}) {
           </View>
         </View>
 
-        <View style={styles.InnerContainer}><Text style={styles.title}>회원 정보 수정</Text></View>
+        <View style={styles.InnerContainer}><Text style={styles.title}>프로필 수정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
           <Text style={styles.modifyTitle}>회원 정보 수정</Text>
         </TouchableOpacity>
         <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => removeRoute()}>
+          <Text style={styles.modifyTitle}>이동 경로 초기화</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => setIsCollectModalVisible(true)}>
           <Text style={styles.modifyTitle}>위치 수집 간격 설정</Text>
         </TouchableOpacity>
