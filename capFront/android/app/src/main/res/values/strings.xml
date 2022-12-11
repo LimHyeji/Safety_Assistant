@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">capFront</string>
+    <string name="app_name">노란돌고래</string>
+     <string name="sample_device_admin">노란돌고래</string>
+   <string name="sample_device_admin_description">노란돌고래</string>
 </resources>
