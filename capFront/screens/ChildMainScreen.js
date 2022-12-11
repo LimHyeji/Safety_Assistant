@@ -712,7 +712,7 @@ function ChildMain({navigation}) {
       const value = await AsyncStorage.getItem('userData');
       const parseValue = JSON.parse(value);
 
-      const value2 = await AsyncStorage.getItem('profile');
+      const value2 = await AsyncStorage.getItem('profile2');
       const parseValue2 = JSON.parse(value2);
       setName(parseValue.userName);
       setProfileNum(parseValue2.profileNum);
@@ -759,7 +759,7 @@ function ChildMain({navigation}) {
   const changeProfile = async(index) => {
     setProfileNum(index);
     await AsyncStorage.setItem(
-      'profile',
+      'profile2',
       JSON.stringify({
         profileNum: index,
       })

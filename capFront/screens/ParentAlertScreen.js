@@ -31,15 +31,57 @@ function ParentAlert({navigation}){
 
     const [alarmList, setAlarmList] = useState([]);
     const [childName, setChildName] = useState('');
+    const [childProfileNum, setChildProfileNum] = useState(0);
+    const profileList = [
+      {
+        idx: 0,
+        src: require('../profile/default.jpg')
+      },
+      {
+        idx: 1,
+        src: require('../profile/profile1.png')
+      },
+      {
+        idx: 2,
+        src: require('../profile/profile2.png')
+      },
+      {
+        idx: 3,
+        src: require('../profile/profile3.png')
+      },
+      {
+        idx: 4,
+        src: require('../profile/profile4.png')
+      },
+      {
+        idx: 5,
+        src: require('../profile/profile5.png')
+      },
+      {
+        idx: 6,
+        src: require('../profile/profile6.png')
+      },
+      {
+        idx: 7,
+        src: require('../profile/profile7.png')
+      }
+      ,{
+        idx: 8,
+        src: require('../profile/profile8.png')
+      }
+    ];
 
     const loadAlarmList = async () => {
       try {
         const value = await AsyncStorage.getItem('alarm');
-        setAlarmList(JSON.parse(value));
+        setAlarmList(JSON.parse(value).reverse());
 
         const userValue = await AsyncStorage.getItem('userData');
         const parseUserValue = JSON.parse(userValue);
+        const userValue2 = await AsyncStorage.getItem('profile');
+        const parseUserValue2 = JSON.parse(userValue2);
         setChildName(parseUserValue.childName);
+        setChildProfileNum(parseUserValue2.childProfileNum);
         
       } catch (error) {
         console.log(error);
@@ -85,7 +127,7 @@ return(
             alarmList === null ? (<></>) : (
               alarmList.map((a, index) => (
                 <View key={index} style={styles.container}>
-                  <Image style={styles.image}  source={require("../profile/profile6.png")}/>
+                  <Image style={styles.image}  source={profileList[childProfileNum].src}/>
                   {a.alarm === "arrival" ? (a.where === "House" ? (<Text style={styles.textTitle}>{childName}이(가) 안전하게 집에 도착했습니다.</Text>) : 
                     <Text style={styles.textTitle}>{childName}이(가) 안전하게 등교했습니다.</Text>
                   ) : (

@@ -311,7 +311,7 @@ return (
     );
 };
 
-function AuthFormAPI(form, {navigation}){
+async function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
     method: 'POST',
     body: JSON.stringify({
@@ -330,9 +330,32 @@ function AuthFormAPI(form, {navigation}){
     headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
     .then((response) => response.json())
-    .then((responseJson) => {
+    .then(async(responseJson) => {
       console.log(responseJson);
       if(responseJson.msg === "It is Check to communicate"){
+        if(form.idx.value === true) {
+          await AsyncStorage.setItem(
+            'profile',
+            JSON.stringify({
+              profileNum: 0,
+              childProfileNum: 0,
+            })
+          );
+          await AsyncStorage.setItem(
+            'collect',
+            JSON.stringify({
+              collectInterval: 5000,
+            })
+          );
+        }
+        else {
+          await AsyncStorage.setItem(
+            'profile2',
+            JSON.stringify({
+              profileNum: 0,
+            })
+          );
+        }
         navigation.navigate('Loginpage')
       }
       else{

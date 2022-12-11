@@ -112,18 +112,6 @@ return (
             childSchoolLng:responseJson.childrenInfo[0].schoollng
           })
         )
-        await AsyncStorage.setItem(
-          'profile',
-          JSON.stringify({
-            profileNum: 0,
-          })
-        );
-        await AsyncStorage.setItem(
-          'collect',
-          JSON.stringify({
-            collectInterval: 5000,
-          })
-        );
         navigation.navigate('ParentMainpage');
         }
         else if(responseJson.idx === false) { //자녀일 경우의 저장 내용
@@ -144,25 +132,13 @@ return (
               duration: responseJson.myLocation.duration,
             })
           )
-          await AsyncStorage.setItem(
-            'profile',
-            JSON.stringify({
-              profileNum: 0,
-            })
-          );
-          await AsyncStorage.setItem(
-            'collect',
-            JSON.stringify({
-              collectInterval: 5000,
-            })
-          );
           navigation.navigate('ChildMainpage');
         }
       }
     })
     .catch((error) => {
       console.error(error);
-      Alert.alert("로그인 정보를 다시 확인해주세요!");
+      Alert.alert("로그인 실패", "자녀 회원가입을 먼저 진행해주세요!");
     });
   };
   

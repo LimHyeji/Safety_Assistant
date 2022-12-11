@@ -26,6 +26,7 @@ function ParentMain({navigation}) {
   const [latitude, setLatitude] = useState(null); //부모의 위치데이터
   const [longitude, setLongitude] = useState(null);
   const [name, setName] = useState('');
+  const [childName, setChildName] = useState('');
 
   const [childLat, setChildLat] = useState(null); //자녀의 위치데이터
   const [childLng, setChildLng] = useState(null);
@@ -37,6 +38,8 @@ function ParentMain({navigation}) {
   
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileNum, setProfileNum] = useState(0);
+  const [isChildProfileModalVisible, setIsChildProfileModalVisible] = useState(false);
+  const [childProfileNum, setChildProfileNum] = useState(0);
   const profileList = [
     {
       idx: 0,
@@ -190,7 +193,12 @@ function ParentMain({navigation}) {
         const address=response.results[0].formatted_address;
         const addresstemp=address.substr(5, address.length);
         const value = await AsyncStorage.getItem('alarm');
-        setAlarmList(JSON.parse(value));
+        if(JSON.parse(value) === null) {
+          
+        }
+        else {
+          setAlarmList(JSON.parse(value));
+        }
         let date = new Date();
         let now = date.toLocaleString();
         setAlarmList(alarmList => [...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
@@ -267,7 +275,9 @@ function ParentMain({navigation}) {
       const value3 = await AsyncStorage.getItem('collect');
       const parseValue3 = JSON.parse(value3);
       setName(parseValue.userName);
+      setChildName(parseValue.childName);
       setProfileNum(parseValue2.profileNum);
+      setChildProfileNum(parseValue2.childProfileNum);
       setCollectInterval(parseValue3.collectInterval);
       setColFlag(true);
     } catch(error) {
@@ -319,9 +329,22 @@ function ParentMain({navigation}) {
       'profile',
       JSON.stringify({
         profileNum: index,
+        childProfileNum: childProfileNum,
       })
     );
     setIsProfileModalVisible(!isProfileModalVisible);
+  }
+
+  const changeChildProfile = async(index) => {
+    setChildProfileNum(index);
+    await AsyncStorage.setItem(
+      'profile',
+      JSON.stringify({
+        profileNum: profileNum,
+        childProfileNum: index,
+      })
+    );
+    setIsChildProfileModalVisible(!isChildProfileModalVisible);
   }
 
   const changeCollectInterval = async(interval) => {
@@ -339,7 +362,7 @@ function ParentMain({navigation}) {
   renderDrawer = () => {
     return (
       <View style={styles.container}>
-        <Modal //프로필 수정
+        <Modal //부모 프로필 수정
           visible={isProfileModalVisible}
           transparent={true}
         >
@@ -357,6 +380,29 @@ function ParentMain({navigation}) {
               />
             </View>
             <TouchableOpacity style={styles.button} onPress={() => setIsProfileModalVisible(!isProfileModalVisible)}>
+              <Text style={{color: "black", fontSize: 18}}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal //자녀 프로필 수정
+          visible={isChildProfileModalVisible}
+          transparent={true}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <FlatList
+                keyExtractor={item => item.idx}
+                data={profileList}
+                renderItem={({item}) => (
+                  <TouchableOpacity onPress={() => changeChildProfile(item.idx)}>
+                    <Image style={styles.changeImage} source={item.src}/>
+                  </TouchableOpacity>
+                )}
+                numColumns={3}
+              />
+            </View>
+            <TouchableOpacity style={styles.button} onPress={() => setIsChildProfileModalVisible(!isChildProfileModalVisible)}>
               <Text style={{color: "black", fontSize: 18}}>취소</Text>
             </TouchableOpacity>
           </View>
@@ -408,6 +454,18 @@ function ParentMain({navigation}) {
             <Text style={styles.idx}>부모</Text>
           </View>
         </View>
+
+        <View style={styles.InnerContainer}><Text style={styles.title}>자녀</Text></View>
+        <View style={styles.childProfile}>
+          <TouchableOpacity activeOpacity={1} onPress={() => setIsChildProfileModalVisible(true)}>
+            <Image style={styles.image}  source={profileList[childProfileNum].src}/>
+          </TouchableOpacity>
+          <View style={{alignItems: 'flex-end'}}>
+            <Text style={styles.userName}>{childName}</Text>
+            <Text style={styles.idx}>자녀</Text>
+          </View>
+        </View>
+
         <View style={styles.InnerContainer}><Text style={styles.title}>회원 정보 수정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('CheckPasswordpage')}}>
           <Text style={styles.modifyTitle}>회원 정보 수정</Text>
@@ -590,6 +648,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#CAEF53",
+    flexDirection: "row",
+  },
+  childProfile:{
+    width: "100%",
+    height: "13%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#EEFBC4",
+    borderBottomWidth: 0.5,
+    borderColor: "grey",
     flexDirection: "row",
   },
   image: {
