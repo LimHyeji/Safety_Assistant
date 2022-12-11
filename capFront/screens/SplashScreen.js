@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {  View, Text, ScrollView ,StyleSheet, Image, Dimensions, Button, } from 'react-native';
+import {  View, Text, ScrollView ,StyleSheet, Image, Dimensions, Button,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const loading =async({navigation})=>{
@@ -32,13 +32,19 @@ const loading =async({navigation})=>{
 
 function SplashScreen({navigation}){
   useEffect(() => {
-    loading({navigation});
+    //loading({navigation});
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.circle}>
         <Image source={require("../logo.png")}  style={styles.image}/>
         <Text style={styles.title}>노란 돌고래</Text>
+      <View>
+      <TouchableOpacity style={styles.signup} onPress={() => navigation.navigate('Test2page')}>
+        <Text>락테스트</Text>
+      </TouchableOpacity>   
+        </View>
       </View>
     </View>
     );
