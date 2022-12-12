@@ -8,10 +8,9 @@ function Help({navigation}){
     const [finePosFlag, setFinePosFlag] = useState(false);
     const [colFlag, setColFlag] = useState(false);
     return(
-        <ScrollView>
+        <ScrollView endFillColor={"white"}>
             <View style={styles.container}>
-            <ScrollView>
-                <Image source={require("../logo.png")}  style={styles.image}/>
+            <Image source={require("../logo.png")}  style={styles.image}/>
                 <Text style={styles.title}>도움말</Text>
                 <View style={styles.InputContainer}>
                     <TouchableOpacity onPress={() => setFitFlag(!fitFlag)}>
@@ -27,7 +26,6 @@ function Help({navigation}){
                     {
                         fitFlag === true ? (
                             <View>
-
                                 <Text style={styles.context}>노란 돌고래는 구글 피트니스를 통해 심박수를 받아와 위급 상황을 인식하고 보호자에게 긴급 전화를 거는 기능을 제공합니다.</Text>
                                 <Text style={styles.context}>따라서 구글 피트니스에 필요 권한을 요청하고 허용해주셔야 해당 기능을 제대로 사용하실 수 있습니다.</Text>
                                 <Text style={styles.context}>(단, 스마트 워치가 있을 경우만)</Text>
@@ -104,7 +102,6 @@ function Help({navigation}){
                         ) : (<></>)
                     }
                 </View>
-                </ScrollView>
             </View>
         </ScrollView>
     );
@@ -115,7 +112,6 @@ export default Help;
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      height: Dimensions.get('window').height,
       alignItems: "center",
       backgroundColor: "white",
     },
@@ -129,6 +125,7 @@ const styles = StyleSheet.create({
     InputContainer: {
       width: "90%",
       marginTop: 10,
+      marginBottom: 10,
       backgroundColor: "#EEFBC4",
       padding: 15,
       borderRadius: 10,
