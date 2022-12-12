@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Platform, Alert, PermissionsAndroid, ActivityIndicator, TouchableOpacity, Image, Modal, FlatList, ScrollView} from "react-native";
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import IconMet from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from "react-native-geolocation-service";
 import Postcode from '@actbase/react-daum-postcode';
@@ -132,8 +133,8 @@ function ParentMain({navigation}) {
         //console.log(responseJson);
         if(responseJson.message==="expired"){
           try{
-          await AsyncStorage.removeItem('userData');
-          navigation.navigate('Loginpage');
+            await AsyncStorage.removeItem('userData');
+            RNRestart.Restart();
         }catch(error){
           console.log(error);
         }
@@ -506,6 +507,7 @@ function ParentMain({navigation}) {
   }
 
   let drawer = null;
+  const mapRef = React.createRef();
   return (
       <View style={{ flex: 1 }}>
         <DrawerLayout
@@ -519,9 +521,22 @@ function ParentMain({navigation}) {
           renderNavigationView={this.renderDrawer}
           onDrawerClose={() => (drawer.closeDrawer())}
         >
+          
           <View>
             <TouchableOpacity style={styles.alarmButton} onPress={() =>  navigation.navigate('ParentAlertpage')}>
               <Icon name="bell" size={25} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.curLocation} onPress={() => {
+              mapRef.current.animateToRegion({
+                latitude: childLat,
+                longitude: childLng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              });
+            }}>
+              <IconMet name="my-location" size={20} color={"#000"}/>
             </TouchableOpacity>
           </View>
           <View>
@@ -564,6 +579,7 @@ function ParentMain({navigation}) {
             showsCompass={false}
             toolbarEnabled={false}
             minZoomLevel={17}
+            ref={mapRef}
           >
             <Marker
             coordinate={{latitude: childLat, longitude: childLng}}
@@ -765,5 +781,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#CAEF53",
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  curLocation: {
+    alignItems: "center",
+    justifyContent: 'center',
+    width: 30,
+    height: 30,
+    borderRadius: 35,
+    backgroundColor: "#CAEF53",
+    position: "absolute",
+    top: 60,
+    right: 15,
+    zIndex: 1,
   }
 })
