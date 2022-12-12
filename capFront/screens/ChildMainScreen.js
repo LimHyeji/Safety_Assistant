@@ -748,7 +748,7 @@ function ChildMain ({navigation}) {
 
       const value3 = await AsyncStorage.getItem('chiRoute');
       const parseValue3 = JSON.parse(value3);
-console.log(parseValeue3);
+      console.log(parseValue3);
       setName(parseValue.userName);
       setProfileNum(parseValue2.profileNum);
       setRoute(parseValue3.route);
@@ -787,10 +787,6 @@ console.log(parseValeue3);
     } catch(error) {
       console.log(error);
     }
-  }
-
-  const findMarker=()=>{
-    
   }
 
   useEffect(() => {
@@ -893,6 +889,7 @@ console.log(parseValeue3);
   }
 
   let drawer = null;
+  const mapRef = React.createRef();
   return (
       <View style={{ flex: 1 }}>
         <DrawerLayout
@@ -907,7 +904,14 @@ console.log(parseValeue3);
           onDrawerClose={() => (drawer.closeDrawer())}
         >
           <View>
-            <TouchableOpacity style={styles.locationButton} onPress={() => findMarker()}>
+            <TouchableOpacity style={styles.locationButton} onPress={() => {
+              mapRef.current.animateToRegion({
+                latitude: latitude,
+                longitude: longitude,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+              });
+            }}>
               <IconMat name="my-location" size={25} color={"#000"}/>
             </TouchableOpacity>
           </View>
@@ -927,6 +931,7 @@ console.log(parseValeue3);
             showsCompass={false}
             toolbarEnabled={false}
             minZoomLevel={17}
+            ref={mapRef}
             //zoomEnabled={false}
           >
           <Marker
@@ -938,7 +943,6 @@ console.log(parseValeue3);
           {routeFlag===true ?(
           <Polyline coordinates={route} strokeColor="#CAEF53" strokeColors={['#CAEF53']} strokeWidth={5}/>
           ) : (<></>)}
-
           {// 모든 횡단보도 표시
             allCrossWalks.map(crossWalk => (
               crossWalk.map((cross, index) => (
