@@ -495,6 +495,9 @@ function ParentMain({navigation}) {
         <TouchableOpacity style={styles.InnerContainer} onPress={() => setIsCollectModalVisible(true)}>
           <Text style={styles.modifyTitle}>위치 수집 간격 설정</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('HelpPage')}}>
+          <Text style={styles.touchTitle}>도움말</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
           <Text style={styles.logoutText}>로그아웃</Text>
         </TouchableOpacity>
