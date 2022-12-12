@@ -10,6 +10,7 @@ function Help({navigation}){
     return(
         <ScrollView>
             <View style={styles.container}>
+            <ScrollView>
                 <Image source={require("../logo.png")}  style={styles.image}/>
                 <Text style={styles.title}>도움말</Text>
                 <View style={styles.InputContainer}>
@@ -26,6 +27,7 @@ function Help({navigation}){
                     {
                         fitFlag === true ? (
                             <View>
+
                                 <Text style={styles.context}>노란 돌고래는 구글 피트니스를 통해 심박수를 받아와 위급 상황을 인식하고 보호자에게 긴급 전화를 거는 기능을 제공합니다.</Text>
                                 <Text style={styles.context}>따라서 구글 피트니스에 필요 권한을 요청하고 허용해주셔야 해당 기능을 제대로 사용하실 수 있습니다.</Text>
                                 <Text style={styles.context}>(단, 스마트 워치가 있을 경우만)</Text>
@@ -49,6 +51,7 @@ function Help({navigation}){
                     {
                         posFlag === true ? (
                             <View>
+                                <Image style={styles.helpImage} source={require("../location_permit.jpg")}/>
                                 <Text style={styles.context}>노란 돌고래는 GPS를 통한 위치 정보를 수집하여 많은 기능을 제공합니다.</Text>
                                 <Text style={styles.context}>따라서 위치 접근 권한을 허용해주셔야 합니다.</Text>
                                 <Text style={styles.context}>백그라운드에서도 위치 정보를 수집하기 위해서 반드시 위치 접근 권한을 "항상 허용"으로 설정해주시기 바랍니다.</Text>
@@ -71,6 +74,7 @@ function Help({navigation}){
                     {
                         finePosFlag === true ? (
                             <View>
+                                <Image style={styles.helpImage} source={require("../location_accuracy.jpg")}/>
                                 <Text style={styles.context}>GPS의 정확도를 향상시키기 위해 위치 설정에서 Google 위치 정확도를 켜주시고 항상 모바일 네트워크 / 와이파이 / 블루투스를 켠 상태로 어플을 이용해주세요.</Text>
                                 <Text style={styles.context}>그러면 보다 정확하게 위치 정보를 받아올 수 있습니다.</Text>
                             </View>
@@ -92,6 +96,7 @@ function Help({navigation}){
                     {
                         colFlag === true ? (
                             <View>
+
                                 <Text style={styles.context}>위치 수집 간격이란 자녀의 위치를 수집해오는 간격을 말합니다.</Text>
                                 <Text style={styles.context}>시간이 짧을수록 더 자주 자녀의 현위치 정보를 가져옵니다.</Text>
                                 <Text style={styles.context}>수집 간격이 너무 넓으면 자녀의 이동 경로의 정확도가 떨어지니 참고해주세요.</Text>
@@ -99,6 +104,7 @@ function Help({navigation}){
                         ) : (<></>)
                     }
                 </View>
+                </ScrollView>
             </View>
         </ScrollView>
     );
@@ -111,7 +117,7 @@ const styles = StyleSheet.create({
       flex: 1,
       height: Dimensions.get('window').height,
       alignItems: "center",
-      backgroundColor: "white"
+      backgroundColor: "white",
     },
     title: {
       fontSize: 30,
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
       marginBottom: 20,
     },
     InputContainer: {
-      width: "80%",
+      width: "90%",
       marginTop: 10,
       backgroundColor: "#EEFBC4",
       padding: 15,
@@ -138,6 +144,12 @@ const styles = StyleSheet.create({
       height: 200,
       marginTop: 80,
     },
+    helpImage: {
+        width: '90%',
+        height: 150,
+        marginBottom: 30,
+        resizeMode:"contain",
+      },
     category: {
         fontSize: 18,
         color: "black",
