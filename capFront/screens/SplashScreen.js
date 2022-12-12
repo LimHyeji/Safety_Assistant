@@ -32,7 +32,7 @@ const loading =async({navigation})=>{
 
 function SplashScreen({navigation}){
   useEffect(() => {
-    //loading({navigation});
+    loading({navigation});
   }, []);
 
   return (
@@ -40,11 +40,6 @@ function SplashScreen({navigation}){
       <View style={styles.circle}>
         <Image source={require("../logo.png")}  style={styles.image}/>
         <Text style={styles.title}>노란 돌고래</Text>
-      <View>
-      <TouchableOpacity style={styles.signup} onPress={() => navigation.navigate('Test2page')}>
-        <Text>락테스트</Text>
-      </TouchableOpacity>   
-        </View>
       </View>
     </View>
     );

@@ -14,8 +14,6 @@ import ChildSetUpScreen from './screens/ChildSetUpScreen';
 import CheckPasswordScreen from './screens/CheckPasswordScreen';
 import ChildModifyScreen from './screens/ChildModifyScreen'; 
 import ParentModifyScreen from './screens/ParentModifyScreen'; 
-import Test2 from './screens/Test2'; //임시
-
 
 const ParentAppStack = createStackNavigator(
   {
@@ -58,7 +56,6 @@ const AuthStack = createStackNavigator(
   const switchScreen=createSwitchNavigator(
   {
     Splashpage:SplashScreen,
-    Test2page:Test2, //임시
     ParentApp:ParentAppStack,
     ChildApp:ChildAppStack,
     Auth:AuthStack,
