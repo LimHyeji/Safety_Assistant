@@ -129,7 +129,7 @@ function ParentMain({navigation}) {
       })
       .then((response) => response.json())
       .then(async(responseJson) => {
-        //console.log(responseJson);
+        console.log(responseJson);
         if(responseJson.message==="expired"){
           try{
           await AsyncStorage.removeItem('userData');
@@ -534,6 +534,7 @@ function ParentMain({navigation}) {
             }}
             showsCompass={false}
             toolbarEnabled={false}
+            minZoomLevel={17}
           >
 
             <Marker
@@ -562,7 +563,7 @@ function ParentMain({navigation}) {
             </Marker>
 
             <Polyline
-              coordinates={route} strokeColor="#000" strokeColors={['#7F0000']} strokeWidth={5}
+              coordinates={route} strokeColor="#CAEF53" strokeColors={['#CAEF53']} strokeWidth={5}
             />
             
           </MapView>
