@@ -136,9 +136,7 @@ const rightAction = (progress, dragX) => {
       deleteOne(alarmList);
     }
     }>
-
-      <Text style={styles.deltext}>삭제</Text>
-
+   <Icon style={styles.trash} name="trash-alt" size={25} color={"#000"}/>
     </Pressable>
     </Animated.View>
   );
@@ -211,7 +209,7 @@ const styles = StyleSheet.create({
         //flexDirection: 'row',
         backgroundColor: 'white',
         //alignItems: 'center',
-        marginTop: 5,
+        //marginTop: 5,
         marginLeft: 2,
         marginBottom: 5,
         borderBottomWidth: 1,
@@ -232,14 +230,12 @@ const styles = StyleSheet.create({
         width: '30%',
         height: 100,
         //flexDirection: 'row',
-        marginTop: 5,
+        //marginTop: 5,
         backgroundColor: '#CAEF53',
         alignItems: 'center',
         borderRadius: 10,
       },
-      deltext:{
-        fontSize: 20,
-        fontWeight: 'bold',
+      trash:{
         color: 'darkgrey',
         marginTop: 30,
         alignItems: 'center',
