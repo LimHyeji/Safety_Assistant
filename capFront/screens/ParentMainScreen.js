@@ -34,7 +34,7 @@ function ParentMain({navigation}) {
   const [show, setShow] = useState(false);
 
   const [alarmList, setAlarmList] = useState([]);
-  const [flag, setFlag] = useState(false);
+  let [flag, setFlag] = useState(0);
   
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileNum, setProfileNum] = useState(0);
@@ -209,7 +209,7 @@ function ParentMain({navigation}) {
         setAlarmList(alarmList => [...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
         //await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
 
-        setFlag(true);
+        setFlag(flag+1);
       },
       (error) => {
         console.error(error);
@@ -313,7 +313,7 @@ function ParentMain({navigation}) {
   }, [colFlag]);
 
   useEffect(() => {
-    if(flag === true) {
+    if(flag > 0) {
       saveAlarm(alarmList);
     }
   }, [flag])

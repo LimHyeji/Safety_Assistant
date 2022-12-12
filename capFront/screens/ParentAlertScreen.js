@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, PermissionsAndroid, TouchableOpacity, Dimensions, Pressable, Animated} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -32,6 +32,8 @@ function ParentAlert({navigation}){
     const [alarmList, setAlarmList] = useState([]);
     const [childName, setChildName] = useState('');
     const [childProfileNum, setChildProfileNum] = useState(0);
+    let [row,setRow]=useState([]);
+    let preOpenedRow;
     const profileList = [
       {
         idx: 0,
@@ -88,8 +90,17 @@ function ParentAlert({navigation}){
       }
     }
 
+   const closeRow=(index)=>{
+    if(preOpenedRow&&preOpenedRow!==row[index]){
+      preOpenedRow.close();
+      preOpenedRow=null;
+      row[index]=null;
+    }
+    preOpenedRow=row[index];
+   }
+
     const deleteOne=async(newList)=>{
-      await AsyncStorage.setItem('alarm', JSON.stringify(newList));
+      await AsyncStorage.setItem('alarm', JSON.stringify(newList.reverse()));
       loadAlarmList();
     }
     
@@ -108,10 +119,8 @@ function ParentAlert({navigation}){
 
 const rightAction = (progress, dragX) => {
   const trans = dragX.interpolate({
-    //inputRange: [0, 1],   //화면의 왼쪽 끝, 화면의 맨 오른쪽
-    //outputRange: [40, 0],   //transitin 0, transition 100% 
-    inputRange: [0, 50, 100, 101],
-    outputRange: [-20, 0, 0, 1],
+    inputRange: [0, 1],  
+    outputRange: [40, 0], 
   });
 
   return (
@@ -121,7 +130,9 @@ const rightAction = (progress, dragX) => {
   ]}>
     <Pressable onPress={() =>       
     {
+      console.log(progress);
       setAlarmList(alarmList.splice(progress,1));
+      closeRow(progress);
       deleteOne(alarmList);
     }
     }>
@@ -133,28 +144,28 @@ const rightAction = (progress, dragX) => {
   );
 }
 
-
 return(
-    <View style={styles.body}>
+  <View style={styles.body}>
 
-        <Text style={styles.title}>알림</Text>
-        <TouchableOpacity style={styles.alarmButton} onPress={() => {navigation.navigate('ParentMainpage')}}>
-          <Icon name="bell" size={25} color={"#000"}/>
-        </TouchableOpacity>  
-        {/*스크롤 가능하게 구현(async 배열)*/}
-        <ScrollView>
-          {
-            alarmList === null ? (<></>) : (
-              alarmList.map((a, index) => (
-                <Swipeable 
-                key={index}
-                containerStyle={{
-                  width: '100%',
-                  height: '100%',
-                }}
-                renderRightActions={dragX=>rightAction(index,dragX)}>
+      <Text style={styles.title}>알림</Text>
+      <TouchableOpacity style={styles.alarmButton} onPress={() => {navigation.navigate('ParentMainpage')}}>
+        <Icon name="bell" size={25} color={"#000"}/>
+      </TouchableOpacity>  
+      {/*스크롤 가능하게 구현(async 배열)*/}
+      <ScrollView>
+        {
+          alarmList === null ? (<></>) : (
+            alarmList.map((a, index) => (
+              <View   key={index} style={styles.sContainer}>
+              <Swipeable 
+              ref={ref=>row[index]=ref}
+              onSwipeableOpen={closeRow(index)}
+              containerStyle={{
+                width: '100%',
+                height: '100%',
+              }}
+              renderRightActions={dragX=>rightAction(index,dragX)}>
                 <View  style={styles.container}>
-
                   <Image style={styles.image}  source={profileList[childProfileNum].src}/>
                   {a.alarm === "arrival" ? (a.where === "House" ? (<Text style={styles.textTitle}>{childName}이(가) 안전하게 집에 도착했습니다.</Text>) : 
                     <Text style={styles.textTitle}>{childName}이(가) 안전하게 등교했습니다.</Text>
@@ -168,19 +179,20 @@ return(
                   )}
                   <Text style={styles.text1}>{a.alarmAddress}</Text>
                   <Text style={styles.text2}>{a.now}</Text>
-
                 </View>
                 </Swipeable>
-              ))
-            )
-          }
-        </ScrollView>
-        <View>
-        <TouchableOpacity style={styles.del} onPress={() =>  delAlert()}>
-            <Text style={styles.del}>알림 전체 삭제</Text>
-          </TouchableOpacity>   
-        </View>
-   </View>
+              </View>
+
+            ))
+          )
+        }
+      </ScrollView>
+      <View>
+      <TouchableOpacity style={styles.del} onPress={() =>  delAlert()}>
+          <Text style={styles.del}>알림 전체 삭제</Text>
+        </TouchableOpacity>   
+      </View>
+ </View>
 
 );
 };
@@ -206,6 +218,15 @@ const styles = StyleSheet.create({
         borderColor: 'lightgrey',
         borderRadius: 10,
         borderWidth: 1,
+      },
+      sContainer:{
+        width: '99%',
+        height: 100,
+        //flexDirection: 'row',
+        //alignItems: 'center',
+        marginTop: 5,
+        marginLeft: 2,
+        marginBottom: 5,
       },
       SwipeContainer: {
         width: '30%',
