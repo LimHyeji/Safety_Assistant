@@ -4,6 +4,7 @@ import Geolocation from "react-native-geolocation-service";
 import MapView, {Marker, Polyline, Circle, } from "react-native-maps";
 import Boundary, {Events} from 'react-native-boundary';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import IconMat from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import GoogleFit, { Scopes, BucketUnit } from 'react-native-google-fit'
@@ -45,18 +46,20 @@ async function requestSAWPermission() {
 }
 
 
-function ChildMain({navigation}) {
+function ChildMain ({navigation}) {
 
-  const [latitude, setLatitude] = useState(null)
+  const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [route, setRoute] = useState([]); 
   const [dangerAreas, setDangerAreas] = useState([]); // 위험 지역
   const searchYear = [2021030, 2020055, 2019066];
   const [allCrossWalks, setAllCrossWalks] = useState([]); // 미추홀구 모든 횡단보도
-  const [fenceCrossWalks, setFenceCrossWalks] = useState([]) // 미추홀구 70m이상 횡단보도
+  const [fenceCrossWalks, setFenceCrossWalks] = useState([]); // 미추홀구 70m이상 횡단보도
   const [fillAllData, setFillAllData] = useState([]);
   const [fitFlag, setFitFlag] = useState(false);
   const [name, setName] = useState('');
   let timer=null;
+  let routeFlag=false;
 
   //프로필
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -180,17 +183,33 @@ function ChildMain({navigation}) {
       }
   }
 
-  const trackPosition = () => {
+  const saveRoute=async(route)=>{
+    await AsyncStorage.setItem('chiRoute',
+    JSON.stringify({
+      route: route,
+    })
+    )
+  }
+
+
+  const removeRoute = async() => {
+    await AsyncStorage.removeItem('chiRoute');
+    setRoute([]);
+  }
+
+  const trackPosition = async() => {
     requestPermission().then(result => {
       console.log({result});
       if(result === "granted") {
         requestBackPermission();
-        const _watchId = Geolocation.watchPosition(
+        const _watchId = Geolocation.watchPosition (
           position => {
             const {latitude, longitude} = position.coords;
             setLatitude(latitude);
             setLongitude(longitude);
-            ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
+            ChildMainAPI(latitude,longitude);
+            setRoute(route => [...route, {latitude:latitude, longitude:longitude}]);
+            saveRoute(route);
           },
           error => {
             console.log(error);
@@ -213,6 +232,16 @@ function ChildMain({navigation}) {
         RNRestart.Restart();
       }
     })
+  }
+
+  const changeFlag=()=>{
+    if(routeFlag===true){
+      routeFlag=false;
+    }
+    else{
+      routeFlag=true;
+    }
+    console.log(routeFlag);
   }
 
   const timeOut=async()=>{
@@ -717,8 +746,12 @@ function ChildMain({navigation}) {
       const value2 = await AsyncStorage.getItem('profile2');
       const parseValue2 = JSON.parse(value2);
 
+      const value3 = await AsyncStorage.getItem('chiRoute');
+      const parseValue3 = JSON.parse(value3);
+console.log(parseValeue3);
       setName(parseValue.userName);
       setProfileNum(parseValue2.profileNum);
+      setRoute(parseValue3.route);
     } catch(error) {
       console.log(error);
     }
@@ -754,6 +787,10 @@ function ChildMain({navigation}) {
     } catch(error) {
       console.log(error);
     }
+  }
+
+  const findMarker=()=>{
+    
   }
 
   useEffect(() => {
@@ -839,6 +876,9 @@ function ChildMain({navigation}) {
           <Text style={styles.touchTitle}>회원 정보 수정</Text>
         </TouchableOpacity>
         <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => removeRoute()}>
+          <Text style={styles.modifyTitle}>이동 경로 초기화</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ChildSetUppage')}}>
           <Text style={styles.touchTitle}>알림 설정</Text>
         </TouchableOpacity>
@@ -867,6 +907,11 @@ function ChildMain({navigation}) {
           onDrawerClose={() => (drawer.closeDrawer())}
         >
           <View>
+            <TouchableOpacity style={styles.locationButton} onPress={() => findMarker()}>
+              <IconMat name="my-location" size={25} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+          <View>
             <TouchableOpacity style={styles.modifyButton} onPress={() => {drawer.openDrawer()}}>
               <Icon name="bars" size={25} color={"#000"}/>
             </TouchableOpacity>
@@ -882,13 +927,17 @@ function ChildMain({navigation}) {
             showsCompass={false}
             toolbarEnabled={false}
             minZoomLevel={17}
-            //zoomEnabled={false} // 횡단보도 마커크기 고정 안되면 그냥 지도 확대 안되게 하는걸로...
+            //zoomEnabled={false}
           >
           <Marker
               coordinate={{latitude: latitude, longitude: longitude}}
           >
             <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
           </Marker>
+
+          {routeFlag===true ?(
+          <Polyline coordinates={route} strokeColor="#CAEF53" strokeColors={['#CAEF53']} strokeWidth={5}/>
+          ) : (<></>)}
 
           {// 모든 횡단보도 표시
             allCrossWalks.map(crossWalk => (
@@ -926,6 +975,13 @@ function ChildMain({navigation}) {
             )}
 
           </MapView>
+
+          <View>
+            <TouchableOpacity style={styles.routeButton} onPress={() => changeFlag()}>
+              <Icon name="search-location" size={30} color={"#000"}/>
+            </TouchableOpacity>
+          </View>
+
         </DrawerLayout>
         <Modal //구글 피트 권한 관련
           visible={isFitModalVisible}
@@ -1052,6 +1108,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#66666",
     marginRight: 20,
+  },
+  locationButton:{
+    alignItems: "center",
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 35,
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
+  },
+  routeButton:{
+    backgroundColor: "#CAEF53",
+    alignItems: "center",
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    elevation: 2,
   },
   modifyButton: {
     justifyContent: 'center',
