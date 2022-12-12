@@ -184,6 +184,7 @@ function ChildMain({navigation}) {
     requestPermission().then(result => {
       console.log({result});
       if(result === "granted") {
+        requestBackPermission();
         const _watchId = Geolocation.watchPosition(
           position => {
             const {latitude, longitude} = position.coords;
@@ -207,6 +208,9 @@ function ChildMain({navigation}) {
             Geolocation.clearWatch(_watchId);
           }
         }
+      }
+      else if(result === "denied") {
+        RNRestart.Restart();
       }
     })
   }
@@ -712,6 +716,7 @@ function ChildMain({navigation}) {
 
       const value2 = await AsyncStorage.getItem('profile2');
       const parseValue2 = JSON.parse(value2);
+
       setName(parseValue.userName);
       setProfileNum(parseValue2.profileNum);
     } catch(error) {
@@ -885,7 +890,7 @@ function ChildMain({navigation}) {
 
           </MapView>
         </DrawerLayout>
-        <Modal
+        <Modal //구글 피트 권한 관련
           visible={isFitModalVisible}
           transparent={true}
         >
@@ -1043,7 +1048,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   changeImage: {
     width: 80,
