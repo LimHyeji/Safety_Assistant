@@ -129,7 +129,7 @@ function ParentMain({navigation}) {
       })
       .then((response) => response.json())
       .then(async(responseJson) => {
-        console.log(responseJson);
+        //console.log(responseJson);
         if(responseJson.message==="expired"){
           try{
           await AsyncStorage.removeItem('userData');
