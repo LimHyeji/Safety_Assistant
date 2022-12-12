@@ -59,7 +59,8 @@ function ChildMain ({navigation}) {
   const [fitFlag, setFitFlag] = useState(false);
   const [name, setName] = useState('');
   let timer=null;
-  let routeFlag=false;
+  const [routeFlag, setRouteFlag] = useState(false);
+  const [exceptFlag, setExceptFlag] = useState(false);
 
   //프로필
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -209,7 +210,6 @@ function ChildMain ({navigation}) {
             setLongitude(longitude);
             ChildMainAPI(latitude,longitude);
             setRoute(route => [...route, {latitude:latitude, longitude:longitude}]);
-            saveRoute(route);
           },
           error => {
             console.log(error);
@@ -234,15 +234,14 @@ function ChildMain ({navigation}) {
     })
   }
 
-  const changeFlag=()=>{
-    if(routeFlag===true){
-      routeFlag=false;
+  useEffect(() => {
+    if(exceptFlag === false) {
+      setExceptFlag(true);
     }
-    else{
-      routeFlag=true;
+    else {
+      saveRoute(route);
     }
-    console.log(routeFlag);
-  }
+  }, [route])
 
   const timeOut=async()=>{
     const value = await AsyncStorage.getItem('userData');
@@ -873,7 +872,7 @@ function ChildMain ({navigation}) {
         </TouchableOpacity>
         <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => removeRoute()}>
-          <Text style={styles.modifyTitle}>이동 경로 초기화</Text>
+          <Text style={styles.touchTitle}>이동 경로 초기화</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ChildSetUppage')}}>
           <Text style={styles.touchTitle}>알림 설정</Text>
@@ -940,7 +939,7 @@ function ChildMain ({navigation}) {
             <Icon name="map-marker-alt" size={30} color={"#CAEF53"}/>
           </Marker>
 
-          {routeFlag===true ?(
+          {routeFlag === true ?(
           <Polyline coordinates={route} strokeColor="#CAEF53" strokeColors={['#CAEF53']} strokeWidth={5}/>
           ) : (<></>)}
           {// 모든 횡단보도 표시
@@ -981,7 +980,7 @@ function ChildMain ({navigation}) {
           </MapView>
 
           <View>
-            <TouchableOpacity style={styles.routeButton} onPress={() => changeFlag()}>
+            <TouchableOpacity style={styles.routeButton} onPress={() => setRouteFlag(!routeFlag)}>
               <Icon name="search-location" size={30} color={"#000"}/>
             </TouchableOpacity>
           </View>
