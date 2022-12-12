@@ -100,6 +100,8 @@ function ChildMain({navigation}) {
     }
   ];
 
+  const [isFitModalVisible, setIsFitModalVisible] = useState(false);
+
   const componentDidMount = async() => {
       // 위험지역
       for(let g in searchYear) {
@@ -179,36 +181,34 @@ function ChildMain({navigation}) {
   }
 
   const trackPosition = () => {
-    requestBackPermission().then(
-      requestPermission().then(result => {
-        console.log({result});
-        if(result === "granted") {
-          const _watchId = Geolocation.watchPosition(
-            position => {
-              const {latitude, longitude} = position.coords;
-              setLatitude(latitude);
-              setLongitude(longitude);
-              ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
-            },
-            error => {
-              console.log(error);
-            },
-            {
-              enableHighAccuracy: true,
-              distanceFilter: 0,
-              interval: 3000,
-              fastestInterval: 2000,
-            },
-          );
-      
-          return () => {
-            if(_watchId) {
-              Geolocation.clearWatch(_watchId);
-            }
+    requestPermission().then(result => {
+      console.log({result});
+      if(result === "granted") {
+        const _watchId = Geolocation.watchPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            setLatitude(latitude);
+            setLongitude(longitude);
+            ChildMainAPI(latitude,longitude) //여기서 호출해야 위경도값 넘어감 왜지...?
+          },
+          error => {
+            console.log(error);
+          },
+          {
+            enableHighAccuracy: true,
+            distanceFilter: 0,
+            interval: 3000,
+            fastestInterval: 2000,
+          },
+        );
+    
+        return () => {
+          if(_watchId) {
+            Geolocation.clearWatch(_watchId);
           }
         }
-      })
-    );
+      }
+    })
   }
 
   const timeOut=async()=>{
@@ -303,6 +303,7 @@ function ChildMain({navigation}) {
                   setFitFlag(true);
                 } else {
                   console.log('Denied')
+                  setIsFitModalVisible(true);
                   //dispatch("AUTH_DENIED", authResult.message);
                 }
               })
@@ -838,6 +839,7 @@ function ChildMain({navigation}) {
             }}
             showsCompass={false}
             toolbarEnabled={false}
+            minZoomLevel={17}
             //zoomEnabled={false} // 횡단보도 마커크기 고정 안되면 그냥 지도 확대 안되게 하는걸로...
           >
           <Marker
@@ -883,6 +885,27 @@ function ChildMain({navigation}) {
 
           </MapView>
         </DrawerLayout>
+        <Modal
+          visible={isFitModalVisible}
+          transparent={true}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.fitModalView}>
+              <Image style={styles.smartWatch} source={require("../free-icon-smartwatch-2622339.png")}/>
+              <View>
+                <Text style={styles.description}>노란 돌고래는 스마트 워치를 통해 심박수 정보를 수집하여 위급 상황을 알리는 기능을 제공합니다.</Text>
+                <Text style={styles.description}>기능을 사용하기 위해 Google Fit 관련 권한을 허용해주셔야 합니다.</Text>
+                <Text style={styles.description}>자세한 사항은 도움말을 확인해주세요.</Text>
+              </View>
+            </View>
+          <TouchableOpacity style={styles.button} onPress={() => {
+            setIsFitModalVisible(!isFitModalVisible);
+            RNRestart.Restart();
+          }}>
+            <Text>확인</Text>
+          </TouchableOpacity>
+          </View>
+      </Modal>
       </View>
   );
 }
@@ -1029,5 +1052,40 @@ const styles = StyleSheet.create({
     margin: 10,
     borderWidth: 0.2,
     borderColor: "lightgray",
+  },
+  button: {
+    width: "80%",
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#CAEF53",
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  smartWatch: {
+    width: 100,
+    height: 100,
+    marginBottom: 30
+  },
+  fitModalView : {
+    margin: 20,
+    width: "80%",
+    height: "45%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  description:{
+    color: "black",
+    marginBottom: 5,
   }
 });
