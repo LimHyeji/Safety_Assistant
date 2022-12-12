@@ -7,10 +7,8 @@ import SplashScreen from './screens/SplashScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ParentMainScreen from './screens/ParentMainScreen';
-import ParentSetUpScreen from './screens/ParentSetUpScreen';
 import ParentAlertScreen from './screens/ParentAlertScreen';
 import ChildMainScreen from './screens/ChildMainScreen';
-import ChildSetUpScreen from './screens/ChildSetUpScreen';
 import CheckPasswordScreen from './screens/CheckPasswordScreen';
 import ChildModifyScreen from './screens/ChildModifyScreen'; 
 import ParentModifyScreen from './screens/ParentModifyScreen'; 
@@ -18,7 +16,6 @@ import ParentModifyScreen from './screens/ParentModifyScreen';
 const ParentAppStack = createStackNavigator(
   {
     ParentMainpage:ParentMainScreen,
-    ParentSetUppage:ParentSetUpScreen,
     ParentAlertpage:ParentAlertScreen,
     CheckPasswordpage:CheckPasswordScreen,
     ParentModifypage:ParentModifyScreen,
@@ -32,7 +29,6 @@ const ParentAppStack = createStackNavigator(
   const ChildAppStack = createStackNavigator(
     {
       ChildMainpage:ChildMainScreen,
-      ChildSetUppage:ChildSetUpScreen,
       CheckPasswordpage:CheckPasswordScreen,
       ChildModifypage:ChildModifyScreen,
     },
