@@ -34,7 +34,7 @@ function ParentMain({navigation}) {
   const [show, setShow] = useState(false);
 
   const [alarmList, setAlarmList] = useState([]);
-  let [flag, setFlag] = useState(0);
+  const [flag, setFlag] = useState(false);
   
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [profileNum, setProfileNum] = useState(0);
@@ -209,7 +209,7 @@ function ParentMain({navigation}) {
         setAlarmList(alarmList => [...alarmList, {alarm: responseJson.alarm, where: responseJson.where, alarmAddress: addresstemp, now}]);
         //await AsyncStorage.setItem('alarm', JSON.stringify(alarmList)) //null 처리
 
-        setFlag(flag+1);
+        //setFlag(flag+1);
       },
       (error) => {
         console.error(error);
@@ -313,10 +313,13 @@ function ParentMain({navigation}) {
   }, [colFlag]);
 
   useEffect(() => {
-    if(flag > 0) {
+    if(flag === true) {
       saveAlarm(alarmList);
     }
-  }, [flag])
+    else {
+      setFlag(true);
+    }
+  }, [alarmList])
   
   if(!latitude && !longitude) { //부모 위치정보 없을 때 로딩
     return (
@@ -555,6 +558,9 @@ function ParentMain({navigation}) {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
+            showsCompass={false}
+            toolbarEnabled={false}
+            minZoomLevel={17}
           >
             <Marker
             coordinate={{latitude: childLat, longitude: childLng}}

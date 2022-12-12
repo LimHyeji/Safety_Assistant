@@ -12,6 +12,7 @@ import ChildMainScreen from './screens/ChildMainScreen';
 import CheckPasswordScreen from './screens/CheckPasswordScreen';
 import ChildModifyScreen from './screens/ChildModifyScreen'; 
 import ParentModifyScreen from './screens/ParentModifyScreen'; 
+import HelpScreen from './screens/HelpScreen';
 
 const ParentAppStack = createStackNavigator(
   {
@@ -31,6 +32,7 @@ const ParentAppStack = createStackNavigator(
       ChildMainpage:ChildMainScreen,
       CheckPasswordpage:CheckPasswordScreen,
       ChildModifypage:ChildModifyScreen,
+      HelpPage:HelpScreen,
     },
     {
       initialRouteName:'ChildMainpage',

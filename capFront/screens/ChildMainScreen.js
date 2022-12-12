@@ -724,10 +724,44 @@ function ChildMain({navigation}) {
     }
   }
 
+  const apiTest = async() => {
+    try{
+      const value = await AsyncStorage.getItem('userData');
+      const parseValue = JSON.parse(value);
+
+      fetch("http://34.64.74.7:8081/user/login/alarm", {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: parseValue.userId,
+          idx: parseValue.idx,
+          alarm: "arrival",
+          where: "House",
+          lat: parseValue.schoolLat,
+          lng: parseValue.schoolLng,
+        }),
+        headers : {
+          'Content-Type' : 'application/json; charset=utf-8',
+          Authorization: `Bearer${parseValue.token}`,
+        }
+      })
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     componentDidMount();
     trackPosition();
     loadData();
+
+    apiTest();
   }, []);
 
   useEffect(() => {
@@ -807,6 +841,9 @@ function ChildMain({navigation}) {
         <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ChildSetUppage')}}>
           <Text style={styles.touchTitle}>알림 설정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('HelpPage')}}>
+          <Text style={styles.touchTitle}>도움말</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.logoutContainer} onPress={() => logoutAPI()}>
           <Text style={styles.logoutText}>로그아웃</Text>
