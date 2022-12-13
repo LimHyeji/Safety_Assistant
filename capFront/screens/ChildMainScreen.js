@@ -874,9 +874,6 @@ function ChildMain ({navigation}) {
         <TouchableOpacity style={styles.InnerContainer} onPress={() => removeRoute()}>
           <Text style={styles.touchTitle}>이동 경로 초기화</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('ChildSetUppage')}}>
-          <Text style={styles.touchTitle}>알림 설정</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => {navigation.navigate('HelpPage')}}>
           <Text style={styles.touchTitle}>도움말</Text>
         </TouchableOpacity>
