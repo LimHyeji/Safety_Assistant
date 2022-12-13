@@ -357,7 +357,8 @@ return (
               console.log(error);
             }
             }
-            navigation.goBack(null);
+            //navigation.goBack(null);
+            RNRestart.Restart();
           })
           .catch((error) => {
             console.error(error);

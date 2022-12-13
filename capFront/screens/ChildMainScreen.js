@@ -793,7 +793,6 @@ function ChildMain ({navigation}) {
     trackPosition();
     loadData();
 
-    apiTest();
   }, []);
 
   useEffect(() => {
@@ -856,6 +855,9 @@ function ChildMain ({navigation}) {
                 numColumns={3}
               />
             </View>
+            <TouchableOpacity style={styles.button} onPress={() => setIsProfileModalVisible(!isProfileModalVisible)}>
+              <Text style={{color: "black", fontSize: 18}}>취소</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
         <View style={styles.profile}>

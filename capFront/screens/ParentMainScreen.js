@@ -179,7 +179,7 @@ function ParentMain({navigation}) {
       fetch('http://34.64.74.7:8081/user/login/alarmRec',{
         method:"POST",
         body: JSON.stringify({
-          "userId": parseValue.childName,
+          "userId": parseValue.childId,
           "idx":true,
         }),
         headers : {
