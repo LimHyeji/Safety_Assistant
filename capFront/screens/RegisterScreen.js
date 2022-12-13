@@ -5,6 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Postcode from '@actbase/react-daum-postcode';
 import Geocode from "react-geocode";
 
+/*
+자녀일 경우 미입력 시 못넘어가게 예외처리 필요
+*/
+
 function AuthForm({navigation}) {   
   
   const [isHomeModalVisible, setIsHomeModalVisible] = useState(false);
@@ -27,7 +31,7 @@ function AuthForm({navigation}) {
     },
     confirmPassword: {
       value: '',
-      type: 'textInput', //비밀번호확인 구현필요
+      type: 'textInput',
       rules: {},
       valid: false,
     },
@@ -87,7 +91,7 @@ function AuthForm({navigation}) {
     }
   });
 
-updateInput = (name, value) => {
+const updateInput = (name, value) => {
   let formCopy = form;
   formCopy[name].value = value;
   setForm(form => {
@@ -138,7 +142,6 @@ function idDoubleCheck(userId){
       Alert.alert("중복 확인", "사용 불가한 아이디입니다.", [
         {
           text: "확인",
-          onPress: () => setValidId(false)
         }
       ])
     }
@@ -146,25 +149,20 @@ function idDoubleCheck(userId){
       Alert.alert("중복 확인", "사용 가능한 아이디입니다.", [
         {
           text: "확인",
-          onPress: () => setValidId(true)
         }
       ])
     }
   })
 };
 
-confirmPassword = () => {
-      //비밀번호 재확인 로직 작성
-  };
-
 return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='always'>
         <View style={styles.container}>
           <Image source={require("../logo.png")}  style={styles.image}/>
           <Text style={styles.title}>회원가입</Text>
           <View style={styles.InputContainer}>
             <TextInput
-                style={styles.body}
+                style={styles.idBody}
                 value={form.userId.value} 
                 type={form.userId.type} // 미입력하면 못 넘어가게
                 autoCapitalize={'none'}
@@ -172,10 +170,7 @@ return (
                 placeholderTextColor={'#ddd'}
                 onChangeText={value=>updateInput('userId',value)}
               />
-              {
-                //id가 이미 존재할 때 true 반환, alert문 필요
-              }
-              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId, validId)}>
+              <TouchableOpacity style={styles.checkButton} onPress={() => idDoubleCheck(form.userId)}>
                 <Text>중복 확인</Text>
               </TouchableOpacity>
           </View>
@@ -203,6 +198,13 @@ return (
               onChangeText={value=>updateInput('confirmPassword',value)}
             />
           </View>
+          {
+              form.confirmPassword.value === form.password.value ? (
+                <Text style={styles.notEq}></Text>
+              ):(
+                <Text style={styles.notEq}>비밀번호가 일치하지 않습니다.</Text>
+              )
+            }
           <View style={styles.InputContainer}>
             <TextInput
               style={styles.body}
@@ -276,17 +278,21 @@ return (
                     style={styles.body}
                     value={form.duration.value}
                     type={form.duration.type}
-                    placeholder="등교 시간"
+                    placeholder="등교 시간(분)"
                     placeholderTextColor={'#ddd'}
                     onChangeText={value=>updateInput('duration',value)}
                   />
                 </View>
+                {
+                  //임시로 넣었는데 ui에 맞게 어떻게 알릴지 고민중
+                }
                 <View style={styles.InputContainer}>
                   <TextInput
                     style={styles.body}
                     value={form.parentPhoneNum.value}
                     type={form.parentPhoneNum.type}
-                    placeholder="부모님 전화번호"
+                    keyboardType={'phone-pad'}
+                    placeholder="부모님 전화번호('-'없이)"
                     placeholderTextColor={'#ddd'}
                     onChangeText={value=>updateInput('parentPhoneNum',value)}
                   />
@@ -305,7 +311,7 @@ return (
     );
 };
 
-function AuthFormAPI(form, {navigation}){
+async function AuthFormAPI(form, {navigation}){
   fetch('http://34.64.74.7:8081/user/signup', {
     method: 'POST',
     body: JSON.stringify({
@@ -315,7 +321,7 @@ function AuthFormAPI(form, {navigation}){
       phoneNum:form.phoneNum.value,
       parentPhoneNum:form.parentPhoneNum.value,
       idx:form.idx.value,
-      houseat:form.houselat.value,
+      houselat:form.houselat.value,
       houselng:form.houselng.value,
       schoollat:form.schoollat.value,
       schoollng:form.schoollng.value,
@@ -324,10 +330,40 @@ function AuthFormAPI(form, {navigation}){
     headers : {'Content-Type' : 'application/json; charset=utf-8'}
   })
     .then((response) => response.json())
-    .then((responseJson) => {
+    .then(async(responseJson) => {
       console.log(responseJson);
       if(responseJson.msg === "It is Check to communicate"){
+        if(form.idx.value === true) {
+          await AsyncStorage.setItem(
+            'profile',
+            JSON.stringify({
+              profileNum: 0,
+              childProfileNum: 0,
+            })
+          );
+          await AsyncStorage.setItem(
+            'collect',
+            JSON.stringify({
+              collectInterval: 5000,
+            })
+          );
+        }
+        else {
+          await AsyncStorage.setItem(
+            'profile2',
+            JSON.stringify({
+              profileNum: 0,
+            })
+          );
+        }
         navigation.navigate('Loginpage')
+      }
+      else{
+        Alert.alert("회원가입 실패","회원가입 정보를 다시 확인해주세요.",[
+          {
+            text:"확인"
+          }
+        ])
       }
     })
     .catch((error) => {
@@ -411,6 +447,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
+    width: "100%",
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "#696969",
+  },
+  idBody: {
     width: "70%",
     height: 42,
     paddingLeft: 20,
@@ -420,9 +463,15 @@ const styles = StyleSheet.create({
   context: {
     width: "70%",
     height: 42,
-    justifyContent: 'flex-start',
     textAlignVertical: 'center',
   },
+  notEq: {
+    width: "70%",
+    height: 42,
+    textAlignVertical: 'center',
+    textAlign: "center",
+    color: "red",
+  }, 
   RadioButtonBody: {
     paddingLeft: 20,
     paddingRight: 20,

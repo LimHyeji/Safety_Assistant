@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
-import {  View, Text, ScrollView ,StyleSheet, Image, Dimensions, Button, } from 'react-native';
+import {  View, Text, ScrollView ,StyleSheet, Image, Dimensions, Button,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-/*
-스타일시트 필요!
-*/
 
 const loading =async({navigation})=>{
   try{
@@ -11,13 +8,13 @@ const loading =async({navigation})=>{
   const parsevalue=JSON.parse(value);
 
   if(value===null){
-    navigation.navigate('Loginpage');
+    setTimeout(() => {navigation.navigate('Loginpage')}, 3000);
   }
   else if(parsevalue.idx===true){
-    navigation.navigate('ParentMainpage');
+    setTimeout(() => {navigation.navigate('ParentMainpage')}, 3000);
   }
   else if(parsevalue.idx===false){
-    navigation.navigate('ChildMainpage');
+    setTimeout(() => {navigation.navigate('ChildMainpage')}, 3000);
   }
 }catch(error){
   console.error(error);
@@ -32,43 +29,21 @@ const loading =async({navigation})=>{
 
 
 };
-/*
+
 function SplashScreen({navigation}){
   useEffect(() => {
     loading({navigation});
   }, []);
+
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.circle}>
         <Image source={require("../logo.png")}  style={styles.image}/>
-        <Text style={styles.title}></Text>
-        </View>
-      </ScrollView>
+        <Text style={styles.title}>노란 돌고래</Text>
+      </View>
+    </View>
     );
 };
-*/ 
-const SplashScreen = ({navigation}) => {
-  
-    return (
-      <View>
-          <View>
-          <Button title="로그인" onPress={() => navigation.navigate('Loginpage')}></Button>
-          </View>
-          <View>
-          <Button title="부모메인" onPress={() => navigation.navigate('ParentMainpage')}></Button>
-          </View>
-          <View>
-          <Button title="자녀메인" onPress={() => navigation.navigate('ChildMainpage')}></Button>
-          </View>
-          <View>
-          <Button title="(임시)회원정보수정" onPress={() => navigation.navigate('Modifypage')}></Button>
-          </View>
-          <View>
-          <Button title="(임시)Test2" onPress={() => navigation.navigate('Test2page')}></Button>
-          </View>
-      </View>
-    );
-  };
 
   export default SplashScreen;
 
@@ -76,49 +51,28 @@ const SplashScreen = ({navigation}) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      height: Dimensions.get('window').height,
       alignItems: "center",
-      backgroundColor: "white"
+      justifyContent: "center",
+      backgroundColor: "#CAEF53"
     },
     title: {
       fontSize: 30,
       fontWeight: 'bold',
-      color: "black",
+      color: "#CAEF53",
       marginTop: 20,
       marginBottom: 20,
-    },
-    InputContainer: {
-      width: "80%",
-      marginTop: 30,
-      borderWidth: 1,
-      borderStyle: 'solid',
-      borderColor: "#CAEF53",
-      borderRadius: 10,
-    },
-    body: {
-      height: 42,
-      paddingLeft: 20,
-      paddingRight: 20,
-      color: "#696969",
-    },
-    button: {
-      width: "40%",
-      marginTop: 30,
-      height: 50,
-      backgroundColor: "#CAEF53",
-      justifyContent: "center",
-      alignItems: "center",
-      borderRadius: 10,
     },
     image: {
       width: 175,
       height: 200,
-      marginTop: 80,
-    },
-    signup: {
-      width: "30%",
       marginTop: 10,
-      justifyContent: "center",
+    },
+    circle:{
+      width: 300,
+      height: 300,
+      borderRadius: 150,
+      backgroundColor: "white",
       alignItems: "center",
+      justifyContent: "center",
     },
   })

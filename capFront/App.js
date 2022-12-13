@@ -7,20 +7,20 @@ import{createStackNavigator} from 'react-navigation-stack'
 import SplashScreen from './screens/SplashScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import addressScreen from './screens/addressScreen';
 import ParentMainScreen from './screens/ParentMainScreen';
-import ParentSetUpScreen from './screens/ParentSetUpScreen';
 import ParentAlertScreen from './screens/ParentAlertScreen';
 import ChildMainScreen from './screens/ChildMainScreen';
-import ChildSetUpScreen from './screens/ChildSetUpScreen';
-import ModifyScreen from './screens/ModifyScreen';  //위치 수정 필요
-import Test2 from './screens/Test2'; //임시
+import CheckPasswordScreen from './screens/CheckPasswordScreen';
+import ChildModifyScreen from './screens/ChildModifyScreen'; 
+import ParentModifyScreen from './screens/ParentModifyScreen'; 
+import HelpScreen from './screens/HelpScreen';
 
 const ParentAppStack = createStackNavigator(
   {
     ParentMainpage:ParentMainScreen,
-    ParentSetUppage:ParentSetUpScreen,
     ParentAlertpage:ParentAlertScreen,
+    CheckPasswordpage:CheckPasswordScreen,
+    ParentModifypage:ParentModifyScreen,
   },
   {
     initialRouteName:'ParentMainpage',
@@ -31,7 +31,9 @@ const ParentAppStack = createStackNavigator(
   const ChildAppStack = createStackNavigator(
     {
       ChildMainpage:ChildMainScreen,
-      ChildSetUppage:ChildSetUpScreen,
+      CheckPasswordpage:CheckPasswordScreen,
+      ChildModifypage:ChildModifyScreen,
+      HelpPage:HelpScreen,
     },
     {
       initialRouteName:'ChildMainpage',
@@ -43,7 +45,6 @@ const AuthStack = createStackNavigator(
   {
     Loginpage:LoginScreen,
     Registerpage:RegisterScreen,
-    addresspage:addressScreen,
   },
   {
     initialRouteName:'Loginpage',
@@ -54,8 +55,6 @@ const AuthStack = createStackNavigator(
   const switchScreen=createSwitchNavigator(
   {
     Splashpage:SplashScreen,
-    Modifypage:ModifyScreen,
-    Test2page:Test2, //임시
     ParentApp:ParentAppStack,
     ChildApp:ChildAppStack,
     Auth:AuthStack,

@@ -10,6 +10,22 @@
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <!--백그라운드 위치 정보 수집-->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!--다른 앱 위에 그리기-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!--전화-->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!--lock-->
+    <uses-permission android:name="android.permission.MANAGE_DEVICE_ADMINS" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+
+    <!--알림-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    
+    <queries>
+      <package android:name="com.google.android.apps.fitness" />
+    </queries>
 
 
     <application
@@ -20,6 +36,8 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="true"
+      android:launchMode="singleTask"
+      android:stateNotNeeded="true"
       >
     
     <!--Maps-->
@@ -41,8 +59,21 @@
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+       <receiver android:name="com.rnlocktask.MyAdmin"
+           android:label="@string/sample_device_admin"
+           android:description="@string/sample_device_admin_description"
+           android:permission="android.permission.BIND_DEVICE_ADMIN"
+           android:exported="true">
+           <meta-data android:name="android.app.device_admin"
+               android:resource="@xml/my_admin" />
+           <intent-filter>
+               <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+           </intent-filter>
+       </receiver>
     </application>
 </manifest>

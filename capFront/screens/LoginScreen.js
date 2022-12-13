@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { View, Text, TextInput, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions} from "react-native";
+import { View, Text, TextInput, ScrollView ,TouchableOpacity, StyleSheet, Image, Dimensions, Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /*
@@ -26,7 +26,7 @@ const [form, setForm] = useState({
   }
 });
 
-updateInput = (name, value) => {
+const updateInput = (name, value) => {
   let formCopy = form;
   formCopy[name].value = value;
   setForm(form => {
@@ -35,7 +35,7 @@ updateInput = (name, value) => {
 };
 
 return (
-  <ScrollView>
+  <ScrollView keyboardShouldPersistTaps='always'>
     <View style={styles.container}>
       <Image source={require("../logo.png")}  style={styles.image}/>
       <Text style={styles.title}>로그인</Text>
@@ -47,7 +47,7 @@ return (
           autoCapitalize={'none'}
           placeholder="아이디"
           placeholderTextColor={'#ddd'}
-          onChangeText={value=>updateInput('userId',value)}
+          onChangeText={(value) => updateInput('userId', value)}
         />
       </View>
       <View style={styles.InputContainer}>
@@ -59,7 +59,7 @@ return (
           autoCapitalize={'none'}
           placeholder="비밀번호"
           placeholderTextColor={'#ddd'}
-          onChangeText={value=>updateInput('password',value)}
+          onChangeText={(value) => updateInput('password',value)}
         />
       </View>
 
@@ -76,7 +76,7 @@ return (
 
   function LoginAPI(form, {navigation}){
     
-    fetch('http://34.64.74.7:8081/user/login', { 
+    fetch('http://34.64.74.7:8081/user/lgin', { 
     method: 'POST',
     body: JSON.stringify({
       userId: form.userId.value,
@@ -86,41 +86,59 @@ return (
   })
     .then((response) =>   response.json())
     .then(async(responseJson)=> {
-      console.log(responseJson);
-      if(responseJson.idx===true){  //부모일 경우의 저장 내용
-      await AsyncStorage.setItem(
-        'userData',
-        JSON.stringify({
-          idx:responseJson.idx,
-          userId:responseJson.userId,
-          userName:responseJson.userName,
-          token:responseJson.token,
+      if(responseJson.message === "bad request") {
+        Alert.alert("로그인 실패", "로그인 정보를 다시 확인해주세요.", [
+          {
+            text: "확인"
+          }
+        ])
+      }
+      else {
+        console.log(responseJson);
+        if(responseJson.idx===true){  //부모일 경우의 저장 내용
+        await AsyncStorage.setItem(
+          'userData',
+          JSON.stringify({
+            idx:responseJson.idx,
+            userId:responseJson.userId,
+            userName:responseJson.userName,
+            phoneNum: responseJson.phoneNum,
+            token:responseJson.token,
+            childId:responseJson.childrenInfo[0].userId,
+            childName:responseJson.childrenInfo[0].userName, //알림 시 사용
+            childHouseLat:responseJson.childrenInfo[0].houselat, //집 학교 표시 시 사용
+            childHouseLng:responseJson.childrenInfo[0].houselng,
+            childSchoolLat:responseJson.childrenInfo[0].schoollat,
+            childSchoolLng:responseJson.childrenInfo[0].schoollng
+          })
+        )
+        navigation.navigate('ParentMainpage');
+        }
+        else if(responseJson.idx === false) { //자녀일 경우의 저장 내용
+          await AsyncStorage.setItem(
+            'userData',
+            JSON.stringify({
+              idx:responseJson.idx,
+              userId:responseJson.userId,
+              userName:responseJson.userName,
+              phoneNum: responseJson.phoneNum,
+              parentPhoneNum: responseJson.myLocation.parentPhoneNum,
+              token:responseJson.token,
 
-          childId:responseJson.childrenInfo.userId,
-          childHouseLat:responseJson.childrenInfo.houselat, //집 학교 표시 시 사용
-          childHouseLng:responseJson.childrenInfo.houselng,
-          childSchoolLat:responseJson.childrenInfo.schoollat,
-          childSchoolLng:responseJson.childrenInfo.schoollng
-        })
-      )
-      navigation.navigate('ParentMainpage');
-    }
-    else{ //자녀일 경우의 저장 내용
-      await AsyncStorage.setItem(
-        'userData',
-        JSON.stringify({
-          idx:responseJson.idx,
-          userId:responseJson.userId,
-          userName:responseJson.userName,
-          token:responseJson.token,
-        })
-      )
-      navigation.navigate('ChildMainpage');
-    }
+              houseLat: responseJson.myLocation.houselat,
+              houseLng: responseJson.myLocation.houselng,
+              schoolLat: responseJson.myLocation.schoollat,
+              schoolLng: responseJson.myLocation.schoollng,
+              duration: responseJson.myLocation.duration,
+            })
+          )
+          navigation.navigate('ChildMainpage');
+        }
+      }
     })
     .catch((error) => {
       console.error(error);
-      Alert.alert("로그인 정보를 다시 확인해주세요!");
+      Alert.alert("로그인 실패", "자녀 회원가입을 먼저 진행해주세요!");
     });
   };
   
