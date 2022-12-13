@@ -10,7 +10,6 @@ import Geocode from "react-geocode";
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import RNRestart from 'react-native-restart';
 import {RadioButton} from 'react-native-paper';
-import NotificationSounds, { playSampleSound } from  'react-native-notification-sounds';
 
 //위치 접근 권한 받기
 async function requestPermission() {
@@ -42,9 +41,6 @@ function ParentMain({navigation}) {
   const [profileNum, setProfileNum] = useState(0);
   const [isChildProfileModalVisible, setIsChildProfileModalVisible] = useState(false);
   const [childProfileNum, setChildProfileNum] = useState(0);
-  const [isSoundModalVisible, setIsSoundModalVisible] = useState(false);
-  const [soundNum, setSoundNum] = useState(0);
-  const [soundTempNum, setSoundTempNum] = useState(0);
   const profileList = [
     {
       idx: 0,
@@ -83,14 +79,6 @@ function ParentMain({navigation}) {
       src: require('../profile/profile8.png')
     }
   ];
-
-  const sound=(soundNum)=>{
-    NotificationSounds.getNotifications('notification').then(soundsList  => {
-     playSampleSound(soundsList[soundNum]);
-    });
-  }
-
-
   //위치 수집 간격 설정
   const [isCollectModalVisible, setIsCollectModalVisible] = useState(false);
   const [collectInterval, setCollectInterval] = useState(5000);
@@ -240,10 +228,6 @@ function ParentMain({navigation}) {
 
   async function saveAlarm(alarmList) {
     await AsyncStorage.setItem('alarm', JSON.stringify(alarmList));
-    const value = await AsyncStorage.getItem('sound');
-    const parseValue=JSON.parse(value);
-    console.log(parseValue);
-    sound(parseValue.soundNum);
     console.log(alarmList);
   }
 
@@ -305,17 +289,12 @@ function ParentMain({navigation}) {
       const value4 = await AsyncStorage.getItem('route');
       const parseValue4 = JSON.parse(value4);
 
-      const value5 = await AsyncStorage.getItem('sound');
-      const parseValue5 = JSON.parse(value5);
-
       setName(parseValue.userName);
       setChildName(parseValue.childName);
       setProfileNum(parseValue2.profileNum);
       setChildProfileNum(parseValue2.childProfileNum);
       setCollectInterval(parseValue3.collectInterval);
       setRoute(parseValue4.route);
-      setSoundNum(parseValue5.soundNum);
-      setSoundTempNum(parseValue5.soundNum);
       setColFlag(true);
     } catch(error) {
       console.log(error);
@@ -325,7 +304,6 @@ function ParentMain({navigation}) {
   useEffect(() => {
     trackPosition();
     loadData();
-    //sound();
     setInterval(()=>parentAlert(),5000); //과연 넘어올것인가
   }, []);
 
@@ -398,17 +376,6 @@ function ParentMain({navigation}) {
     );
     setIsCollectModalVisible(!isCollectModalVisible);
     RNRestart.Restart();
-  }
-
-  const changeSound = async(index) => {
-    setSoundNum(index);
-    await AsyncStorage.setItem(
-      'sound',
-      JSON.stringify({
-        'soundNum':index,  
-      })
-    );
-    setIsSoundModalVisible(!isSoundModalVisible);
   }
 
   renderDrawer = () => {
@@ -507,38 +474,6 @@ function ParentMain({navigation}) {
           </View>
         </View>
 
-        <Modal //사운드 설정
-          visible={isSoundModalVisible}
-          transparent={true}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-                <ScrollView>
-                 <RadioButton.Group
-                 onValueChange={(newValue) => {sound(newValue); setSoundTempNum(newValue)}}
-                 value={soundTempNum}
-               >
-                 <RadioButton.Item label="1번" value={0} style={styles.RadioButtonBody}/>
-                 <RadioButton.Item label="2번" value={1} style={styles.RadioButtonBody}/>                
-                 <RadioButton.Item label="3번" value={2} style={styles.RadioButtonBody}/>                
-                 <RadioButton.Item label="4번" value={3} style={styles.RadioButtonBody}/>                
-                 <RadioButton.Item label="5번" value={4} style={styles.RadioButtonBody}/>               
-                 <RadioButton.Item label="6번" value={5} style={styles.RadioButtonBody}/>     
-                 <RadioButton.Item label="7번" value={6} style={styles.RadioButtonBody}/>                
-                 <RadioButton.Item label="8번" value={7} style={styles.RadioButtonBody}/>               
-                 <RadioButton.Item label="9번" value={8} style={styles.RadioButtonBody}/>            
-               </RadioButton.Group>
-               </ScrollView>
-             </View>
-             <TouchableOpacity style={styles.button1} onPress={() => changeSound(soundTempNum)}>
-              <Text style={{color: "black", fontSize: 18}}>설정</Text>
-            </TouchableOpacity>
-             <TouchableOpacity style={styles.button} onPress={() => setIsSoundModalVisible(!isSoundModalVisible)}>
-              <Text style={{color: "black", fontSize: 18}}>취소</Text>
-            </TouchableOpacity>
-            </View>
-        </Modal>
-
         <View style={styles.InnerContainer}><Text style={styles.title}>자녀</Text></View>
         <View style={styles.childProfile}>
           <TouchableOpacity activeOpacity={1} onPress={() => setIsChildProfileModalVisible(true)}>
@@ -557,9 +492,6 @@ function ParentMain({navigation}) {
         <View style={styles.InnerContainer}><Text style={styles.title}>설정</Text></View>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => removeRoute()}>
           <Text style={styles.setupTitle}>이동 경로 초기화</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.InnerContainer} onPress={() => setIsSoundModalVisible(true)}>
-          <Text style={styles.setupTitle}>알림 설정</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.InnerContainer} onPress={() => setIsCollectModalVisible(true)}>
           <Text style={styles.setupTitle}>위치 수집 간격 설정</Text>
@@ -671,7 +603,7 @@ function ParentMain({navigation}) {
         </DrawerLayout>
       </View>
   );
-        }
+}
 
 export default ParentMain;
 
@@ -841,15 +773,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "70%",
     marginLeft: 70
-  },
-  button1: {
-    width: "80%",
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: "#CAEF53",
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom:10,
   },
   button: {
     width: "80%",
